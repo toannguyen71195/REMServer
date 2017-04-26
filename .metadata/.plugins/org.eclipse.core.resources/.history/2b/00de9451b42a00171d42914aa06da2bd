@@ -1,0 +1,30 @@
+package com.kms.cura_server.response;
+
+import java.util.List;
+
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
+import toannguyen.rem.entity.ConditionEntity;
+import toannguyen.rem.entity.Entity;
+import toannguyen.rem.entity.SpecialityEntity;
+import toannguyen.rem.entity.json.EntityToJsonConverter;
+import toannguyen.rem.entity.user.UserEntity;
+
+public class ConditionAPIResponse extends APIResponse {
+
+	@Override
+	public String successResponse(Entity entity) {
+		return null;
+	}
+
+	@Override
+	public String successResponse(List<? extends Entity> entity) {
+		JsonElement jsonElement = EntityToJsonConverter.convertEntityListToJson(entity);
+		JsonObject jsonObject = new JsonObject();
+		jsonObject.add(ConditionEntity.CONDITION_LIST, jsonElement);
+		jsonObject.addProperty(Entity.STATUS_KEY, true);
+		return jsonObject.toString();
+	}
+
+}
