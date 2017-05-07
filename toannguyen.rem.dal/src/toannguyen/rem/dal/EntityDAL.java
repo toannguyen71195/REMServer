@@ -33,9 +33,9 @@ public abstract class EntityDAL {
 		}
 	}
 
-	protected Entity getByID(String tableName, int id, DatabaseHelper dbh) throws SQLException, ClassNotFoundException, IOException {
+	protected Entity getByID(String tableName, String idColumn, int id, DatabaseHelper dbh) throws SQLException, ClassNotFoundException, IOException {
 		try {
-			Entity result = dbh.queryByID(tableName, id);
+			Entity result = dbh.queryByID(tableName, idColumn, id);
 			return result;
 		} finally {
 			if (dbh != null) {

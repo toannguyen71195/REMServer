@@ -1,14 +1,18 @@
 package toannguyen.rem.entity;
 
 public abstract class Entity {
-	private String id;
+	private int id;
 	private String name;
 	public static final String STATUS_KEY = "statuskey";
+	public static final String SUCCESS_KEY = "success";
+	public static final String ERROR_KEY = "error";
 	public static final String MESSAGE= "message";
-	public Entity() {
+	
+	public Entity(int id) {
+		this.id = id;
 	}
 	
-	public Entity(String id, String name) {
+	public Entity(int id, String name) {
 		this.name = name;
 		this.id = id;
 	}
@@ -19,10 +23,10 @@ public abstract class Entity {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public String getId() {
+	public int getId() {
 		return id;
 	}
-	public void setId(String id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 }

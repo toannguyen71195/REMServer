@@ -1,2 +1,31 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<qualifiedTypeNameHistroy/>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="org.apache.commons.codec.binary.StringUtils"/>
+<fullyQualifiedTypeName name="com.kms.cura.dal.mapping.UserColumn"/>
+<fullyQualifiedTypeName name="org.json.JSONObject"/>
+<fullyQualifiedTypeName name="toannguyen.rem.dal.EntityDAL"/>
+<fullyQualifiedTypeName name="toannguyen.rem.entity.Entity"/>
+<fullyQualifiedTypeName name="toannguyen.rem.entity.EstateDetailEntity"/>
+<fullyQualifiedTypeName name="toannguyen.rem.dal.EstateDAL"/>
+<fullyQualifiedTypeName name="toannguyen.rem.dal.mapping.UserColumn"/>
+<fullyQualifiedTypeName name="toannguyen.rem.dal.database.UserDatabaseHelper"/>
+<fullyQualifiedTypeName name="toannguyen.rem.dal.database.AddressDatabaseHelper"/>
+<fullyQualifiedTypeName name="java.lang.String"/>
+<fullyQualifiedTypeName name="toannguyen.rem.dal.database.DatabaseHelper"/>
+<fullyQualifiedTypeName name="com.sun.xml.internal.bind.v2.schemagen.xmlschema.List"/>
+<fullyQualifiedTypeName name="java.util.List"/>
+<fullyQualifiedTypeName name="java.util.ArrayList"/>
+<fullyQualifiedTypeName name="java.lang.StringBuilder"/>
+<fullyQualifiedTypeName name="toannguyen.rem.dal.mapping.EstateColumn"/>
+<fullyQualifiedTypeName name="toannguyen.rem.dal.mapping.EstateTypeColumn"/>
+<fullyQualifiedTypeName name="com.sun.jndi.cosnaming.IiopUrl.Address"/>
+<fullyQualifiedTypeName name="toannguyen.rem.dal.mapping.AddressColumn"/>
+<fullyQualifiedTypeName name="toannguyen.rem.entity.AddressEntity"/>
+<fullyQualifiedTypeName name="java.sql.ResultSet"/>
+<fullyQualifiedTypeName name="toannguyen.rem.dal.database.EstateDatabaseHelper"/>
+<fullyQualifiedTypeName name="toannguyen.rem.server.response.UserAPIResponse"/>
+<fullyQualifiedTypeName name="toannguyen.rem.server.response.APIResponse"/>
+<fullyQualifiedTypeName name="toannguyen.rem.server.response.TypicalAPIResponse"/>
+<fullyQualifiedTypeName name="toannguyen.rem.entity.UserEntity"/>
+<fullyQualifiedTypeName name="toannguyen.rem.entity.EstateEntity"/>
+</qualifiedTypeNameHistroy>

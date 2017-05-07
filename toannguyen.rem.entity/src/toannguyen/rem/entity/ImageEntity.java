@@ -8,8 +8,8 @@ public class ImageEntity extends Entity {
 	public static String IMAGE_FORMAT ="png";
 	private String encodedImage, path, userId;
 
-	public ImageEntity(String encodedImage, String path, String name, String id) {
-		super(name, id);
+	public ImageEntity(String encodedImage, String path, String name, int id) {
+		super(id, name);
 		this.encodedImage = encodedImage;
 		this.path = path;
 	}

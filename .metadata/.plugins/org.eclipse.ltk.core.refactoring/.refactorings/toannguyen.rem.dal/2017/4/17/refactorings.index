@@ -8,3 +8,5 @@
 1493233776271	Rename package 'com.kms.cura.dal.user'
 1493235229399	Delete elements
 1493235234299	Delete elements
+1493277292353	Rename field 'USE_CURA_DATABASE'
+1493277455110	Rename package 'com.kms.cura.dal.mapping'

@@ -13,16 +13,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.kms.cura.dal.mapping.EntityColumn;
-
+import toannguyen.rem.dal.mapping.EntityColumn;
 import toannguyen.rem.entity.Entity;
 
 public abstract class DatabaseHelper {
 	
-	private static final String USE_CURA_DATABASE = "use cura";
+	private static final String USE_REM_DATABASE = "use estate_manager";
 	private static final String CONNECTION_NAME = "jdbc:mysql://localhost:3306/";
 	private static final String CONNECTION_ID = "root";
-	private static final String CONNECTION_PASSWORD = "root";
+	private static final String CONNECTION_PASSWORD = "toannguyen";
 	protected Connection con;
 
 	public DatabaseHelper() throws ClassNotFoundException, SQLException {
@@ -30,7 +29,7 @@ public abstract class DatabaseHelper {
 		Class.forName(com.mysql.jdbc.Driver.class.getName());
 		con = DriverManager.getConnection(CONNECTION_NAME, CONNECTION_ID, CONNECTION_PASSWORD);
 		try {
-			stmt = con.prepareStatement(USE_CURA_DATABASE);
+			stmt = con.prepareStatement(USE_REM_DATABASE);
 			stmt.executeQuery();
 		} finally {
 			stmt.close();
@@ -62,10 +61,6 @@ public abstract class DatabaseHelper {
 				stmt.close();
 			}
 		}
-	}
-
-	public Entity queryByID(String tableName, int id) throws SQLException, ClassNotFoundException, IOException {
-		return queryByID(tableName, EntityColumn.ID.getColumnName(), id);
 	}
 	
 	public Entity queryByID(String tableName, String idColumnName, int id) throws SQLException, ClassNotFoundException, IOException {
