@@ -1,21 +1,29 @@
 package toannguyen.rem.entity;
 
+import java.sql.Timestamp;
+
 public class EstateEntity extends Entity {
 	
 	public static String ESTATE_LIST = "estates";
+	public static int STATUS_AVAILABLE = 1;
 	
 	UserEntity owner;
 	AddressEntity address;
 	EstateDetailEntity detail;
 	boolean available;
 	String type;
+	Timestamp postTime;
+	Double price;
+	
 
-	public EstateEntity(int id, String name, UserEntity owner, AddressEntity address, boolean status, String type) {
+	public EstateEntity(int id, String name, UserEntity owner, AddressEntity address, boolean status, String type, Timestamp postTime, Double price) {
 		super(id, name);
 		this.owner = owner;
 		this.address = address;
 		this.available = status;
 		this.type = type;
+		this.postTime = postTime;
+		this.price = price;
 	}
 
 	public UserEntity getOwner() {
@@ -58,4 +66,21 @@ public class EstateEntity extends Entity {
 		this.type = type;
 	}
 
+	public boolean isAvailable() {
+		return available;
+	}
+
+	public void setAvailable(boolean available) {
+		this.available = available;
+	}
+
+	public Timestamp getPostTime() {
+		return postTime;
+	}
+
+	public void setPostTime(Timestamp postTime) {
+		this.postTime = postTime;
+	}
+
+	
 }

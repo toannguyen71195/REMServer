@@ -2,10 +2,7 @@
 <qualifiedTypeNameHistroy>
 <fullyQualifiedTypeName name="org.apache.commons.codec.binary.StringUtils"/>
 <fullyQualifiedTypeName name="com.kms.cura.dal.mapping.UserColumn"/>
-<fullyQualifiedTypeName name="org.json.JSONObject"/>
 <fullyQualifiedTypeName name="toannguyen.rem.dal.EntityDAL"/>
-<fullyQualifiedTypeName name="toannguyen.rem.entity.Entity"/>
-<fullyQualifiedTypeName name="toannguyen.rem.entity.EstateDetailEntity"/>
 <fullyQualifiedTypeName name="toannguyen.rem.dal.EstateDAL"/>
 <fullyQualifiedTypeName name="toannguyen.rem.dal.mapping.UserColumn"/>
 <fullyQualifiedTypeName name="toannguyen.rem.dal.database.UserDatabaseHelper"/>
@@ -16,7 +13,6 @@
 <fullyQualifiedTypeName name="java.util.List"/>
 <fullyQualifiedTypeName name="java.util.ArrayList"/>
 <fullyQualifiedTypeName name="java.lang.StringBuilder"/>
-<fullyQualifiedTypeName name="toannguyen.rem.dal.mapping.EstateColumn"/>
 <fullyQualifiedTypeName name="toannguyen.rem.dal.mapping.EstateTypeColumn"/>
 <fullyQualifiedTypeName name="com.sun.jndi.cosnaming.IiopUrl.Address"/>
 <fullyQualifiedTypeName name="toannguyen.rem.dal.mapping.AddressColumn"/>
@@ -25,7 +21,16 @@
 <fullyQualifiedTypeName name="toannguyen.rem.dal.database.EstateDatabaseHelper"/>
 <fullyQualifiedTypeName name="toannguyen.rem.server.response.UserAPIResponse"/>
 <fullyQualifiedTypeName name="toannguyen.rem.server.response.APIResponse"/>
-<fullyQualifiedTypeName name="toannguyen.rem.server.response.TypicalAPIResponse"/>
 <fullyQualifiedTypeName name="toannguyen.rem.entity.UserEntity"/>
+<fullyQualifiedTypeName name="java.sql.Timestamp"/>
+<fullyQualifiedTypeName name="javax.ws.rs.POST"/>
+<fullyQualifiedTypeName name="toannguyen.rem.server.response.TypicalAPIResponse"/>
+<fullyQualifiedTypeName name="com.google.gson.JsonObject"/>
+<fullyQualifiedTypeName name="org.json.JSONObject"/>
+<fullyQualifiedTypeName name="javax.ws.rs.PathParam"/>
 <fullyQualifiedTypeName name="toannguyen.rem.entity.EstateEntity"/>
+<fullyQualifiedTypeName name="toannguyen.rem.dal.mapping.EstateColumn"/>
+<fullyQualifiedTypeName name="toannguyen.rem.entity.EstateDetailEntity"/>
+<fullyQualifiedTypeName name="toannguyen.rem.dal.mapping.EstateDetailColumn"/>
+<fullyQualifiedTypeName name="toannguyen.rem.entity.Entity"/>
 </qualifiedTypeNameHistroy>

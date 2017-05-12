@@ -42,10 +42,11 @@ create table estate (
     Rate int check (1 <= rate <= 5),
     StatusID int,
     EstateTypeID int,
-    PostTime datetime
+    PostTime datetime,
+    Price double
 );
 
-create table interestedEstate (
+create table interested_estate (
 	EstateID int references estate (EstateID),
     BuyerID int references users (UserID),
     isVisited bool,

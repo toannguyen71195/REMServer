@@ -9,15 +9,15 @@ import java.util.List;
 
 import toannguyen.rem.dal.mapping.AddressColumn;
 import toannguyen.rem.dal.mapping.EstateColumn;
+import toannguyen.rem.dal.mapping.EstateDetailColumn;
 import toannguyen.rem.dal.mapping.EstateTypeColumn;
 import toannguyen.rem.entity.AddressEntity;
 import toannguyen.rem.entity.Entity;
+import toannguyen.rem.entity.EstateDetailEntity;
 import toannguyen.rem.entity.EstateEntity;
 import toannguyen.rem.entity.UserEntity;
 
 public class EstateDatabaseHelper extends DatabaseHelper {
-
-	private static int STATUS_AVAILABLE = 1;
 
 	public EstateDatabaseHelper() throws ClassNotFoundException, SQLException {
 		super();
@@ -26,23 +26,18 @@ public class EstateDatabaseHelper extends DatabaseHelper {
 	@Override
 	protected Entity getEntityFromResultSet(ResultSet resultSet)
 			throws SQLException, ClassNotFoundException, IOException {
-		// EstateEntity(UserEntity owner, AddressEntity address, boolean status,
-		// String type)
 		UserDatabaseHelper userDatabaseHelper = new UserDatabaseHelper();
 		try {
 			UserEntity userEntity = userDatabaseHelper
 					.getUserByID(resultSet.getInt(EstateColumn.OWNER_ID.getColumnName()));
-			if (resultSet.getInt(EstateColumn.STATUS_ID.getColumnName()) == STATUS_AVAILABLE) {
-				return new EstateEntity(resultSet.getInt(EstateColumn.ID.getColumnName()),
-						resultSet.getString(EstateColumn.NAME.getColumnName()), userEntity,
-						getAddressEntityFromResultSet(resultSet), true,
-						resultSet.getString(EstateTypeColumn.NAME.getColumnName()));
-			} else {
-				return new EstateEntity(resultSet.getInt(EstateColumn.ID.getColumnName()),
-						resultSet.getString(EstateColumn.NAME.getColumnName()), userEntity,
-						getAddressEntityFromResultSet(resultSet), false,
-						resultSet.getString(EstateTypeColumn.NAME.getColumnName()));
-			}
+			return new EstateEntity(resultSet.getInt(EstateColumn.ID.getColumnName()),
+					resultSet.getString(EstateColumn.NAME.getColumnName()), userEntity,
+					getAddressEntityFromResultSet(resultSet),
+					resultSet.getInt(EstateColumn.STATUS_ID.getColumnName()) == EstateEntity.STATUS_AVAILABLE,
+					resultSet.getString(EstateTypeColumn.NAME.getColumnName()),
+					resultSet.getTimestamp(EstateColumn.POST_TIME.getColumnName()),
+					resultSet.getDouble(EstateColumn.PRICE.getColumnName()));
+
 		} finally {
 			if (userDatabaseHelper != null) {
 				userDatabaseHelper.closeConnection();
@@ -64,9 +59,6 @@ public class EstateDatabaseHelper extends DatabaseHelper {
 		ResultSet rs = null;
 		List<EstateEntity> result = new ArrayList<>();
 		try {
-			// SELECT * FROM estate e left join address a on e.AddressID =
-			// a.AddressID
-			// left join estate_type t on e.EstateTypeID = t.EstateTypeID;
 			StringBuilder builder = new StringBuilder();
 			builder.append("SELECT * FROM ");
 			builder.append(EstateColumn.TABLE_NAME + " e left join ");
@@ -92,5 +84,111 @@ public class EstateDatabaseHelper extends DatabaseHelper {
 				stmt.close();
 			}
 		}
+	}
+
+	public EstateEntity queryEstateByOwnerID(int id) throws SQLException, ClassNotFoundException, IOException {
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		try {
+			StringBuilder builder = new StringBuilder();
+			builder.append("SELECT * FROM ");
+			builder.append(EstateColumn.TABLE_NAME + " e left join ");
+			builder.append(AddressColumn.TABLE_NAME + " a on e.");
+			builder.append(EstateColumn.ADDRESS_ID + " = a.");
+			builder.append(AddressColumn.ID);
+			builder.append(" left join ");
+			builder.append(EstateTypeColumn.TABLE_NAME + " t on e.");
+			builder.append(EstateColumn.ESTATE_TYPE_ID + " = t.");
+			builder.append(EstateTypeColumn.ID + " where e.");
+			builder.append(EstateColumn.OWNER_ID + " = ");
+			builder.append(id + ";");
+			stmt = con.prepareStatement(builder.toString());
+			rs = stmt.executeQuery();
+			rs.next();
+			EstateEntity entity = (EstateEntity) getEntityFromResultSet(rs);
+			return entity;
+		} finally {
+			if (rs != null) {
+				rs.close();
+			}
+			if (stmt != null) {
+				stmt.close();
+			}
+		}
+	}
+
+	public List<EstateEntity> queryNewEstate(int count) throws SQLException, ClassNotFoundException, IOException {
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		List<EstateEntity> result = new ArrayList<>();
+		try {
+			StringBuilder builder = new StringBuilder();
+			builder.append("SELECT * FROM ");
+			builder.append(EstateColumn.TABLE_NAME + " e left join ");
+			builder.append(AddressColumn.TABLE_NAME + " a on e.");
+			builder.append(EstateColumn.ADDRESS_ID + " = a.");
+			builder.append(AddressColumn.ID);
+			builder.append(" left join ");
+			builder.append(EstateTypeColumn.TABLE_NAME + " t on e.");
+			builder.append(EstateColumn.ESTATE_TYPE_ID + " = t.");
+			builder.append(EstateTypeColumn.ID + " where e.");
+			builder.append(EstateColumn.STATUS_ID + " = " + EstateEntity.STATUS_AVAILABLE);
+			builder.append(" order by " + EstateColumn.POST_TIME + " desc");
+			builder.append(" limit " + count + ";");
+			stmt = con.prepareStatement(builder.toString());
+			rs = stmt.executeQuery();
+			while (rs.next()) {
+				EstateEntity entity = (EstateEntity) getEntityFromResultSet(rs);
+				result.add(entity);
+			}
+			return result;
+		} finally {
+			if (rs != null) {
+				rs.close();
+			}
+			if (stmt != null) {
+				stmt.close();
+			}
+		}
+	}
+
+	public EstateDetailEntity queryEstateDetail(int estateId) throws SQLException {
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		try {
+			StringBuilder builder = new StringBuilder();
+			builder.append("SELECT * FROM ");
+			builder.append(EstateColumn.TABLE_NAME + " e left join ");
+			builder.append(EstateDetailColumn.TABLE_NAME + " d on e.");
+			builder.append(EstateColumn.ESTATE_DETAIL_ID + " = d.");
+			builder.append(EstateDetailColumn.ID);
+			builder.append(" where e.");
+			builder.append(EstateColumn.ID + " = ");
+			builder.append(estateId + ";");
+			stmt = con.prepareStatement(builder.toString());
+			rs = stmt.executeQuery();
+			rs.next();
+			EstateDetailEntity entity = (EstateDetailEntity) getEstateDetailFromResultSet(rs);
+			return entity;
+		} finally {
+			if (rs != null) {
+				rs.close();
+			}
+			if (stmt != null) {
+				stmt.close();
+			}
+		}
+	}
+
+	private EstateDetailEntity getEstateDetailFromResultSet(ResultSet rs) throws SQLException {
+		return new EstateDetailEntity(rs.getInt(EstateDetailColumn.ID.getColumnName()), 
+				rs.getDouble(EstateDetailColumn.AREA.getColumnName()), 
+				rs.getInt(EstateDetailColumn.BATHROOM.getColumnName()), 
+				rs.getInt(EstateDetailColumn.BEDROOM.getColumnName()), 
+				rs.getString(EstateDetailColumn.CONDITION.getColumnName()), 
+				rs.getString(EstateDetailColumn.DESCRIPTION.getColumnName()), 
+				rs.getInt(EstateDetailColumn.FLOOR.getColumnName()), 
+				rs.getDouble(EstateDetailColumn.LENGTH.getColumnName()), 
+				rs.getDouble(EstateDetailColumn.WIDTH.getColumnName()));
 	}
 }

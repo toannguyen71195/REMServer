@@ -28,7 +28,7 @@ insert into address(City, District, Ward, Street, Address)
     Width double */
 
 insert into estate_detail(Area, Bathroom, Bedroom, Cond, Description, Floor, Length, Width)
-			values(125, 6, 6, '3-years-old', 'Built for hire only', 4, 25, 5);
+			values(125, 6, 6, '3-years-old', 'Built for hire', 4, 25, 5);
 insert into estate_detail(Area, Bathroom, Bedroom, Cond, Description, Floor, Length, Width)
 			values(25, 1, 1, 'New', 'New', 2, 5, 5);
 
@@ -41,8 +41,10 @@ insert into estate_detail(Area, Bathroom, Bedroom, Cond, Description, Floor, Len
     StatusID int,
     EstateTypeID int */
 
-insert into estate (AddressID, EstateDetailID, Name, OwnerID, StatusID, EstateTypeID, PostTime)
-			values (1, 1, 'Phòng cho thuê', 3, 1, 2, '2017-05-06 05:06:07');
-insert into estate (AddressID, EstateDetailID, Name, OwnerID, StatusID, EstateTypeID, PostTime)
-			values (2, 2, 'Cho thuê nhà riêng', 3, 1, 4,'2017-05-05 06:07:08');
+insert into estate (AddressID, EstateDetailID, Name, OwnerID, StatusID, EstateTypeID, PostTime, Price)
+			values (1, 1, 'Phòng cho thuê', 3, 1, 2, '2017-05-06 05:06:07', 12000);
+insert into estate (AddressID, EstateDetailID, Name, OwnerID, StatusID, EstateTypeID, PostTime, Price)
+			values (2, 2, 'Cho thuê nhà riêng', 3, 1, 4,'2017-05-05 06:07:08', 8400);
+            
+
 
