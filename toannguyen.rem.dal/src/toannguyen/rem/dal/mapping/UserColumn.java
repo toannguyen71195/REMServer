@@ -1,7 +1,8 @@
 package toannguyen.rem.dal.mapping;
 
 public enum UserColumn {
-	ID("UserID"), USER_TYPE("UserType"), USER_NAME("UserName"), EMAIL("Email"), ADDRESS("Address"), PASSWORD("Password");
+	ID("UserID"), USER_TYPE("UserType"), USER_NAME("UserName"), FULL_NAME("FullName"), EMAIL("Email"), ADDRESS(
+			"Address"), PASSWORD("Password"), PHONE("Phone");
 
 	String columnName;
 
@@ -18,7 +19,7 @@ public enum UserColumn {
 	}
 
 	public static final String TABLE_NAME = "users";
-	
+
 	@Override
 	public String toString() {
 		return columnName;

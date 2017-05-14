@@ -86,9 +86,10 @@ public class EstateDatabaseHelper extends DatabaseHelper {
 		}
 	}
 
-	public EstateEntity queryEstateByOwnerID(int id) throws SQLException, ClassNotFoundException, IOException {
+	public List<EstateEntity> queryEstateByOwnerID(int id) throws SQLException, ClassNotFoundException, IOException {
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
+		List<EstateEntity> entities = new ArrayList<>();
 		try {
 			StringBuilder builder = new StringBuilder();
 			builder.append("SELECT * FROM ");
@@ -104,9 +105,11 @@ public class EstateDatabaseHelper extends DatabaseHelper {
 			builder.append(id + ";");
 			stmt = con.prepareStatement(builder.toString());
 			rs = stmt.executeQuery();
-			rs.next();
-			EstateEntity entity = (EstateEntity) getEntityFromResultSet(rs);
-			return entity;
+			while (rs.next()) {
+				EstateEntity entity = (EstateEntity) getEntityFromResultSet(rs);
+				entities.add(entity);
+			}
+			return entities;
 		} finally {
 			if (rs != null) {
 				rs.close();

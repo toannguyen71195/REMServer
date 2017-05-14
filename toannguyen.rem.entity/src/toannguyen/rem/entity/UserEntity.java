@@ -3,18 +3,23 @@ package toannguyen.rem.entity;
 public class UserEntity extends Entity {
 	
 	public static String USER_LIST = "users";
+	public static String TOKEN = "token";
 	private String email;
 	private String password;
 	private String address;
 	private int typeId;
+	private String fullName;
+	private String phone;
 	// private ImageEntity imageEntity;
 
-	public UserEntity(int id, String name, String email, String password, String address, int typeId) {
+	public UserEntity(int id, String name, String fullName, String email, String phone, String password, String address, int typeId) {
 		super(id, name);
+		this.fullName = fullName;
 		this.email = email;
 		this.password = password;
 		this.address = address;
 		this.typeId = typeId;
+		this.phone = phone;
 	}
 
 	// public UserEntity(String id, String name, String email, String password,
@@ -65,4 +70,21 @@ public class UserEntity extends Entity {
 		this.typeId = typeId;
 	}
 
+	public String getFullName() {
+		return fullName;
+	}
+
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	
 }

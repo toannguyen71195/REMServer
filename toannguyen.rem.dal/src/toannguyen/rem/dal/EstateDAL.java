@@ -31,7 +31,7 @@ public class EstateDAL extends EntityDAL {
 		}
 	}
 
-	public EstateEntity getEstateByOwnerID(int id) throws ClassNotFoundException, SQLException, IOException {
+	public List<EstateEntity> getEstateByOwnerID(int id) throws ClassNotFoundException, SQLException, IOException {
 		EstateDatabaseHelper dbh = new EstateDatabaseHelper();
 		try {
 			return dbh.queryEstateByOwnerID(id);

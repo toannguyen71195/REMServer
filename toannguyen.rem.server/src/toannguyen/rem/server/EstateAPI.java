@@ -33,8 +33,8 @@ public class EstateAPI {
 	public String getByOwnerID(@PathParam("userId") int id) {
 		TypicalAPIResponse response = new TypicalAPIResponse();
 		try {
-			EstateEntity estateEntity = EstateDAL.getInstance().getEstateByOwnerID(id);
-			return response.successResponse(estateEntity);
+			List<EstateEntity> estateEntity = EstateDAL.getInstance().getEstateByOwnerID(id);
+			return response.successResponse(estateEntity, EstateEntity.ESTATE_LIST);
 		} catch (ClassNotFoundException | SQLException | IOException e) {
 			return response.unsuccessResponse(e.getMessage());
 		}

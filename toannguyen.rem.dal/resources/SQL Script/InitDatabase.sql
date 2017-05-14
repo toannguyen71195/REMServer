@@ -12,8 +12,10 @@ create table users (
 	UserID int auto_increment,
     UserType int,
     UserName varchar(50),
+    FullName varchar(50),
     Email varchar(50),
     Address varchar(50),
+    Phone varchar(15),
     Password varchar(50),
     primary key (UserID)
 );
@@ -164,4 +166,16 @@ create table message (
     Sender int references users(UserID),
     Receiver int references users(UserID),
     Time datetime
+);
+
+/* AUTHENTICATION */
+
+create table token_login (
+	UserID int references users(UserID),
+    Token varchar(10)
+);
+
+create table token_resetPassword (
+	UserID int references users(UserID),
+    token varchar(5)
 );

@@ -14,6 +14,13 @@ public abstract class APIResponse {
 		jsonError.addProperty(Entity.MESSAGE, message);
 		return jsonError.toString();
 	}
+	
+	public String successEmptyResponse(String message) {
+		JsonObject jsonObject = new JsonObject();
+		jsonObject.addProperty(Entity.STATUS_KEY, true);
+		jsonObject.addProperty(Entity.MESSAGE, message);
+		return jsonObject.toString();
+	}
 
 	public abstract String successResponse(Entity entity);
 

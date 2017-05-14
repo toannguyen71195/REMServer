@@ -1,9 +1,9 @@
 use estate_manager;
 
-insert into users(UserType, UserName, Email, Address, Password) values (1, 'Toan Nguyen', 'nbtoan@apcs.vn', 'address', '123456');
-insert into users(UserType, UserName, Email, Address, Password) values (1, 'Tri Quach', 'qmtri@apcs.vn', 'address', '123456');
-insert into users(UserType, UserName, Email, Address, Password) values (2, 'Toan Owner', 'nbtoan@apcs.vn', 'address', '123456');
-insert into users(UserType, UserName, Email, Address, Password) values (3, 'Toan Broker', 'nbtoan@apcs.vn', 'address', '123456');
+insert into users(UserType, UserName, FullName, Email, Phone, Address, Password) values (1, 'Toan Buyer', 'Nguyen Bao Toan 1', 'nbtoan+1@apcs.vn', '1234', 'address', '123456');
+insert into users(UserType, UserName, FullName, Email, Phone, Address, Password) values (1, 'Tri Quach', 'QMTri', 'qmtri@apcs.vn', '2234', 'address', '123456');
+insert into users(UserType, UserName, FullName, Email, Phone, Address, Password) values (2, 'Toan Owner', 'Nguyen Bao Toan 2', 'nbtoan+2@apcs.vn', '3234', 'address', '123456');
+insert into users(UserType, UserName, FullName, Email, Phone, Address, Password) values (3, 'Toan Broker', 'Nguyen Bao Toan 3', 'nbtoan+3@apcs.vn', '4234', 'address', '123456');
 
 /*	AddressID int primary key auto_increment,
     City varchar(50),
@@ -46,5 +46,9 @@ insert into estate (AddressID, EstateDetailID, Name, OwnerID, StatusID, EstateTy
 insert into estate (AddressID, EstateDetailID, Name, OwnerID, StatusID, EstateTypeID, PostTime, Price)
 			values (2, 2, 'Cho thuê nhà riêng', 3, 1, 4,'2017-05-05 06:07:08', 8400);
             
+insert into interested_estate (EstateID, BuyerID, isVisited)
+			values (1, 1, false);
+insert into interested_estate (EstateID, BuyerID, isVisited, Time)
+			values (2, 1, true, '2017-06-07 07:08:09');
 
 
