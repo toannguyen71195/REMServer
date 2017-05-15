@@ -2,6 +2,7 @@ package toannguyen.rem.dal;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.List;
 
 import toannguyen.rem.dal.database.EstateDatabaseHelper;
@@ -53,6 +54,25 @@ public class EstateDAL extends EntityDAL {
 		EstateDatabaseHelper dbh = new EstateDatabaseHelper();
 		try {
 			return dbh.queryEstateDetail(estateId);
+		} finally {
+			dbh.closeConnection();
+		}
+	}
+
+	public List<EstateEntity> getInterestedEstate(int userId) throws ClassNotFoundException, SQLException, IOException {
+		EstateDatabaseHelper dbh = new EstateDatabaseHelper();
+		try {
+			return dbh.queryInterestedEstate(userId);
+		} finally {
+			dbh.closeConnection();
+		}
+	}
+	
+	// return null if not visited
+	public Timestamp getVisitedTime(int userId, int estateId) throws SQLException, ClassNotFoundException {
+		EstateDatabaseHelper dbh = new EstateDatabaseHelper();
+		try {
+			return dbh.getVisitedTime(userId, estateId);
 		} finally {
 			dbh.closeConnection();
 		}

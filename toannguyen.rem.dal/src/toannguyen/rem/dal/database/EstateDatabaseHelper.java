@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +12,7 @@ import toannguyen.rem.dal.mapping.AddressColumn;
 import toannguyen.rem.dal.mapping.EstateColumn;
 import toannguyen.rem.dal.mapping.EstateDetailColumn;
 import toannguyen.rem.dal.mapping.EstateTypeColumn;
+import toannguyen.rem.dal.mapping.InterestedEstateColumn;
 import toannguyen.rem.entity.AddressEntity;
 import toannguyen.rem.entity.Entity;
 import toannguyen.rem.entity.EstateDetailEntity;
@@ -184,14 +186,77 @@ public class EstateDatabaseHelper extends DatabaseHelper {
 	}
 
 	private EstateDetailEntity getEstateDetailFromResultSet(ResultSet rs) throws SQLException {
-		return new EstateDetailEntity(rs.getInt(EstateDetailColumn.ID.getColumnName()), 
-				rs.getDouble(EstateDetailColumn.AREA.getColumnName()), 
-				rs.getInt(EstateDetailColumn.BATHROOM.getColumnName()), 
-				rs.getInt(EstateDetailColumn.BEDROOM.getColumnName()), 
-				rs.getString(EstateDetailColumn.CONDITION.getColumnName()), 
-				rs.getString(EstateDetailColumn.DESCRIPTION.getColumnName()), 
-				rs.getInt(EstateDetailColumn.FLOOR.getColumnName()), 
-				rs.getDouble(EstateDetailColumn.LENGTH.getColumnName()), 
+		return new EstateDetailEntity(rs.getInt(EstateDetailColumn.ID.getColumnName()),
+				rs.getDouble(EstateDetailColumn.AREA.getColumnName()),
+				rs.getInt(EstateDetailColumn.BATHROOM.getColumnName()),
+				rs.getInt(EstateDetailColumn.BEDROOM.getColumnName()),
+				rs.getString(EstateDetailColumn.CONDITION.getColumnName()),
+				rs.getString(EstateDetailColumn.DESCRIPTION.getColumnName()),
+				rs.getInt(EstateDetailColumn.FLOOR.getColumnName()),
+				rs.getDouble(EstateDetailColumn.LENGTH.getColumnName()),
 				rs.getDouble(EstateDetailColumn.WIDTH.getColumnName()));
 	}
+
+	public List<EstateEntity> queryInterestedEstate(int userId)
+			throws SQLException, ClassNotFoundException, IOException {
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		List<EstateEntity> entities = new ArrayList<>();
+		try {
+			StringBuilder builder = new StringBuilder();
+			builder.append("SELECT * FROM ");
+			builder.append(InterestedEstateColumn.TABLE_NAME + " i left join ");
+			builder.append(EstateColumn.TABLE_NAME + " e on i.");
+			builder.append(InterestedEstateColumn.ESTATE_ID + " = e.");
+			builder.append(EstateColumn.ID);
+			builder.append(" where i.");
+			builder.append(InterestedEstateColumn.USER_ID + " = ");
+			builder.append(userId + ";");
+			stmt = con.prepareStatement(builder.toString());
+			rs = stmt.executeQuery();
+			while (rs.next()) {
+				EstateEntity entity = (EstateEntity) getEntityFromResultSet(rs);
+				entities.add(entity);
+			}
+			return entities;
+		} finally {
+			if (rs != null) {
+				rs.close();
+			}
+			if (stmt != null) {
+				stmt.close();
+			}
+		}
+	}
+
+	public Timestamp getVisitedTime(int userId, int estateId) throws SQLException {
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		try {
+			StringBuilder builder = new StringBuilder();
+			builder.append("SELECT * FROM ");
+			builder.append(InterestedEstateColumn.TABLE_NAME);
+			builder.append(" where ");
+			builder.append(InterestedEstateColumn.USER_ID + " = ");
+			builder.append(userId);
+			builder.append(" and ");
+			builder.append(InterestedEstateColumn.ESTATE_ID + " = ");
+			builder.append(estateId + ";");
+			stmt = con.prepareStatement(builder.toString());
+			rs = stmt.executeQuery();
+			if (rs.next()) {
+				return rs.getTimestamp(InterestedEstateColumn.TIME.getColumnName());
+			} else {
+				return null;
+			}
+		} finally {
+			if (rs != null) {
+				rs.close();
+			}
+			if (stmt != null) {
+				stmt.close();
+			}
+		}
+	}
+
 }

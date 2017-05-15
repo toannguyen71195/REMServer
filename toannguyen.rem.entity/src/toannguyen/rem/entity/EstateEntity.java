@@ -5,6 +5,8 @@ import java.sql.Timestamp;
 public class EstateEntity extends Entity {
 	
 	public static String ESTATE_LIST = "estates";
+	public static String IS_VISITED = "isVisited";
+	public static String TIME = "time";
 	public static int STATUS_AVAILABLE = 1;
 	
 	UserEntity owner;
