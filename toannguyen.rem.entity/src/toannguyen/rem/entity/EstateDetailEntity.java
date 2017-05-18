@@ -1,7 +1,6 @@
 package toannguyen.rem.entity;
 
 public class EstateDetailEntity extends Entity {
-	double area;
 	int bathroom;
 	int bedroom;
 	String condition;
@@ -10,10 +9,9 @@ public class EstateDetailEntity extends Entity {
 	double length;
 	double width;
 
-	public EstateDetailEntity(int id, double area, int bathroom, int bedroom, String condition, String description, int floor,
+	public EstateDetailEntity(int id, int bathroom, int bedroom, String condition, String description, int floor,
 			double length, double width) {
 		super(id);
-		this.area = area;
 		this.bathroom = bathroom;
 		this.bedroom = bedroom;
 		this.condition = condition;
@@ -21,14 +19,6 @@ public class EstateDetailEntity extends Entity {
 		this.floor = floor;
 		this.length = length;
 		this.width = width;
-	}
-
-	public double getArea() {
-		return area;
-	}
-
-	public void setArea(double area) {
-		this.area = area;
 	}
 
 	public int getBathroom() {

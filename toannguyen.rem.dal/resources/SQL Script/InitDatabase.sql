@@ -45,7 +45,9 @@ create table estate (
     StatusID int,
     EstateTypeID int,
     PostTime datetime,
-    Price double
+    Price double,
+    Area double,
+    PhotoID int
 );
 
 create table interested_estate (
@@ -88,14 +90,14 @@ create table comment (
 
 create table photo (
 	PhotoID int primary key auto_increment,
-    Photo varchar(510),
+    Photo longtext,
+    Description varchar(255),
     EstateID int references estate (EstateID),
     Time datetime
 );
 
 create table estate_detail (
 	EstateDetailID int primary key auto_increment,
-    Area double,
     Bathroom int,
     Bedroom int,
     Cond varchar(255),
@@ -123,7 +125,7 @@ create table note (
 	NoteID int auto_increment primary key,
     Note varchar(1020),
     EstateID int references estate(EstateID),
-    PhotoID int references photo(PhotoID),
+    Photo longtext,
     Time datetime,
     UserID int references users(UserID)
 );
@@ -172,7 +174,7 @@ create table message (
 
 create table token_login (
 	UserID int references users(UserID),
-    Token varchar(10)
+    Token varchar(20)
 );
 
 create table token_resetPassword (

@@ -9,11 +9,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import toannguyen.rem.dal.mapping.AddressColumn;
+import toannguyen.rem.dal.mapping.CommentColumn;
 import toannguyen.rem.dal.mapping.EstateColumn;
 import toannguyen.rem.dal.mapping.EstateDetailColumn;
 import toannguyen.rem.dal.mapping.EstateTypeColumn;
 import toannguyen.rem.dal.mapping.InterestedEstateColumn;
+import toannguyen.rem.dal.mapping.PhotoColumn;
 import toannguyen.rem.entity.AddressEntity;
+import toannguyen.rem.entity.CommentEntity;
 import toannguyen.rem.entity.Entity;
 import toannguyen.rem.entity.EstateDetailEntity;
 import toannguyen.rem.entity.EstateEntity;
@@ -38,7 +41,8 @@ public class EstateDatabaseHelper extends DatabaseHelper {
 					resultSet.getInt(EstateColumn.STATUS_ID.getColumnName()) == EstateEntity.STATUS_AVAILABLE,
 					resultSet.getString(EstateTypeColumn.NAME.getColumnName()),
 					resultSet.getTimestamp(EstateColumn.POST_TIME.getColumnName()),
-					resultSet.getDouble(EstateColumn.PRICE.getColumnName()));
+					resultSet.getDouble(EstateColumn.PRICE.getColumnName()),
+					resultSet.getDouble(EstateColumn.AREA.getColumnName()));
 
 		} finally {
 			if (userDatabaseHelper != null) {
@@ -54,6 +58,14 @@ public class EstateDatabaseHelper extends DatabaseHelper {
 				resultSet.getString(AddressColumn.WARD.getColumnName()),
 				resultSet.getString(AddressColumn.STREET.getColumnName()),
 				resultSet.getString(AddressColumn.ADDRESS.getColumnName()));
+	}
+
+	private CommentEntity getCommentFromResultSet(ResultSet resultSet) throws SQLException {
+		return new CommentEntity(resultSet.getInt(CommentColumn.ID.getColumnName()),
+				resultSet.getInt(CommentColumn.USER_ID.getColumnName()),
+				resultSet.getInt(CommentColumn.ESTATE_ID.getColumnName()),
+				resultSet.getString(CommentColumn.COMMENT.getColumnName()),
+				resultSet.getTimestamp(CommentColumn.TIME.getColumnName()));
 	}
 
 	public List<EstateEntity> queryAllEstate() throws SQLException, ClassNotFoundException, IOException {
@@ -187,7 +199,6 @@ public class EstateDatabaseHelper extends DatabaseHelper {
 
 	private EstateDetailEntity getEstateDetailFromResultSet(ResultSet rs) throws SQLException {
 		return new EstateDetailEntity(rs.getInt(EstateDetailColumn.ID.getColumnName()),
-				rs.getDouble(EstateDetailColumn.AREA.getColumnName()),
 				rs.getInt(EstateDetailColumn.BATHROOM.getColumnName()),
 				rs.getInt(EstateDetailColumn.BEDROOM.getColumnName()),
 				rs.getString(EstateDetailColumn.CONDITION.getColumnName()),
@@ -209,6 +220,14 @@ public class EstateDatabaseHelper extends DatabaseHelper {
 			builder.append(EstateColumn.TABLE_NAME + " e on i.");
 			builder.append(InterestedEstateColumn.ESTATE_ID + " = e.");
 			builder.append(EstateColumn.ID);
+			builder.append(" left join ");
+			builder.append(AddressColumn.TABLE_NAME + " a on e.");
+			builder.append(EstateColumn.ADDRESS_ID + " = a.");
+			builder.append(AddressColumn.ID);
+			builder.append(" left join ");
+			builder.append(EstateTypeColumn.TABLE_NAME + " t on e.");
+			builder.append(EstateColumn.ESTATE_TYPE_ID + " = t.");
+			builder.append(EstateTypeColumn.ID);
 			builder.append(" where i.");
 			builder.append(InterestedEstateColumn.USER_ID + " = ");
 			builder.append(userId + ";");
@@ -249,6 +268,181 @@ public class EstateDatabaseHelper extends DatabaseHelper {
 			} else {
 				return null;
 			}
+		} finally {
+			if (rs != null) {
+				rs.close();
+			}
+			if (stmt != null) {
+				stmt.close();
+			}
+		}
+	}
+
+	public void setInterested(int userId, int estateId) throws SQLException {
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		// check if interested => delete
+		StringBuilder builder = new StringBuilder();
+		builder.append("SELECT * FROM ");
+		builder.append(InterestedEstateColumn.TABLE_NAME);
+		builder.append(" where ");
+		builder.append(InterestedEstateColumn.USER_ID + " = ");
+		builder.append(userId + " and ");
+		builder.append(InterestedEstateColumn.ESTATE_ID + " = ");
+		builder.append(estateId + ";");
+		stmt = con.prepareStatement(builder.toString());
+		rs = stmt.executeQuery();
+		if (rs.next()) { // delete
+			builder = new StringBuilder();
+			builder.append("delete from " + InterestedEstateColumn.TABLE_NAME);
+			builder.append(" where ");
+			builder.append(InterestedEstateColumn.USER_ID + " = ");
+			builder.append(userId + " and ");
+			builder.append(InterestedEstateColumn.ESTATE_ID + " = ");
+			builder.append(estateId + ";");
+			executeUpdate(stmt, rs, builder);
+		} else { // else insert
+			builder = new StringBuilder();
+			builder.append("insert into " + InterestedEstateColumn.TABLE_NAME);
+			builder.append(" (" + InterestedEstateColumn.ESTATE_ID.getColumnName() + ", ");
+			builder.append(InterestedEstateColumn.USER_ID + ", ");
+			builder.append(InterestedEstateColumn.IS_VISITED + ") ");
+			builder.append("values (" + estateId + ", " + userId + ", false);");
+			executeUpdate(stmt, rs, builder);
+		}
+	}
+
+	private void executeUpdate(PreparedStatement stmt, ResultSet rs, StringBuilder builder) throws SQLException {
+		if (rs != null) {
+			rs.close();
+		}
+		if (stmt != null) {
+			stmt.close();
+		}
+		try {
+			con.setAutoCommit(false);
+			stmt = con.prepareStatement(builder.toString());
+			stmt.executeUpdate();
+			con.commit();
+		} catch (SQLException e) {
+			if (con != null) {
+				con.rollback();
+			}
+			throw e;
+		} finally {
+			con.setAutoCommit(true);
+			if (rs != null) {
+				rs.close();
+			}
+			if (stmt != null) {
+				stmt.close();
+			}
+		}
+	}
+
+	public CommentEntity comment(int userId, int estateId, String comment) throws SQLException {
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		StringBuilder builder = new StringBuilder();
+		builder.append("insert into " + CommentColumn.TABLE_NAME);
+		builder.append(" (" + CommentColumn.ESTATE_ID.getColumnName() + ", ");
+		builder.append(CommentColumn.USER_ID + ", ");
+		builder.append(CommentColumn.COMMENT + ", ");
+		builder.append(CommentColumn.TIME + ") ");
+		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+		builder.append("values (" + estateId + ", " + userId + ", '" + comment + "', '" + timestamp.toString() + "');");
+		try {
+			executeUpdate(stmt, rs, builder);
+			return queryLastCommentBy2ID(userId, estateId);
+		} catch (SQLException e) {
+			throw e;
+		}
+	}
+
+	private CommentEntity queryLastCommentBy2ID(int userId, int estateId) throws SQLException {
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		try {
+			StringBuilder builder = new StringBuilder();
+			builder.append("SELECT * FROM ");
+			builder.append(CommentColumn.TABLE_NAME);
+			builder.append(" where ");
+			builder.append(CommentColumn.USER_ID + " = ");
+			builder.append(userId + " and ");
+			builder.append(CommentColumn.ESTATE_ID + " = ");
+			builder.append(estateId + ";");
+			stmt = con.prepareStatement(builder.toString());
+			rs = stmt.executeQuery();
+			if (rs.last()) {
+				return getCommentFromResultSet(rs);
+			}
+			return null;
+		} finally {
+			if (rs != null) {
+				rs.close();
+			}
+			if (stmt != null) {
+				stmt.close();
+			}
+		}
+	}
+
+	public List<CommentEntity> queryCommentByEstate(int estateId) throws SQLException {
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		List<CommentEntity> entities = new ArrayList<>();
+		try {
+			StringBuilder builder = new StringBuilder();
+			builder.append("SELECT * FROM ");
+			builder.append(CommentColumn.TABLE_NAME);
+			builder.append(" where ");
+			builder.append(CommentColumn.ESTATE_ID + " = ");
+			builder.append(estateId + ";");
+			stmt = con.prepareStatement(builder.toString());
+			rs = stmt.executeQuery();
+			while (rs.next()) {
+				CommentEntity entity = (CommentEntity) getCommentFromResultSet(rs);
+				entities.add(entity);
+			}
+			return entities;
+		} finally {
+			if (rs != null) {
+				rs.close();
+			}
+			if (stmt != null) {
+				stmt.close();
+			}
+		}
+	}
+
+	public void deleteComment(int commentId) throws SQLException {
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		StringBuilder builder = new StringBuilder();
+		builder.append("delete from " + CommentColumn.TABLE_NAME);
+		builder.append(" where ");
+		builder.append(CommentColumn.ID + " = ");
+		builder.append(commentId + ";");
+		executeUpdate(stmt, rs, builder);
+	}
+
+	public String getRepresentPhoto(int estateId) throws SQLException {
+		// SELECT * FROM estate e left join photo p on e.PhotoID = p.PhotoID
+		// where e.EstateID = 1;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		try {
+			StringBuilder builder = new StringBuilder();
+			builder.append("SELECT * FROM " + EstateColumn.TABLE_NAME);
+			builder.append(" e left join " + PhotoColumn.TABLE_NAME + " p on e.");
+			builder.append(EstateColumn.PHOTO_ID + " = p." + PhotoColumn.ID);
+			builder.append(" where e." + EstateColumn.ID + " = " + estateId + ";");
+			stmt = con.prepareStatement(builder.toString());
+			rs = stmt.executeQuery();
+			if (rs.next()) {
+				return rs.getString(PhotoColumn.PHOTO.getColumnName());
+			}
+			return null;
 		} finally {
 			if (rs != null) {
 				rs.close();

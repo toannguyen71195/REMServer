@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 import toannguyen.rem.dal.database.EstateDatabaseHelper;
+import toannguyen.rem.entity.CommentEntity;
 import toannguyen.rem.entity.EstateDetailEntity;
 import toannguyen.rem.entity.EstateEntity;
 
@@ -73,6 +74,51 @@ public class EstateDAL extends EntityDAL {
 		EstateDatabaseHelper dbh = new EstateDatabaseHelper();
 		try {
 			return dbh.getVisitedTime(userId, estateId);
+		} finally {
+			dbh.closeConnection();
+		}
+	}
+
+	public void setInterestedEstate(int userId, int estateId) throws SQLException, ClassNotFoundException {
+		EstateDatabaseHelper dbh = new EstateDatabaseHelper();
+		try {
+			dbh.setInterested(userId, estateId);
+		} finally {
+			dbh.closeConnection();
+		}
+	}
+
+	public CommentEntity comment(int userId, int estateId, String comment) throws SQLException, ClassNotFoundException {
+		EstateDatabaseHelper dbh = new EstateDatabaseHelper();
+		try {
+			return dbh.comment(userId, estateId, comment);
+		} finally {
+			dbh.closeConnection();
+		}
+	}
+
+	public List<CommentEntity> queryCommentByEstate(int estateId) throws ClassNotFoundException, SQLException {
+		EstateDatabaseHelper dbh = new EstateDatabaseHelper();
+		try {
+			return dbh.queryCommentByEstate(estateId);
+		} finally {
+			dbh.closeConnection();
+		}
+	}
+
+	public void deleteComment(int commentId) throws ClassNotFoundException, SQLException {
+		EstateDatabaseHelper dbh = new EstateDatabaseHelper();
+		try {
+			dbh.deleteComment(commentId);
+		} finally {
+			dbh.closeConnection();
+		}
+	}
+
+	public String getRepresentPhoto(int estateId) throws ClassNotFoundException, SQLException {
+		EstateDatabaseHelper dbh = new EstateDatabaseHelper();
+		try {
+			return dbh.getRepresentPhoto(estateId);
 		} finally {
 			dbh.closeConnection();
 		}

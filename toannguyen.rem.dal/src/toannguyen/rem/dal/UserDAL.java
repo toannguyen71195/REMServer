@@ -64,6 +64,7 @@ public class UserDAL extends EntityDAL {
 		try {
 			String token = DataUtils.createLoginToken();
 			dbh = new UserDatabaseHelper();
+			dbh.clearLoginToken(id);
 			dbh.insertLoginToken(id, token);
 			return token;
 		} finally {

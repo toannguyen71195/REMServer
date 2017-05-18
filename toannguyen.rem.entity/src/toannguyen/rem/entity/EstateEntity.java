@@ -3,12 +3,12 @@ package toannguyen.rem.entity;
 import java.sql.Timestamp;
 
 public class EstateEntity extends Entity {
-	
+
 	public static String ESTATE_LIST = "estates";
 	public static String IS_VISITED = "isVisited";
 	public static String TIME = "time";
 	public static int STATUS_AVAILABLE = 1;
-	
+
 	UserEntity owner;
 	AddressEntity address;
 	EstateDetailEntity detail;
@@ -16,9 +16,10 @@ public class EstateEntity extends Entity {
 	String type;
 	Timestamp postTime;
 	Double price;
-	
+	Double area;
 
-	public EstateEntity(int id, String name, UserEntity owner, AddressEntity address, boolean status, String type, Timestamp postTime, Double price) {
+	public EstateEntity(int id, String name, UserEntity owner, AddressEntity address, boolean status, String type,
+			Timestamp postTime, Double price, Double area) {
 		super(id, name);
 		this.owner = owner;
 		this.address = address;
@@ -26,6 +27,7 @@ public class EstateEntity extends Entity {
 		this.type = type;
 		this.postTime = postTime;
 		this.price = price;
+		this.area = area;
 	}
 
 	public UserEntity getOwner() {
@@ -84,5 +86,4 @@ public class EstateEntity extends Entity {
 		this.postTime = postTime;
 	}
 
-	
 }

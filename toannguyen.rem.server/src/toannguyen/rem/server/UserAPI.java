@@ -22,7 +22,7 @@ import toannguyen.rem.server.response.UserAPIResponse;
 public final class UserAPI {
 
 	@GET
-	@Path("/getAllUser")
+	@Path("/getAll")
 	public String getAllUser() {
 		UserAPIResponse response = new UserAPIResponse();
 		try {
@@ -36,11 +36,11 @@ public final class UserAPI {
 	@POST
 	@Path("/login")
 	public String logIn(String json) {
-		JSONObject jsonObject = new JSONObject(json);
-		String username = jsonObject.getString(UserColumn.USER_NAME.getColumnName());
-		String password = jsonObject.getString(UserColumn.PASSWORD.getColumnName());
 		UserAPIResponse response = new UserAPIResponse();
 		try {
+			JSONObject jsonObject = new JSONObject(json);
+			String username = jsonObject.getString(UserColumn.USER_NAME.getColumnName());
+			String password = jsonObject.getString(UserColumn.PASSWORD.getColumnName());
 			UserEntity userEntity = UserDAL.getInstance().logIn(username, password);
 			if (userEntity != null) {
 				String token = UserDAL.getInstance().createLoginToken(userEntity.getId());
@@ -73,15 +73,14 @@ public final class UserAPI {
 	@Path("/register")
 	public String register(String json) {
 		UserAPIResponse response = new UserAPIResponse();
-		JSONObject jsonObject = new JSONObject(json);
-		UserEntity entity = new UserEntity(0, jsonObject.getString(UserColumn.USER_NAME.getColumnName()),
-				jsonObject.getString(UserColumn.FULL_NAME.getColumnName()),
-				jsonObject.getString(UserColumn.EMAIL.getColumnName()),
-				jsonObject.getString(UserColumn.PHONE.getColumnName()),
-				jsonObject.getString(UserColumn.PASSWORD.getColumnName()),
-				jsonObject.getString(UserColumn.ADDRESS.getColumnName()),
-				jsonObject.getInt(UserColumn.USER_TYPE.getColumnName()));
 		try {
+			JSONObject jsonObject = new JSONObject(json);
+			UserEntity entity = new UserEntity(0, jsonObject.getString(UserColumn.USER_NAME.getColumnName()),
+					jsonObject.getString(UserColumn.FULL_NAME.getColumnName()),
+					jsonObject.getString(UserColumn.EMAIL.getColumnName()),
+					jsonObject.getString(UserColumn.PHONE.getColumnName()),
+					jsonObject.getString(UserColumn.PASSWORD.getColumnName()), "",
+					jsonObject.getInt(UserColumn.USER_TYPE.getColumnName()));
 			UserEntity userEntity = UserDAL.getInstance().register(entity);
 			if (userEntity != null) {
 				String token = UserDAL.getInstance().createLoginToken(userEntity.getId());

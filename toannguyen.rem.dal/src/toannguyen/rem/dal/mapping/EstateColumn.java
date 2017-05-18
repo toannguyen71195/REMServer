@@ -2,8 +2,8 @@ package toannguyen.rem.dal.mapping;
 
 public enum EstateColumn {
 	ID("EstateID"), ADDRESS_ID("AddressID"), ESTATE_DETAIL_ID("EstateDetailID"), NAME("Name"), OWNER_ID(
-			"OwnerID"), RATE("Rate"), STATUS_ID(
-					"StatusID"), ESTATE_TYPE_ID("EstateTypeID"), POST_TIME("PostTime"), PRICE("Price");
+			"OwnerID"), RATE("Rate"), STATUS_ID("StatusID"), ESTATE_TYPE_ID(
+					"EstateTypeID"), POST_TIME("PostTime"), PRICE("Price"), AREA("Area"), PHOTO_ID("PhotoID");
 
 	String columnName;
 
