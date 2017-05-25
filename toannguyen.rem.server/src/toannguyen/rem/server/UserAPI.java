@@ -28,7 +28,7 @@ public final class UserAPI {
 		try {
 			List<Entity> users = UserDAL.getInstance().getAll();
 			return response.successResponse(users, UserEntity.USER_LIST);
-		} catch (ClassNotFoundException | SQLException | IOException e) {
+		} catch (Exception e) {
 			return response.unsuccessResponse(e.getMessage());
 		}
 	}

@@ -9,7 +9,7 @@ import toannguyen.rem.entity.Entity;
 
 public abstract class EntityDAL {
 
-	protected List<Entity> getAll(String tableName, DatabaseHelper dbh) throws ClassNotFoundException, SQLException, IOException {
+	protected List<Entity> getAll(String tableName, DatabaseHelper dbh) throws Exception {
 		List<Entity> result = null;
 		try {
 			result = dbh.queryAll(tableName);
@@ -21,19 +21,7 @@ public abstract class EntityDAL {
 		}
 	}
 
-	protected Entity getByName(String tableName, String name, DatabaseHelper dbh)
-			throws SQLException, ClassNotFoundException, IOException {
-		try {
-			Entity result = dbh.queryByName(tableName, name);
-			return result;
-		} finally {
-			if (dbh != null) {
-				dbh.closeConnection();
-			}
-		}
-	}
-
-	protected Entity getByID(String tableName, String idColumn, int id, DatabaseHelper dbh) throws SQLException, ClassNotFoundException, IOException {
+	protected Entity getByID(String tableName, String idColumn, int id, DatabaseHelper dbh) throws Exception {
 		try {
 			Entity result = dbh.queryByID(tableName, idColumn, id);
 			return result;

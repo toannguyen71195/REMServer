@@ -23,7 +23,7 @@ public class UserDAL extends EntityDAL {
 		return _instance;
 	}
 
-	public List<Entity> getAll() throws ClassNotFoundException, SQLException, IOException {
+	public List<Entity> getAll() throws Exception {
 		UserDatabaseHelper dbh = null;
 		try {
 			dbh = new UserDatabaseHelper();
@@ -35,7 +35,7 @@ public class UserDAL extends EntityDAL {
 		}
 	}
 
-	public Entity getUserByID(int id) throws ClassNotFoundException, SQLException, IOException {
+	public Entity getUserByID(int id) throws Exception {
 		UserDatabaseHelper dbh = null;
 		try {
 			dbh = new UserDatabaseHelper();

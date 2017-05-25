@@ -1,6 +1,5 @@
 package toannguyen.rem.server;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -20,6 +19,8 @@ import toannguyen.rem.dal.mapping.CommentColumn;
 import toannguyen.rem.entity.CommentEntity;
 import toannguyen.rem.entity.EstateDetailEntity;
 import toannguyen.rem.entity.EstateEntity;
+import toannguyen.rem.entity.PhotoEntity;
+import toannguyen.rem.entity.json.JsonToEntityConverter;
 import toannguyen.rem.server.response.EstateAPIResponse;
 import toannguyen.rem.server.response.TypicalAPIResponse;
 
@@ -33,7 +34,7 @@ public class EstateAPI {
 		try {
 			List<EstateEntity> estateEntities = EstateDAL.getInstance().getAll();
 			return response.successResponse(estateEntities, EstateEntity.ESTATE_LIST);
-		} catch (ClassNotFoundException | SQLException | IOException e) {
+		} catch (Exception e) {
 			return response.unsuccessResponse(e.getMessage());
 		}
 	}
@@ -45,7 +46,7 @@ public class EstateAPI {
 		try {
 			List<EstateEntity> estateEntity = EstateDAL.getInstance().getEstateByOwnerID(id);
 			return response.successResponse(estateEntity, EstateEntity.ESTATE_LIST);
-		} catch (ClassNotFoundException | SQLException | IOException e) {
+		} catch (Exception e) {
 			return response.unsuccessResponse(e.getMessage());
 		}
 	}
@@ -57,7 +58,7 @@ public class EstateAPI {
 		try {
 			List<EstateEntity> estateEntities = EstateDAL.getInstance().getNewEstate(count);
 			return response.successResponse(estateEntities, EstateEntity.ESTATE_LIST);
-		} catch (ClassNotFoundException | SQLException | IOException e) {
+		} catch (Exception e) {
 			return response.unsuccessResponse(e.getMessage());
 		}
 	}
@@ -69,7 +70,7 @@ public class EstateAPI {
 		try {
 			EstateDetailEntity estateDetailEntity = EstateDAL.getInstance().getEstateDetail(estateId);
 			return response.successResponse(estateDetailEntity);
-		} catch (ClassNotFoundException | SQLException e) {
+		} catch (Exception e) {
 			return response.unsuccessResponse(e.getMessage());
 		}
 	}
@@ -86,7 +87,7 @@ public class EstateAPI {
 				jsonObjects.add(response.successResponseInterested(entity, timeVisited));
 			}
 			return response.successResponseInterestedList(jsonObjects);
-		} catch (ClassNotFoundException | SQLException | IOException e) {
+		} catch (Exception e) {
 			return response.unsuccessResponse(e.getMessage());
 		}
 	}
@@ -171,6 +172,58 @@ public class EstateAPI {
 				return response.unsuccessResponse("Estate does not have representative photo in db");
 			}
 		} catch (ClassNotFoundException | SQLException e) {
+			return response.unsuccessResponse(e.getMessage());
+		}
+	}
+	
+	@POST
+	@Path("/post")
+	public String post(String json) {
+		EstateAPIResponse response = new EstateAPIResponse();
+		try {
+			EstateEntity reqEntity = JsonToEntityConverter.convertJsonStringToEntity(json, EstateEntity.class);
+			EstateEntity rtEntity = EstateDAL.getInstance().postEstate(reqEntity);
+			return response.successResponse(rtEntity);
+		} catch (Exception e) {
+			return response.unsuccessResponse(e.getMessage());
+		}
+	}
+	
+	@POST
+	@Path("/upRepresentPhoto")
+	public String upRepresentPhoto(String json) {
+		EstateAPIResponse response = new EstateAPIResponse();
+		try {
+			PhotoEntity reqEntity = JsonToEntityConverter.convertJsonStringToEntity(json, PhotoEntity.class);
+			EstateDAL.getInstance().upRepresentPhoto(reqEntity);
+			return response.successEmptyResponse("Update success");
+		} catch (Exception e) {
+			return response.unsuccessResponse(e.getMessage());
+		}
+	}
+	
+	@POST
+	@Path("/edit")
+	public String edit(String json) {
+		EstateAPIResponse response = new EstateAPIResponse();
+		try {
+			EstateEntity reqEntity = JsonToEntityConverter.convertJsonStringToEntity(json, EstateEntity.class);
+			EstateEntity rtEntity = EstateDAL.getInstance().editEstate(reqEntity);
+			return response.successResponse(rtEntity);
+		} catch (Exception e) {
+			return response.unsuccessResponse(e.getMessage());
+		}
+	}
+	
+	@POST
+	@Path("upPhotoList")
+	public String upPhotoList(String json) {
+		EstateAPIResponse response = new EstateAPIResponse();
+		try {
+			PhotoEntity reqEntity = JsonToEntityConverter.convertJsonStringToEntity(json, PhotoEntity.class);
+			EstateDAL.getInstance().upRepresentPhoto(reqEntity);
+			return response.successEmptyResponse("Update success");
+		} catch (Exception e) {
 			return response.unsuccessResponse(e.getMessage());
 		}
 	}

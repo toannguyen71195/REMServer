@@ -1,7 +1,7 @@
 package toannguyen.rem.dal.mapping;
 
 public enum PhotoColumn {
-	ID("PhotoID"), PHOTO("Photo"), DESCRIPTION("Description"), ESTATE_ID("EstateID"), TIME("Time");
+	ID("PhotoID"), PHOTO("Photo"), ESTATE_ID("EstateID"), TIME("Time");
 	
 	String columnName;
 

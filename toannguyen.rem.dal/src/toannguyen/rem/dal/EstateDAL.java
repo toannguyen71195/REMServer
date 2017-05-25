@@ -1,6 +1,5 @@
 package toannguyen.rem.dal;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
@@ -9,6 +8,7 @@ import toannguyen.rem.dal.database.EstateDatabaseHelper;
 import toannguyen.rem.entity.CommentEntity;
 import toannguyen.rem.entity.EstateDetailEntity;
 import toannguyen.rem.entity.EstateEntity;
+import toannguyen.rem.entity.PhotoEntity;
 
 public class EstateDAL extends EntityDAL {
 	private static EstateDAL _instance;
@@ -24,7 +24,7 @@ public class EstateDAL extends EntityDAL {
 		return _instance;
 	}
 
-	public List<EstateEntity> getAll() throws ClassNotFoundException, SQLException, IOException {
+	public List<EstateEntity> getAll() throws Exception {
 		EstateDatabaseHelper dbh = new EstateDatabaseHelper();
 		try {
 			return dbh.queryAllEstate();
@@ -33,7 +33,7 @@ public class EstateDAL extends EntityDAL {
 		}
 	}
 
-	public List<EstateEntity> getEstateByOwnerID(int id) throws ClassNotFoundException, SQLException, IOException {
+	public List<EstateEntity> getEstateByOwnerID(int id) throws Exception {
 		EstateDatabaseHelper dbh = new EstateDatabaseHelper();
 		try {
 			return dbh.queryEstateByOwnerID(id);
@@ -42,7 +42,7 @@ public class EstateDAL extends EntityDAL {
 		}
 	}
 
-	public List<EstateEntity> getNewEstate(int count) throws ClassNotFoundException, SQLException, IOException {
+	public List<EstateEntity> getNewEstate(int count) throws Exception {
 		EstateDatabaseHelper dbh = new EstateDatabaseHelper();
 		try {
 			return dbh.queryNewEstate(count);
@@ -51,7 +51,7 @@ public class EstateDAL extends EntityDAL {
 		}
 	}
 
-	public EstateDetailEntity getEstateDetail(int estateId) throws ClassNotFoundException, SQLException {
+	public EstateDetailEntity getEstateDetail(int estateId) throws Exception {
 		EstateDatabaseHelper dbh = new EstateDatabaseHelper();
 		try {
 			return dbh.queryEstateDetail(estateId);
@@ -60,7 +60,7 @@ public class EstateDAL extends EntityDAL {
 		}
 	}
 
-	public List<EstateEntity> getInterestedEstate(int userId) throws ClassNotFoundException, SQLException, IOException {
+	public List<EstateEntity> getInterestedEstate(int userId) throws Exception {
 		EstateDatabaseHelper dbh = new EstateDatabaseHelper();
 		try {
 			return dbh.queryInterestedEstate(userId);
@@ -115,10 +115,37 @@ public class EstateDAL extends EntityDAL {
 		}
 	}
 
-	public String getRepresentPhoto(int estateId) throws ClassNotFoundException, SQLException {
+	public EstateEntity postEstate(EstateEntity reqEntity) throws Exception {
 		EstateDatabaseHelper dbh = new EstateDatabaseHelper();
 		try {
-			return dbh.getRepresentPhoto(estateId);
+			return dbh.postEstate(reqEntity);
+		} finally {
+			dbh.closeConnection();
+		}
+	}
+
+	public EstateEntity editEstate(EstateEntity reqEntity) throws Exception {
+		EstateDatabaseHelper dbh = new EstateDatabaseHelper();
+		try {
+			return dbh.editEstate(reqEntity);
+		} finally {
+			dbh.closeConnection();
+		}
+	}
+	
+	public String getRepresentPhoto(int id) throws SQLException, ClassNotFoundException {
+		EstateDatabaseHelper dbh = new EstateDatabaseHelper();
+		try {
+			return dbh.getRepresentPhoto(id);
+		} finally {
+			dbh.closeConnection();
+		}
+	}
+
+	public void upRepresentPhoto(PhotoEntity reqEntity) throws Exception {
+		EstateDatabaseHelper dbh = new EstateDatabaseHelper();
+		try {
+			dbh.upRepresentPhoto(reqEntity);
 		} finally {
 			dbh.closeConnection();
 		}

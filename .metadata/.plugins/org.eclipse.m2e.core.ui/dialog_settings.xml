@@ -14,8 +14,8 @@
 	</section>
 	<section name="org.eclipse.m2e.core.ui.internal.dialogs.EditDependencyDialog">
 		<item value="480" key="width"/>
-		<item value="474" key="x"/>
-		<item value="84" key="y"/>
+		<item value="735" key="x"/>
+		<item value="173" key="y"/>
 		<item value="450" key="height"/>
 	</section>
 	<section name="org.eclipse.m2e.core.ui.internal.dialogs.MavenRepositorySearchDialog">
@@ -23,5 +23,11 @@
 		<item value="556" key="x"/>
 		<item value="34" key="y"/>
 		<item value="531" key="height"/>
+	</section>
+	<section name="org.eclipse.m2e.editor.dialogs.ManageDependenciesDialog">
+		<item value="613" key="width"/>
+		<item value="408" key="x"/>
+		<item value="84" key="y"/>
+		<item value="450" key="height"/>
 	</section>
 </section>

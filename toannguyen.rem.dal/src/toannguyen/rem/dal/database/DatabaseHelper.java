@@ -2,18 +2,12 @@ package toannguyen.rem.dal.database;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import toannguyen.rem.dal.mapping.EntityColumn;
 import toannguyen.rem.entity.Entity;
 
 public abstract class DatabaseHelper {
@@ -49,7 +43,7 @@ public abstract class DatabaseHelper {
 		}
 	}
 
-	public List<Entity> queryAll(String tableName) throws SQLException, ClassNotFoundException, IOException {
+	public List<Entity> queryAll(String tableName) throws Exception {
 		ResultSet rs = null;
 		PreparedStatement stmt = null;
 		List<Entity> result = new ArrayList<Entity>();
@@ -69,7 +63,7 @@ public abstract class DatabaseHelper {
 		}
 	}
 	
-	public Entity queryByID(String tableName, String idColumnName, int id) throws SQLException, ClassNotFoundException, IOException {
+	public Entity queryByID(String tableName, String idColumnName, int id) throws Exception {
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		try {
@@ -89,22 +83,12 @@ public abstract class DatabaseHelper {
 			}
 		}
 	}
-
-	public Entity queryByName(String tableName, String name) throws SQLException, ClassNotFoundException, IOException {
+	
+	public void deleteByID(String tableName, String idColumnName, int id) throws SQLException, ClassNotFoundException, IOException {
 		PreparedStatement stmt = null;
-		ResultSet rs = null;
-		try {
-			stmt = con.prepareStatement(
-					"SELECT * FROM " + tableName + " WHERE " + EntityColumn.NAME.getColumnName() + " = ?");
-			stmt.setString(1, name);
-			rs = stmt.executeQuery();
-			rs.next();
-			Entity result = getEntityFromResultSet(rs);
-			return result;
-		} finally {
-			rs.close();
-			stmt.close();
-		}
+		stmt = con.prepareStatement("DELETE FROM " + tableName + " WHERE " + idColumnName + " = ?");
+		stmt.setInt(1, id);
+		executeDelete(stmt);
 	}
 
 	protected ResultSet queryByReferenceID(String tableName, String referenceID, int referenceValue)
@@ -117,85 +101,53 @@ public abstract class DatabaseHelper {
 		return rs;
 	}
 
-	protected abstract Entity getEntityFromResultSet(ResultSet resultSet) throws SQLException, ClassNotFoundException, IOException;
+	protected abstract Entity getEntityFromResultSet(ResultSet resultSet) throws Exception;
 
-	public void insertReferenceRowsToReferenceTable(String database, List<ReferenceTableRow> referenceRows)
-			throws SQLException {
-		PreparedStatement stmt = null;
-		for (ReferenceTableRow referenceRow : referenceRows) {
-			try {
-				stmt = con.prepareStatement("INSERT INTO " + database + "(" + referenceRow.getFirstRefKey() + ","
-						+ referenceRow.getSecondRefKey() + ") VALUES (?,?)");
-				stmt.setInt(1, Integer.parseInt(referenceRow.getFirstValue()));
-				stmt.setInt(2, Integer.parseInt(referenceRow.getSecondValue()));
-				stmt.executeUpdate();
-			} finally {
+
+
+	protected void executeUpdate(PreparedStatement stmt, ResultSet rs, StringBuilder builder) throws SQLException {
+		if (rs != null) {
+			rs.close();
+		}
+		if (stmt != null) {
+			stmt.close();
+		}
+		try {
+			con.setAutoCommit(false);
+			stmt = con.prepareStatement(builder.toString());
+			stmt.executeUpdate();
+			con.commit();
+		} catch (SQLException e) {
+			if (con != null) {
+				con.rollback();
+			}
+			throw e;
+		} finally {
+			con.setAutoCommit(true);
+			if (rs != null) {
+				rs.close();
+			}
+			if (stmt != null) {
 				stmt.close();
 			}
 		}
 	}
-
-	protected PreparedStatement createInsertPreparedStatement(Map<String, Object> valueMap, String databaseName) throws SQLException {
-		StringBuilder insertString = new StringBuilder("INSERT INTO " + databaseName + " (");
-		StringBuilder valueString = new StringBuilder(") VALUES (");
-		boolean isFirst = true;
-		for (Entry<String, Object> entry : valueMap.entrySet()) {
-			if (isFirst) {
-				isFirst = false;
-			} else {
-				insertString.append(",");
-				valueString.append(",");
-			}
-			insertString.append(entry.getKey());
-			valueString.append("?");
-		}
-		valueString.append(")");
-		String statementString = insertString.toString() + valueString.toString();
-		PreparedStatement stmt = con.prepareStatement(statementString);
-		setPreparedStatementValue(valueMap, stmt);
-		return stmt;
-	}
 	
-	protected PreparedStatement createSelectWherePreparedStatement(Map<String, Object> valueMap, String databaseName) throws SQLException {
-		StringBuilder whereString = new StringBuilder("SELECT * FROM ");
-		whereString.append(databaseName);
-		whereString.append(" WHERE ");
-		boolean isFirst = true;
-		for (Entry<String, Object> entry : valueMap.entrySet()) {
-			if (isFirst) {
-				isFirst = false;
-			} else {
-				whereString.append(" AND ");
+	private void executeDelete(PreparedStatement stmt) throws SQLException {
+		try {
+			con.setAutoCommit(false);
+			stmt.executeUpdate();
+			con.commit();
+		} catch (SQLException e) {
+			if (con != null) {
+				con.rollback();
 			}
-			whereString.append(entry.getKey());
-			whereString.append(" = ");
-			whereString.append("?");
-		}
-		PreparedStatement stmt = con.prepareStatement(whereString.toString());
-		setPreparedStatementValue(valueMap, stmt);
-		return stmt;
-	}
-
-	protected void setPreparedStatementValue(Map<String, Object> valueMap, PreparedStatement stmt) throws SQLException {
-		int count = 1;
-		for (Entry<String, Object> valueEntry : valueMap.entrySet()) {
-			if (valueEntry.getValue() instanceof Integer) {
-				stmt.setInt(count, (Integer) valueEntry.getValue());
-			} else if (valueEntry.getValue() instanceof String) {
-				stmt.setString(count, (String) valueEntry.getValue());
-			} else if (valueEntry.getValue() instanceof Date) {
-				stmt.setDate(count, (Date) valueEntry.getValue());
-			} else if (valueEntry.getValue() instanceof Double) {
-				stmt.setDouble(count, (Double) valueEntry.getValue());
-			} else if (valueEntry.getValue() instanceof Time){
-				stmt.setTime(count, (Time) valueEntry.getValue());
-			} else {
-				// handle for null
-				stmt.setString(count, null);
+			throw e;
+		} finally {
+			con.setAutoCommit(true);
+			if (stmt != null) {
+				stmt.close();
 			}
-			count++;
 		}
 	}
-
-	
 }
