@@ -1,7 +1,7 @@
 package toannguyen.rem.dal.mapping;
 
 public enum EstateDetailColumn {
-	ID("EstateDetailID"), AREA("Area"), BATHROOM("Bathroom"), BEDROOM("Bedroom"), CONDITION("Cond"), DESCRIPTION(
+	ID("EstateID"), BATHROOM("Bathroom"), BEDROOM("Bedroom"), CONDITION("Cond"), DESCRIPTION(
 			"Description"), FLOOR("Floor"), LENGTH("Length"), WIDTH("Width");
 
 	String columnName;

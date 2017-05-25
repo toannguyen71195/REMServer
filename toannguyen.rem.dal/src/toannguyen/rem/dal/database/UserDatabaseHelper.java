@@ -31,7 +31,7 @@ public class UserDatabaseHelper extends DatabaseHelper {
 		return new UserEntity(id, name, fullName, email, phone, password, address, type);
 	}
 
-	public UserEntity getUserByID(int id) throws ClassNotFoundException, SQLException, IOException {
+	public UserEntity getUserByID(int id) throws Exception {
 		return (UserEntity) super.queryByID(UserColumn.TABLE_NAME, UserColumn.ID.getColumnName(), id);
 	}
 

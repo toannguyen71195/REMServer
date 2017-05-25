@@ -15,11 +15,12 @@ public class EstateEntity extends Entity {
 	boolean available;
 	String type;
 	Timestamp postTime;
+	Timestamp editTime;
 	Double price;
 	Double area;
 
 	public EstateEntity(int id, String name, UserEntity owner, AddressEntity address, boolean status, String type,
-			Timestamp postTime, Double price, Double area) {
+			Timestamp postTime, Timestamp editTime, Double price, Double area) {
 		super(id, name);
 		this.owner = owner;
 		this.address = address;
@@ -28,6 +29,7 @@ public class EstateEntity extends Entity {
 		this.postTime = postTime;
 		this.price = price;
 		this.area = area;
+		this.editTime = editTime;
 	}
 
 	public UserEntity getOwner() {
@@ -84,6 +86,22 @@ public class EstateEntity extends Entity {
 
 	public void setPostTime(Timestamp postTime) {
 		this.postTime = postTime;
+	}
+
+	public Double getPrice() {
+		return price;
+	}
+
+	public void setPrice(Double price) {
+		this.price = price;
+	}
+
+	public Double getArea() {
+		return area;
+	}
+
+	public void setArea(Double area) {
+		this.area = area;
 	}
 
 }

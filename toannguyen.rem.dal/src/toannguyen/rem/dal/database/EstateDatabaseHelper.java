@@ -1,6 +1,5 @@
 package toannguyen.rem.dal.database;
 
-import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -20,6 +19,7 @@ import toannguyen.rem.entity.CommentEntity;
 import toannguyen.rem.entity.Entity;
 import toannguyen.rem.entity.EstateDetailEntity;
 import toannguyen.rem.entity.EstateEntity;
+import toannguyen.rem.entity.PhotoEntity;
 import toannguyen.rem.entity.UserEntity;
 
 public class EstateDatabaseHelper extends DatabaseHelper {
@@ -29,21 +29,23 @@ public class EstateDatabaseHelper extends DatabaseHelper {
 	}
 
 	@Override
-	protected Entity getEntityFromResultSet(ResultSet resultSet)
-			throws SQLException, ClassNotFoundException, IOException {
+	protected Entity getEntityFromResultSet(ResultSet resultSet) throws Exception {
 		UserDatabaseHelper userDatabaseHelper = new UserDatabaseHelper();
 		try {
 			UserEntity userEntity = userDatabaseHelper
 					.getUserByID(resultSet.getInt(EstateColumn.OWNER_ID.getColumnName()));
-			return new EstateEntity(resultSet.getInt(EstateColumn.ID.getColumnName()),
-					resultSet.getString(EstateColumn.NAME.getColumnName()), userEntity,
-					getAddressEntityFromResultSet(resultSet),
+			int id = resultSet.getInt(EstateColumn.ID.getColumnName());
+			EstateDetailEntity detailEntity = queryEstateDetail(id);
+			EstateEntity estateEntity = new EstateEntity(id, resultSet.getString(EstateColumn.NAME.getColumnName()),
+					userEntity, getAddressEntityFromResultSet(resultSet),
 					resultSet.getInt(EstateColumn.STATUS_ID.getColumnName()) == EstateEntity.STATUS_AVAILABLE,
 					resultSet.getString(EstateTypeColumn.NAME.getColumnName()),
 					resultSet.getTimestamp(EstateColumn.POST_TIME.getColumnName()),
+					resultSet.getTimestamp(EstateColumn.EDIT_TIME.getColumnName()),
 					resultSet.getDouble(EstateColumn.PRICE.getColumnName()),
 					resultSet.getDouble(EstateColumn.AREA.getColumnName()));
-
+			estateEntity.setDetail(detailEntity);
+			return estateEntity;
 		} finally {
 			if (userDatabaseHelper != null) {
 				userDatabaseHelper.closeConnection();
@@ -68,7 +70,7 @@ public class EstateDatabaseHelper extends DatabaseHelper {
 				resultSet.getTimestamp(CommentColumn.TIME.getColumnName()));
 	}
 
-	public List<EstateEntity> queryAllEstate() throws SQLException, ClassNotFoundException, IOException {
+	public List<EstateEntity> queryAllEstate() throws Exception {
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		List<EstateEntity> result = new ArrayList<>();
@@ -100,7 +102,7 @@ public class EstateDatabaseHelper extends DatabaseHelper {
 		}
 	}
 
-	public List<EstateEntity> queryEstateByOwnerID(int id) throws SQLException, ClassNotFoundException, IOException {
+	public List<EstateEntity> queryEstateByOwnerID(int id) throws Exception {
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		List<EstateEntity> entities = new ArrayList<>();
@@ -134,7 +136,7 @@ public class EstateDatabaseHelper extends DatabaseHelper {
 		}
 	}
 
-	public List<EstateEntity> queryNewEstate(int count) throws SQLException, ClassNotFoundException, IOException {
+	public List<EstateEntity> queryNewEstate(int count) throws Exception {
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		List<EstateEntity> result = new ArrayList<>();
@@ -169,18 +171,15 @@ public class EstateDatabaseHelper extends DatabaseHelper {
 		}
 	}
 
-	public EstateDetailEntity queryEstateDetail(int estateId) throws SQLException {
+	public EstateDetailEntity queryEstateDetail(int estateId) throws Exception {
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		try {
 			StringBuilder builder = new StringBuilder();
 			builder.append("SELECT * FROM ");
-			builder.append(EstateColumn.TABLE_NAME + " e left join ");
-			builder.append(EstateDetailColumn.TABLE_NAME + " d on e.");
-			builder.append(EstateColumn.ESTATE_DETAIL_ID + " = d.");
-			builder.append(EstateDetailColumn.ID);
-			builder.append(" where e.");
-			builder.append(EstateColumn.ID + " = ");
+			builder.append(EstateDetailColumn.TABLE_NAME);
+			builder.append(" where ");
+			builder.append(EstateDetailColumn.ID + " = ");
 			builder.append(estateId + ";");
 			stmt = con.prepareStatement(builder.toString());
 			rs = stmt.executeQuery();
@@ -197,19 +196,24 @@ public class EstateDatabaseHelper extends DatabaseHelper {
 		}
 	}
 
-	private EstateDetailEntity getEstateDetailFromResultSet(ResultSet rs) throws SQLException {
-		return new EstateDetailEntity(rs.getInt(EstateDetailColumn.ID.getColumnName()),
-				rs.getInt(EstateDetailColumn.BATHROOM.getColumnName()),
-				rs.getInt(EstateDetailColumn.BEDROOM.getColumnName()),
-				rs.getString(EstateDetailColumn.CONDITION.getColumnName()),
-				rs.getString(EstateDetailColumn.DESCRIPTION.getColumnName()),
-				rs.getInt(EstateDetailColumn.FLOOR.getColumnName()),
-				rs.getDouble(EstateDetailColumn.LENGTH.getColumnName()),
-				rs.getDouble(EstateDetailColumn.WIDTH.getColumnName()));
+	private EstateDetailEntity getEstateDetailFromResultSet(ResultSet rs) throws Exception {
+		try {
+			EstateDetailEntity detailEntity = new EstateDetailEntity(rs.getInt(EstateDetailColumn.ID.getColumnName()),
+					rs.getInt(EstateDetailColumn.BATHROOM.getColumnName()),
+					rs.getInt(EstateDetailColumn.BEDROOM.getColumnName()),
+					rs.getString(EstateDetailColumn.CONDITION.getColumnName()),
+					rs.getString(EstateDetailColumn.DESCRIPTION.getColumnName()),
+					rs.getInt(EstateDetailColumn.FLOOR.getColumnName()),
+					rs.getDouble(EstateDetailColumn.LENGTH.getColumnName()),
+					rs.getDouble(EstateDetailColumn.WIDTH.getColumnName()));
+			return detailEntity;
+		} catch (Exception e) {
+			throw new Exception("rs detail " + e.getMessage());
+		}
+
 	}
 
-	public List<EstateEntity> queryInterestedEstate(int userId)
-			throws SQLException, ClassNotFoundException, IOException {
+	public List<EstateEntity> queryInterestedEstate(int userId) throws Exception {
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		List<EstateEntity> entities = new ArrayList<>();
@@ -309,34 +313,6 @@ public class EstateDatabaseHelper extends DatabaseHelper {
 			builder.append(InterestedEstateColumn.IS_VISITED + ") ");
 			builder.append("values (" + estateId + ", " + userId + ", false);");
 			executeUpdate(stmt, rs, builder);
-		}
-	}
-
-	private void executeUpdate(PreparedStatement stmt, ResultSet rs, StringBuilder builder) throws SQLException {
-		if (rs != null) {
-			rs.close();
-		}
-		if (stmt != null) {
-			stmt.close();
-		}
-		try {
-			con.setAutoCommit(false);
-			stmt = con.prepareStatement(builder.toString());
-			stmt.executeUpdate();
-			con.commit();
-		} catch (SQLException e) {
-			if (con != null) {
-				con.rollback();
-			}
-			throw e;
-		} finally {
-			con.setAutoCommit(true);
-			if (rs != null) {
-				rs.close();
-			}
-			if (stmt != null) {
-				stmt.close();
-			}
 		}
 	}
 
@@ -453,4 +429,187 @@ public class EstateDatabaseHelper extends DatabaseHelper {
 		}
 	}
 
+	public EstateEntity postEstate(EstateEntity reqEntity) throws Exception {
+		// insert into address table
+		AddressEntity addressEntity = null;
+		AddressDatabaseHelper addressDatabaseHelper = null;
+		try {
+			addressDatabaseHelper = new AddressDatabaseHelper();
+			addressEntity = addressDatabaseHelper.insertAddress(reqEntity.getAddress());
+		} finally {
+			if (addressDatabaseHelper != null) {
+				addressDatabaseHelper.closeConnection();
+			}
+		}
+
+		// insert into estate (AddressID, Name, OwnerID,
+		// StatusID, EstateTypeID, PostTime, Price, Area, Photo)
+		// values (1, 1, 'Phòng cho thuê', 3, 1, 2, '2017-05-06 05:06:07',
+		// 12000, 80, 1);
+		StringBuilder builder = new StringBuilder();
+		builder.append("insert into " + EstateColumn.TABLE_NAME);
+		builder.append(" (" + EstateColumn.ADDRESS_ID + ", ");
+		builder.append(EstateColumn.NAME + ", ");
+		builder.append(EstateColumn.OWNER_ID + ", ");
+		builder.append(EstateColumn.STATUS_ID + ", ");
+		builder.append(EstateColumn.ESTATE_TYPE_ID + ", ");
+		builder.append(EstateColumn.POST_TIME + ", ");
+		builder.append(EstateColumn.EDIT_TIME + ", ");
+		builder.append(EstateColumn.PRICE + ", ");
+		builder.append(EstateColumn.AREA + ") ");
+		builder.append(" values (");
+		builder.append("'" + addressEntity.getId() + "', ");
+		builder.append("'" + reqEntity.getName() + "', ");
+		builder.append(reqEntity.getOwner().getId() + ", ");
+		builder.append("1, ");
+		builder.append(reqEntity.getType() + ", ");
+		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+		builder.append("'" + timestamp.toString() + "', ");
+		builder.append("'" + timestamp.toString() + "', ");
+		builder.append(reqEntity.getPrice() + ", ");
+		builder.append(reqEntity.getArea() + "');");
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		executeUpdate(stmt, rs, builder);
+		EstateEntity rtEstate = queryEstateByAddressID(addressEntity.getId());
+		if (rtEstate == null) {
+			throw new Exception("Server error after insert estate.");
+		}
+		// insert into estate detail
+		EstateDetailEntity rtDetail = insertEstateDetail(reqEntity);
+		if (rtDetail == null) {
+			throw new Exception("Server error after insert detail.");
+		}
+		rtEstate.setDetail(rtDetail);
+		return rtEstate;
+	}
+
+	private EstateEntity queryEstateByAddressID(int id) throws Exception {
+		return (EstateEntity) super.queryByID(EstateColumn.TABLE_NAME, EstateColumn.ADDRESS_ID.getColumnName(), id);
+	}
+
+	private EstateDetailEntity insertEstateDetail(EstateEntity entity) throws Exception {
+		// insert into estate_detail(Bathroom, Bedroom, Cond, Description,
+		// Floor, Length, Width) values(1, 1, 'New', 'New', 2, 5, 5);
+		EstateDetailEntity detail = entity.getDetail();
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		StringBuilder builder = new StringBuilder();
+		builder.append("insert into ");
+		builder.append(EstateDetailColumn.TABLE_NAME);
+		builder.append(" (" + EstateDetailColumn.ID + ",");
+		builder.append(EstateDetailColumn.BATHROOM + ",");
+		builder.append(EstateDetailColumn.BEDROOM + ",");
+		builder.append(EstateDetailColumn.CONDITION + ",");
+		builder.append(EstateDetailColumn.DESCRIPTION + ",");
+		builder.append(EstateDetailColumn.FLOOR + ",");
+		builder.append(EstateDetailColumn.LENGTH + ",");
+		builder.append(EstateDetailColumn.WIDTH + ") values ('");
+		builder.append(entity.getId() + "','");
+		builder.append(detail.getBathroom() + "','");
+		builder.append(detail.getBedroom() + "','");
+		builder.append(detail.getCondition() + "','");
+		builder.append(detail.getDescription() + "','");
+		builder.append(detail.getFloor() + "','");
+		builder.append(detail.getLength() + "','");
+		builder.append(detail.getWidth() + "');");
+		try {
+			executeUpdate(stmt, rs, builder);
+			return queryEstateDetail(entity.getId());
+		} finally {
+			if (rs != null) {
+				rs.close();
+			}
+			if (stmt != null) {
+				stmt.close();
+			}
+		}
+	}
+
+	public EstateEntity editEstate(EstateEntity reqEntity) throws Exception {
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		StringBuilder builder = new StringBuilder();
+		try {
+			// update address
+			AddressEntity reqAddress = reqEntity.getAddress();
+			builder.append("update " + AddressColumn.TABLE_NAME);
+			builder.append(" set " + AddressColumn.CITY + " = '" + reqAddress.getCity() + "', ");
+			builder.append(AddressColumn.DISTRICT + " = '" + reqAddress.getDistrict() + "', ");
+			builder.append(AddressColumn.WARD + " = '" + reqAddress.getWard() + "', ");
+			builder.append(AddressColumn.STREET + " = '" + reqAddress.getStreet() + "', ");
+			builder.append(AddressColumn.ADDRESS + " = '" + reqAddress.getAddress());
+			builder.append(" where " + AddressColumn.ID + " = " + reqAddress.getId() + ";");
+			executeUpdate(stmt, rs, builder);
+		} catch (Exception e) {
+			throw new Exception("Server error after update address: " + e.getMessage());
+		}
+		// update estate
+		try {
+			builder.append("update " + EstateColumn.TABLE_NAME);
+			builder.append(" set " + EstateColumn.NAME + " = '" + reqEntity.getName() + "', ");
+			builder.append(EstateColumn.STATUS_ID + " = " + reqEntity.isAvailable() + ", ");
+			builder.append(EstateColumn.AREA + " = " + reqEntity.getArea() + ", ");
+			Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+			builder.append(EstateColumn.EDIT_TIME + " = '" + timestamp.toString() + "', ");
+			builder.append(EstateColumn.PRICE + " = " + reqEntity.getPrice());
+			builder.append(" where " + EstateColumn.ID + " = " + reqEntity.getId() + ";");
+			executeUpdate(stmt, rs, builder);
+		} catch (Exception e) {
+			throw new Exception("Server error after update estate: " + e.getMessage());
+		}
+		// update detail
+		try {
+			EstateDetailEntity reqDetail = reqEntity.getDetail();
+			builder.append("update " + EstateDetailColumn.TABLE_NAME);
+			builder.append(" set " + EstateDetailColumn.BATHROOM + " = " + reqDetail.getBathroom() + ", ");
+			builder.append(EstateDetailColumn.BEDROOM + " = " + reqDetail.getBedroom() + ", ");
+			builder.append(EstateDetailColumn.CONDITION + " = '" + reqDetail.getCondition() + "', ");
+			builder.append(EstateDetailColumn.DESCRIPTION + " = '" + reqDetail.getDescription() + "', ");
+			builder.append(EstateDetailColumn.FLOOR + " = " + reqDetail.getFloor() + ", ");
+			builder.append(EstateDetailColumn.LENGTH + " = " + reqDetail.getLength() + ", ");
+			builder.append(EstateDetailColumn.WIDTH + " = " + reqDetail.getWidth());
+			builder.append(" where " + EstateDetailColumn.ID + " = " + reqDetail.getId() + ";");
+			executeUpdate(stmt, rs, builder);
+		} catch (Exception e) {
+			throw new Exception("Server error after update detail: " + e.getMessage());
+		}
+		return reqEntity;
+
+	}
+
+	public void upRepresentPhoto(PhotoEntity reqEntity) throws Exception {
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		int upID = 0;
+		StringBuilder builder = new StringBuilder();
+		builder.append("insert into " + PhotoColumn.TABLE_NAME);
+		builder.append(" (" + PhotoColumn.PHOTO + ", ");
+		builder.append(PhotoColumn.TIME + "', ");
+		builder.append(PhotoColumn.ESTATE_ID + ") ");
+		builder.append("values ('" + reqEntity.getPhoto() + "','");
+		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+		builder.append(timestamp.toString() + "', ");
+		builder.append(reqEntity.getEstateID() + ");");
+		executeUpdate(stmt, rs, builder);
+
+		builder = new StringBuilder();
+		builder.append("select * from " + PhotoColumn.TABLE_NAME);
+		builder.append(" where ");
+		builder.append(PhotoColumn.TIME + " = '" + reqEntity.getTime().toString() + "' and ");
+		builder.append(PhotoColumn.ESTATE_ID + " = " + reqEntity.getEstateID() + ";");
+		stmt = con.prepareStatement(builder.toString());
+		rs = stmt.executeQuery();
+		if (rs.next()) {
+			upID = rs.getInt(PhotoColumn.ID.getColumnName());
+		} else {
+			throw new Exception("DB query, unable to retrieve photo back, please refresh");
+		}
+
+		builder = new StringBuilder();
+		builder.append("update " + EstateColumn.TABLE_NAME);
+		builder.append(" set " + EstateColumn.PHOTO_ID + " = " + upID);
+		builder.append(" where " + EstateColumn.ID + " = " + reqEntity.getEstateID());
+		executeUpdate(stmt, rs, builder);
+	}
 }

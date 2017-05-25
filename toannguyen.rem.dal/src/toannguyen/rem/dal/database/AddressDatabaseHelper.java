@@ -1,9 +1,9 @@
 package toannguyen.rem.dal.database;
 
 import java.io.IOException;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import toannguyen.rem.dal.mapping.AddressColumn;
 import toannguyen.rem.entity.AddressEntity;
 import toannguyen.rem.entity.Entity;
@@ -25,8 +25,80 @@ public class AddressDatabaseHelper extends DatabaseHelper {
 				resultSet.getString(AddressColumn.ADDRESS.getColumnName()));
 	}
 	
-	public AddressEntity getAddressByID(int id) throws ClassNotFoundException, SQLException, IOException {
+	public AddressEntity getAddressByID(int id) throws Exception {
 		return (AddressEntity) super.queryByID(AddressColumn.TABLE_NAME, AddressColumn.ID.getColumnName(), id);
+	}
+	
+	/*
+	 * throw Exception
+	 * 1. Duplicate address
+	 * 2. Db problem
+	 * never return null
+	 */
+	public AddressEntity insertAddress(AddressEntity entity) throws Exception {
+		AddressEntity addressEntity = queryAddress(entity);
+		if (addressEntity != null) {
+			throw new Exception("Unable to add new address: duplicate address");
+		}
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		StringBuilder builder = new StringBuilder();
+		builder.append("insert into ");
+		builder.append(AddressColumn.TABLE_NAME);
+		builder.append(" (" + AddressColumn.CITY + ",");
+		builder.append(AddressColumn.DISTRICT + ",");
+		builder.append(AddressColumn.WARD + ",");
+		builder.append(AddressColumn.STREET + ",");
+		builder.append(AddressColumn.ADDRESS + ") values ('");
+		builder.append(entity.getCity() + "','");
+		builder.append(entity.getDistrict() + "','");
+		builder.append(entity.getWard() + "','");
+		builder.append(entity.getStreet() + "','");
+		builder.append(entity.getAddress() + "');");
+		try {
+			executeUpdate(stmt, rs, builder);
+			addressEntity = queryAddress(entity);
+			if (addressEntity != null) {
+				return addressEntity;
+			}
+			throw new Exception("Server error, please refresh");
+		} finally {
+			if (rs != null) {
+				rs.close();
+			}
+			if (stmt != null) {
+				stmt.close();
+			}
+		}
+	}
+	
+	private AddressEntity queryAddress(AddressEntity entity) throws SQLException, ClassNotFoundException, IOException {
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		StringBuilder builder = new StringBuilder();
+		builder.append("select * from ");
+		builder.append(AddressColumn.TABLE_NAME + " where ");
+		builder.append(AddressColumn.CITY + " = '" + entity.getCity() + " and ");
+		builder.append(AddressColumn.DISTRICT + " = '" + entity.getDistrict() + " and ");
+		builder.append(AddressColumn.WARD + " = '" + entity.getWard() + " and ");
+		builder.append(AddressColumn.STREET + " = '" + entity.getStreet() + " and ");
+		builder.append(AddressColumn.ADDRESS + " = '" + entity.getAddress() + ";");
+		try {
+			stmt = con.prepareStatement(builder.toString());
+			rs = stmt.executeQuery();
+			if (rs.next()) {
+				return (AddressEntity) getEntityFromResultSet(rs);
+			} else {
+				return null;
+			}
+		} finally {
+			if (rs != null) {
+				rs.close();
+			}
+			if (stmt != null) {
+				stmt.close();
+			}
+		}
 	}
 
 }

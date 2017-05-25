@@ -38,13 +38,13 @@ insert into user_type values (3, 'Broker');
 create table estate (
 	EstateID int primary key auto_increment,
 	AddressID int,
-    EstateDetailID int,
+    EstateTypeID int,
     Name varchar(50),
     OwnerID int,
     Rate int check (1 <= rate <= 5),
     StatusID int,
-    EstateTypeID int,
     PostTime datetime,
+    EditTime datetime,
     Price double,
     Area double,
     PhotoID int
@@ -97,7 +97,7 @@ create table photo (
 );
 
 create table estate_detail (
-	EstateDetailID int primary key auto_increment,
+	EstateID int primary key,
     Bathroom int,
     Bedroom int,
     Cond varchar(255),
