@@ -1,6 +1,5 @@
 package toannguyen.rem.server.response;
 
-import java.sql.Timestamp;
 import java.util.List;
 
 import com.google.gson.JsonArray;
@@ -13,15 +12,10 @@ import toannguyen.rem.entity.json.EntityToJsonConverter;
 
 public class EstateAPIResponse extends TypicalAPIResponse {
 	
-	public JsonObject successResponseInterested(EstateEntity entity, Timestamp visited) {
+	public JsonObject successResponseInterested(EstateEntity entity, int rate) {
 		JsonElement jsonUser = EntityToJsonConverter.convertEntityToJson(entity);
 		JsonObject jsonObject = (JsonObject) jsonUser;
-		if (visited != null) {
-			jsonObject.addProperty(EstateEntity.IS_VISITED, true);
-			jsonObject.addProperty(EstateEntity.TIME, visited.toString());
-		} else {
-			jsonObject.addProperty(EstateEntity.IS_VISITED, false);
-		}
+		jsonObject.addProperty(EstateEntity.RATE, true);
 		return jsonObject;
 	}
 

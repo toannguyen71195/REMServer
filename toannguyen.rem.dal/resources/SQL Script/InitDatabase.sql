@@ -53,6 +53,12 @@ create table estate (
 create table interested_estate (
 	EstateID int references estate (EstateID),
     BuyerID int references users (UserID),
+    Rate int
+);
+
+create table visited_estate (
+	EstateID int references estate (EstateID),
+    BuyerID int references users (UserID),
     isVisited bool,
     Time datetime
 );
@@ -79,14 +85,6 @@ create table estate_status (
 
 insert into estate_status values (1, 'Available');
 insert into estate_status values (2, 'Sold');
-
-create table comment (
-	CommentID int primary key auto_increment,
-    Comment varchar(1020),
-    EstateID int references estate (EstateID),
-    Time datetime,
-    UserID int references users (UserID)
-);
 
 create table photo (
 	PhotoID int primary key auto_increment,
@@ -125,8 +123,13 @@ create table note (
 	NoteID int auto_increment primary key,
     Note varchar(1020),
     EstateID int references estate(EstateID),
+    UserID int references users(UserID)
+);
+
+create table photo_note (
+	NoteID int auto_increment primary key,
+    EstateID int references estate(EstateID),
     Photo longtext,
-    Time datetime,
     UserID int references users(UserID)
 );
 

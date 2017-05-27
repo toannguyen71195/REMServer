@@ -1,7 +1,7 @@
 package toannguyen.rem.dal.mapping;
 
 public enum InterestedEstateColumn {
-	ESTATE_ID("EstateID"), USER_ID("BuyerID"), IS_VISITED("isVisited"), TIME("Time");
+	ESTATE_ID("EstateID"), USER_ID("BuyerID"), RATE("Rate");
 	
 	String columnName;
 

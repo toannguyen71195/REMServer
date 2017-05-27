@@ -4,9 +4,11 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
+import toannguyen.rem.dal.database.EstateDatabaseHelper;
 import toannguyen.rem.dal.database.UserDatabaseHelper;
 import toannguyen.rem.dal.mapping.UserColumn;
 import toannguyen.rem.entity.Entity;
+import toannguyen.rem.entity.EstateEntity;
 import toannguyen.rem.entity.UserEntity;
 
 public class UserDAL extends EntityDAL {
@@ -95,6 +97,48 @@ public class UserDAL extends EntityDAL {
 			if (dbh != null) {
 				dbh.closeConnection();
 			}
+		}
+	}
+
+	public void updateNote(String userId, String estateId, String note) throws ClassNotFoundException, SQLException {
+		UserDatabaseHelper dbh = null;
+		try {
+			dbh = new UserDatabaseHelper();
+			dbh.updateNote(userId, estateId, note);
+		} finally {
+			if (dbh != null) {
+				dbh.closeConnection();
+			}
+		}
+	}
+
+	public String getNote(int userId, int estateId) throws ClassNotFoundException, SQLException {
+		UserDatabaseHelper dbh = null;
+		try {
+			dbh = new UserDatabaseHelper();
+			return dbh.getNote(userId, estateId);
+		} finally {
+			if (dbh != null) {
+				dbh.closeConnection();
+			}
+		}
+	}
+	
+	public List<EstateEntity> getInterestedEstate(int userId) throws Exception {
+		EstateDatabaseHelper dbh = new EstateDatabaseHelper();
+		try {
+			return dbh.queryInterestedEstate(userId);
+		} finally {
+			dbh.closeConnection();
+		}
+	}
+	
+	public void setInterestedEstate(int userId, int estateId, int rate) throws SQLException, ClassNotFoundException {
+		EstateDatabaseHelper dbh = new EstateDatabaseHelper();
+		try {
+			dbh.setInterested(userId, estateId, rate);
+		} finally {
+			dbh.closeConnection();
 		}
 	}
 }

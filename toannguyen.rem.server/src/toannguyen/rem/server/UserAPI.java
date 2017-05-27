@@ -2,6 +2,7 @@ package toannguyen.rem.server;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.GET;
@@ -11,11 +12,17 @@ import javax.ws.rs.PathParam;
 
 import org.json.JSONObject;
 
+import com.google.gson.JsonObject;
+
+import toannguyen.rem.dal.EstateDAL;
 import toannguyen.rem.dal.UserDAL;
+import toannguyen.rem.dal.mapping.NoteColumn;
 import toannguyen.rem.dal.mapping.UserColumn;
 import toannguyen.rem.entity.Entity;
+import toannguyen.rem.entity.EstateEntity;
 import toannguyen.rem.entity.UserEntity;
 import toannguyen.rem.entity.json.ErrorMessage;
+import toannguyen.rem.server.response.EstateAPIResponse;
 import toannguyen.rem.server.response.UserAPIResponse;
 
 @Path("/user")
@@ -92,4 +99,63 @@ public final class UserAPI {
 			return response.unsuccessResponse(e.getMessage());
 		}
 	}
+	
+	@POST
+	@Path("updateNote")
+	public String updateNote(String json) {
+		UserAPIResponse response = new UserAPIResponse();
+		try {
+			JSONObject jsonObject = new JSONObject(json);
+			String userId = jsonObject.getString(NoteColumn.USER_ID.getColumnName());
+			String estateId = jsonObject.getString(NoteColumn.ESTATE_ID.getColumnName());
+			String note = jsonObject.getString(NoteColumn.NOTE.getColumnName());
+			UserDAL.getInstance().updateNote(userId, estateId, note); 
+			return response.successEmptyResponse("Update success");
+		} catch (Exception e) {
+			return response.unsuccessResponse(e.getMessage());
+		}
+	}
+	
+	@GET
+	@Path("getNote/{userId}-{estateId}")
+	public String getNote(@PathParam("userId") int userId, @PathParam("estateId") int estateId) {
+		UserAPIResponse response = new UserAPIResponse();
+		try {
+			String note = UserDAL.getInstance().getNote(userId, estateId); 
+			return response.successStringResponse("note", note);
+		} catch (Exception e) {
+			return response.unsuccessResponse(e.getMessage());
+		}
+	}
+	
+	@GET
+	@Path("/getInterested/{userId}")
+	public String getInterestedEstate(@PathParam("userId") int userId) {
+		EstateAPIResponse response = new EstateAPIResponse();
+		try {
+			List<EstateEntity> estateEntities = UserDAL.getInstance().getInterestedEstate(userId);
+			List<JsonObject> jsonObjects = new ArrayList<>();
+			for (EstateEntity entity : estateEntities) {
+				int rate = EstateDAL.getInstance().getRate(userId, entity.getId());
+				jsonObjects.add(response.successResponseInterested(entity, rate));
+			}
+			return response.successResponseInterestedList(jsonObjects);
+		} catch (Exception e) {
+			return response.unsuccessResponse(e.getMessage());
+		}
+	}
+
+	@GET
+	@Path("/setInterested/{userId}-{estateId}-{rate}")
+	public String setInterested(@PathParam("estateId") int estateId, @PathParam("userId") int userId, @PathParam("rate") int rate) {
+		EstateAPIResponse response = new EstateAPIResponse();
+		try {
+			UserDAL.getInstance().setInterestedEstate(userId, estateId, rate);
+			return response.successEmptyResponse("Update success");
+		} catch (ClassNotFoundException | SQLException e) {
+			return response.unsuccessResponse(e.getMessage());
+		}
+	}
+	
+	
 }

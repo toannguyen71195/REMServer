@@ -18,30 +18,25 @@ public class AddressDatabaseHelper extends DatabaseHelper {
 	protected Entity getEntityFromResultSet(ResultSet resultSet)
 			throws SQLException, ClassNotFoundException, IOException {
 		return new AddressEntity(resultSet.getInt(AddressColumn.ID.getColumnName()),
-				resultSet.getString(AddressColumn.CITY.getColumnName()), 
-				resultSet.getString(AddressColumn.DISTRICT.getColumnName()), 
-				resultSet.getString(AddressColumn.WARD.getColumnName()), 
-				resultSet.getString(AddressColumn.STREET.getColumnName()), 
+				resultSet.getString(AddressColumn.CITY.getColumnName()),
+				resultSet.getString(AddressColumn.DISTRICT.getColumnName()),
+				resultSet.getString(AddressColumn.WARD.getColumnName()),
+				resultSet.getString(AddressColumn.STREET.getColumnName()),
 				resultSet.getString(AddressColumn.ADDRESS.getColumnName()));
 	}
-	
+
 	public AddressEntity getAddressByID(int id) throws Exception {
 		return (AddressEntity) super.queryByID(AddressColumn.TABLE_NAME, AddressColumn.ID.getColumnName(), id);
 	}
-	
+
 	/*
-	 * throw Exception
-	 * 1. Duplicate address
-	 * 2. Db problem
-	 * never return null
+	 * throw Exception 1. Duplicate address 2. Db problem never return null
 	 */
 	public AddressEntity insertAddress(AddressEntity entity) throws Exception {
 		AddressEntity addressEntity = queryAddress(entity);
 		if (addressEntity != null) {
 			throw new Exception("Unable to add new address: duplicate address");
 		}
-		PreparedStatement stmt = null;
-		ResultSet rs = null;
 		StringBuilder builder = new StringBuilder();
 		builder.append("insert into ");
 		builder.append(AddressColumn.TABLE_NAME);
@@ -55,23 +50,14 @@ public class AddressDatabaseHelper extends DatabaseHelper {
 		builder.append(entity.getWard() + "','");
 		builder.append(entity.getStreet() + "','");
 		builder.append(entity.getAddress() + "');");
-		try {
-			executeUpdate(stmt, rs, builder);
-			addressEntity = queryAddress(entity);
-			if (addressEntity != null) {
-				return addressEntity;
-			}
-			throw new Exception("Server error, please refresh");
-		} finally {
-			if (rs != null) {
-				rs.close();
-			}
-			if (stmt != null) {
-				stmt.close();
-			}
+		executeUpdate(builder.toString());
+		addressEntity = queryAddress(entity);
+		if (addressEntity != null) {
+			return addressEntity;
 		}
+		throw new Exception("Error after insert address, query return empty");
 	}
-	
+
 	private AddressEntity queryAddress(AddressEntity entity) throws SQLException, ClassNotFoundException, IOException {
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
@@ -92,12 +78,7 @@ public class AddressDatabaseHelper extends DatabaseHelper {
 				return null;
 			}
 		} finally {
-			if (rs != null) {
-				rs.close();
-			}
-			if (stmt != null) {
-				stmt.close();
-			}
+			closeQuery(stmt, rs);
 		}
 	}
 

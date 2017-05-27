@@ -75,79 +75,42 @@ public abstract class DatabaseHelper {
 			Entity result = getEntityFromResultSet(rs);
 			return result;
 		} finally {
-			if(rs != null){
-				rs.close();
-			}
-			if(stmt != null){
-				stmt.close();
-			}
+			closeQuery(stmt, rs);
 		}
 	}
 	
 	public void deleteByID(String tableName, String idColumnName, int id) throws SQLException, ClassNotFoundException, IOException {
-		PreparedStatement stmt = null;
-		stmt = con.prepareStatement("DELETE FROM " + tableName + " WHERE " + idColumnName + " = ?");
-		stmt.setInt(1, id);
-		executeDelete(stmt);
-	}
-
-	protected ResultSet queryByReferenceID(String tableName, String referenceID, int referenceValue)
-			throws SQLException, ClassNotFoundException {
-		PreparedStatement stmt = null;
-		ResultSet rs = null;
-		stmt = con.prepareStatement("SELECT DISTINCT * FROM " + tableName + " WHERE " + referenceID + " = ?");
-		stmt.setInt(1, referenceValue);
-		rs = stmt.executeQuery();
-		return rs;
+		String query = new String("DELETE FROM " + tableName + " WHERE " + idColumnName + " = " + id + ";");
+		executeUpdate(query);
 	}
 
 	protected abstract Entity getEntityFromResultSet(ResultSet resultSet) throws Exception;
 
-
-
-	protected void executeUpdate(PreparedStatement stmt, ResultSet rs, StringBuilder builder) throws SQLException {
+	protected void executeUpdate(String query) throws SQLException {
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		try {
+			con.setAutoCommit(false);
+			stmt = con.prepareStatement(query);
+			stmt.executeUpdate();
+			con.commit();
+		} catch (SQLException e) {
+			if (con != null) {
+				con.rollback();
+			}
+			throw e;
+		} finally {
+			con.setAutoCommit(true);
+			closeQuery(stmt, rs);
+		}
+	}
+	
+	protected void closeQuery(PreparedStatement stmt, ResultSet rs) throws SQLException {
 		if (rs != null) {
 			rs.close();
 		}
 		if (stmt != null) {
 			stmt.close();
-		}
-		try {
-			con.setAutoCommit(false);
-			stmt = con.prepareStatement(builder.toString());
-			stmt.executeUpdate();
-			con.commit();
-		} catch (SQLException e) {
-			if (con != null) {
-				con.rollback();
-			}
-			throw e;
-		} finally {
-			con.setAutoCommit(true);
-			if (rs != null) {
-				rs.close();
-			}
-			if (stmt != null) {
-				stmt.close();
-			}
-		}
-	}
-	
-	private void executeDelete(PreparedStatement stmt) throws SQLException {
-		try {
-			con.setAutoCommit(false);
-			stmt.executeUpdate();
-			con.commit();
-		} catch (SQLException e) {
-			if (con != null) {
-				con.rollback();
-			}
-			throw e;
-		} finally {
-			con.setAutoCommit(true);
-			if (stmt != null) {
-				stmt.close();
-			}
 		}
 	}
 }

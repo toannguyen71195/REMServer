@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import toannguyen.rem.dal.mapping.NoteColumn;
 import toannguyen.rem.dal.mapping.TokenLoginColumn;
 import toannguyen.rem.dal.mapping.UserColumn;
 import toannguyen.rem.entity.UserEntity;
@@ -52,67 +53,22 @@ public class UserDatabaseHelper extends DatabaseHelper {
 			}
 			return null;
 		} finally {
-			if (rs != null) {
-				rs.close();
-			}
-			if (stmt != null) {
-				stmt.close();
-			}
+			closeQuery(stmt, rs);
 		}
 	}
 
 	public void clearLoginToken(int id) throws SQLException {
-		PreparedStatement stmt = null;
-		ResultSet rs = null;
-		try {
-			con.setAutoCommit(false);
-			StringBuilder builder = new StringBuilder();
-			builder.append("delete from " + TokenLoginColumn.TABLE_NAME);
-			builder.append(" where " + TokenLoginColumn.USER_ID + " = " + id + ";");
-			stmt = con.prepareStatement(builder.toString());
-			stmt.executeUpdate();
-			con.commit();
-		} catch (SQLException e) {
-			if (con != null) {
-				con.rollback();
-			}
-			throw e;
-		} finally {
-			con.setAutoCommit(true);
-			if (rs != null) {
-				rs.close();
-			}
-			if (stmt != null) {
-				stmt.close();
-			}
-		}
+		StringBuilder builder = new StringBuilder();
+		builder.append("delete from " + TokenLoginColumn.TABLE_NAME);
+		builder.append(" where " + TokenLoginColumn.USER_ID + " = " + id + ";");
+		executeUpdate(builder.toString());
 	}
 
 	public void insertLoginToken(int id, String token) throws SQLException {
-		PreparedStatement stmt = null;
-		ResultSet rs = null;
-		try {
-			con.setAutoCommit(false);
-			StringBuilder builder = new StringBuilder();
-			builder.append("insert into " + TokenLoginColumn.TABLE_NAME);
-			builder.append(" values (" + id + ",'" + token + "');");
-			stmt = con.prepareStatement(builder.toString());
-			stmt.executeUpdate();
-			con.commit();
-		} catch (SQLException e) {
-			if (con != null) {
-				con.rollback();
-			}
-			throw e;
-		} finally {
-			con.setAutoCommit(true);
-			if (rs != null) {
-				rs.close();
-			}
-			if (stmt != null) {
-				stmt.close();
-			}
-		}
+		StringBuilder builder = new StringBuilder();
+		builder.append("insert into " + TokenLoginColumn.TABLE_NAME);
+		builder.append(" values (" + id + ",'" + token + "');");
+		executeUpdate(builder.toString());
 	}
 
 	public UserEntity queryLogin(String token) throws SQLException, ClassNotFoundException, IOException {
@@ -144,9 +100,9 @@ public class UserDatabaseHelper extends DatabaseHelper {
 	public UserEntity insertUser(UserEntity entity) throws Exception {
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
+		StringBuilder builder = new StringBuilder();
 		try {
 			// check username, email, phone
-			StringBuilder builder = new StringBuilder();
 			builder.append("SELECT * FROM ");
 			builder.append(UserColumn.TABLE_NAME + " where ");
 			builder.append(UserColumn.USER_NAME + " = '" + entity.getName() + "';");
@@ -161,27 +117,18 @@ public class UserDatabaseHelper extends DatabaseHelper {
 			builder.append(UserColumn.TABLE_NAME + " where ");
 			builder.append(UserColumn.PHONE + " = '" + entity.getPhone() + "';");
 			verifyDuplication(builder, stmt, rs, "Duplicate phone number");
-			// insert
-			con.setAutoCommit(false);
-			builder = new StringBuilder();
-			builder.append("insert into users(UserType, UserName, FullName, Email, Phone, Address, Password) ");
-			builder.append("values (" + entity.getTypeId() + ",'" + entity.getName() + "','");
-			builder.append(entity.getFullName() + "','" + entity.getEmail() + "','");
-			builder.append(entity.getPhone() + "','" + entity.getAddress() + "','" + entity.getPassword() + "');");
-			stmt = con.prepareStatement(builder.toString());
-			stmt.executeUpdate();
-			con.commit();
-			// login
-			con.setAutoCommit(true);
-			return queryLogin(entity.getName(), entity.getPassword());
 		} finally {
-			if (rs != null) {
-				rs.close();
-			}
-			if (stmt != null) {
-				stmt.close();
-			}
+			closeQuery(stmt, rs);
 		}
+		// insert
+		builder = new StringBuilder();
+		builder.append("insert into users(UserType, UserName, FullName, Email, Phone, Address, Password) ");
+		builder.append("values (" + entity.getTypeId() + ",'" + entity.getName() + "','");
+		builder.append(entity.getFullName() + "','" + entity.getEmail() + "','");
+		builder.append(entity.getPhone() + "','" + entity.getAddress() + "','" + entity.getPassword() + "');");
+		executeUpdate(builder.toString());
+		return queryLogin(entity.getName(), entity.getPassword());
+
 	}
 
 	private void verifyDuplication(StringBuilder builder, PreparedStatement stmt, ResultSet rs, String error)
@@ -191,11 +138,58 @@ public class UserDatabaseHelper extends DatabaseHelper {
 		if (rs.next()) {
 			throw new Exception(error);
 		}
-		if (rs != null) {
-			rs.close();
+		closeQuery(stmt, rs);
+	}
+
+	public void updateNote(String userId, String estateId, String note) throws SQLException {
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		try {
+			StringBuilder builder = new StringBuilder();
+			builder.append("SELECT * FROM ");
+			builder.append(NoteColumn.TABLE_NAME + " where ");
+			builder.append(NoteColumn.USER_ID + " = " + userId + " and ");
+			builder.append(NoteColumn.ESTATE_ID + " = " + estateId + ";");
+			stmt = con.prepareStatement(builder.toString());
+			rs = stmt.executeQuery();
+			if (rs.next()) { // update note
+				builder = new StringBuilder();
+				builder.append("update " + NoteColumn.TABLE_NAME);
+				builder.append("set " + NoteColumn.NOTE + " = '" + note + "'");
+				builder.append("where " + NoteColumn.ID + " = " + rs.getInt(NoteColumn.ID.getColumnName()) + ";");
+				builder.append(NoteColumn.ESTATE_ID + " = " + estateId + ";");
+				executeUpdate(builder.toString());
+			} else { // insert note
+				builder = new StringBuilder();
+				builder.append("insert into " + NoteColumn.TABLE_NAME);
+				builder.append(
+						" ( " + NoteColumn.USER_ID + ", " + NoteColumn.ESTATE_ID + ", " + NoteColumn.NOTE + ") ");
+				builder.append("values (" + userId + ", " + estateId + ", '" + note + "');");
+				executeUpdate(builder.toString());
+			}
+		} finally {
+			closeQuery(stmt, rs);
 		}
-		if (stmt != null) {
-			stmt.close();
+	}
+
+	public String getNote(int userId, int estateId) throws SQLException {
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		try {
+			StringBuilder builder = new StringBuilder();
+			builder.append("SELECT * FROM ");
+			builder.append(NoteColumn.TABLE_NAME + " where ");
+			builder.append(NoteColumn.USER_ID + " = " + userId + " and ");
+			builder.append(NoteColumn.ESTATE_ID + " = " + estateId + ";");
+			stmt = con.prepareStatement(builder.toString());
+			rs = stmt.executeQuery();
+			if (rs.next()) {
+				return rs.getString(NoteColumn.NOTE.getColumnName());
+			} else {
+				return null;
+			}
+		} finally {
+			closeQuery(stmt, rs);
 		}
 	}
 

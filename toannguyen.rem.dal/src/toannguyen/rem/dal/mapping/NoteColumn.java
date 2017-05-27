@@ -1,15 +1,15 @@
 package toannguyen.rem.dal.mapping;
 
-public enum CommentColumn {
-	ID("CommentID"), ESTATE_ID("EstateID"), USER_ID("UserID"), COMMENT("Comment"), TIME("Time");
+public enum NoteColumn {
+	ID("NoteID"), NOTE("Note"), ESTATE_ID("EstateID"), USER_ID("UserID");
 	
 	String columnName;
 
-	private CommentColumn(String columnName) {
+	private NoteColumn(String columnName) {
 		this.columnName = columnName;
 	}
 
-	private CommentColumn(EntityColumn entityColumn) {
+	private NoteColumn(EntityColumn entityColumn) {
 		this.columnName = entityColumn.getColumnName();
 	}
 
@@ -17,7 +17,7 @@ public enum CommentColumn {
 		return columnName;
 	}
 
-	public static final String TABLE_NAME = "comment";
+	public static final String TABLE_NAME = "note";
 	
 	@Override
 	public String toString() {
