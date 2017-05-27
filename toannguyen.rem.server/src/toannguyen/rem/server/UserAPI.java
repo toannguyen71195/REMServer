@@ -157,5 +157,16 @@ public final class UserAPI {
 		}
 	}
 	
-	
+	@GET
+	@Path("/setVisited/{userId}-{estateId}")
+	public String setVisited(@PathParam("estateId") int estateId, @PathParam("userId") int userId) {
+//		EstateAPIResponse response = new EstateAPIResponse();
+//		try {
+//			UserDAL.getInstance().setVisitedEstate(userId, estateId);
+//			return response.successEmptyResponse("Update success");
+//		} catch (ClassNotFoundException | SQLException e) {
+//			return response.unsuccessResponse(e.getMessage());
+//		}
+		return null;
+	}
 }

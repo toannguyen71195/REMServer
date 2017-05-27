@@ -103,7 +103,7 @@ public class EstateDAL extends EntityDAL {
 		}
 	}
 
-	public List<EstateEntity> getTopRateEstate(int count) throws ClassNotFoundException, SQLException {
+	public List<EstateEntity> getTopRateEstate(int count) throws Exception {
 		EstateDatabaseHelper dbh = new EstateDatabaseHelper();
 		try {
 			return dbh.queryTopRateEstate(count);

@@ -487,32 +487,28 @@ public class EstateDatabaseHelper extends DatabaseHelper {
 		executeUpdate(builder.toString());
 	}
 
-	public List<EstateEntity> queryTopRateEstate(int count) {
+	public List<EstateEntity> queryTopRateEstate(int count) throws Exception {
 		// SELECT *, SUM(i.Rate) as SumRate FROM interested_estate i
 		// left join estate e on i.EstateID = e.EstateID
 		// left join address a on a.AddressID = e.AddressID
 		// group by i.EstateID
 		// order by SumRate desc
 		// limit 1;
+		List<EstateEntity> entities = new ArrayList<>();
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		StringBuilder builder = new StringBuilder();
-		builder.append("");
-		builder.append("");
-		builder.append("");
-		builder.append("");
-		builder.append("");
-		builder.append("");
-		builder.append("");
-		builder.append("");
-		builder.append("");
-		builder.append("");
-		builder.append("");
-		builder.append("");
-		builder.append("");
-		builder.append("");
-		builder.append("");
-		builder.append("");
-		return null;
+		builder.append("SELECT *, SUM(i.Rate) as SumRate FROM interested_estate i");
+		builder.append(" left join estate e on i.EstateID = e.EstateID");
+		builder.append(" left join address a on a.AddressID = e.AddressID");
+		builder.append(" group by i.EstateID");
+		builder.append(" order by SumRate desc");
+		builder.append(" limit " + count + ";");
+		stmt = con.prepareStatement(builder.toString());
+		rs = stmt.executeQuery();
+		while (rs.next()) {
+			entities.add((EstateEntity) getEntityFromResultSet(rs));
+		}
+		return entities;
 	}
 }

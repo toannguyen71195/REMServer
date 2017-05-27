@@ -6,7 +6,6 @@
 <fullyQualifiedTypeName name="com.sun.xml.internal.bind.v2.schemagen.xmlschema.List"/>
 <fullyQualifiedTypeName name="toannguyen.rem.dal.mapping.EstateTypeColumn"/>
 <fullyQualifiedTypeName name="com.sun.jndi.cosnaming.IiopUrl.Address"/>
-<fullyQualifiedTypeName name="java.sql.ResultSet"/>
 <fullyQualifiedTypeName name="toannguyen.rem.dal.database.EstateDatabaseHelper"/>
 <fullyQualifiedTypeName name="toannguyen.rem.server.response.APIResponse"/>
 <fullyQualifiedTypeName name="toannguyen.rem.dal.database.UserDatabaseHelper"/>
@@ -49,7 +48,8 @@
 <fullyQualifiedTypeName name="toannguyen.rem.server.response.UserAPIResponse"/>
 <fullyQualifiedTypeName name="org.json.JSONObject"/>
 <fullyQualifiedTypeName name="toannguyen.rem.dal.mapping.UserColumn"/>
-<fullyQualifiedTypeName name="toannguyen.rem.dal.UserDAL"/>
 <fullyQualifiedTypeName name="toannguyen.rem.dal.mapping.NoteColumn"/>
+<fullyQualifiedTypeName name="toannguyen.rem.dal.UserDAL"/>
+<fullyQualifiedTypeName name="java.sql.ResultSet"/>
 <fullyQualifiedTypeName name="java.lang.StringBuilder"/>
 </qualifiedTypeNameHistroy>
