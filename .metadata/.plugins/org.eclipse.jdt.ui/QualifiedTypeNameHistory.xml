@@ -21,12 +21,10 @@
 <fullyQualifiedTypeName name="toannguyen.rem.server.response.EstateAPIResponse"/>
 <fullyQualifiedTypeName name="java.lang.String"/>
 <fullyQualifiedTypeName name="com.google.gson.JsonObject"/>
-<fullyQualifiedTypeName name="java.util.ArrayList"/>
 <fullyQualifiedTypeName name="toannguyen.rem.dal.mapping.TokenLoginColumn"/>
 <fullyQualifiedTypeName name="javax.ws.rs.POST"/>
 <fullyQualifiedTypeName name="java.io.BufferedInputStream"/>
 <fullyQualifiedTypeName name="toannguyen.rem.dal.mapping.InterestedEstateColumn"/>
-<fullyQualifiedTypeName name="java.util.List"/>
 <fullyQualifiedTypeName name="toannguyen.rem.entity.CommentEntity"/>
 <fullyQualifiedTypeName name="toannguyen.rem.dal.mapping.CommentColumn"/>
 <fullyQualifiedTypeName name="toannguyen.rem.dal.EstateDAL"/>
@@ -40,7 +38,6 @@
 <fullyQualifiedTypeName name="toannguyen.rem.dal.mapping.PhotoColumn"/>
 <fullyQualifiedTypeName name="toannguyen.rem.dal.mapping.AddressColumn"/>
 <fullyQualifiedTypeName name="toannguyen.rem.dal.mapping.EstateColumn"/>
-<fullyQualifiedTypeName name="toannguyen.rem.entity.EstateDetailEntity"/>
 <fullyQualifiedTypeName name="toannguyen.rem.dal.mapping.EstateDetailColumn"/>
 <fullyQualifiedTypeName name="java.lang.Exception"/>
 <fullyQualifiedTypeName name="java.lang.System"/>
@@ -52,4 +49,7 @@
 <fullyQualifiedTypeName name="toannguyen.rem.dal.UserDAL"/>
 <fullyQualifiedTypeName name="java.sql.ResultSet"/>
 <fullyQualifiedTypeName name="java.lang.StringBuilder"/>
+<fullyQualifiedTypeName name="java.util.List"/>
+<fullyQualifiedTypeName name="toannguyen.rem.entity.EstateDetailEntity"/>
+<fullyQualifiedTypeName name="java.util.ArrayList"/>
 </qualifiedTypeNameHistroy>

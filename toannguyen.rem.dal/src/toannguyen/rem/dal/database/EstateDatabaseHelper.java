@@ -498,7 +498,7 @@ public class EstateDatabaseHelper extends DatabaseHelper {
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		StringBuilder builder = new StringBuilder();
-		builder.append("SELECT *, SUM(i.Rate) as SumRate FROM interested_estate i");
+		builder.append("SELECT e.*, SUM(i.Rate) as SumRate FROM interested_estate i");
 		builder.append(" left join estate e on i.EstateID = e.EstateID");
 		builder.append(" left join address a on a.AddressID = e.AddressID");
 		builder.append(" group by i.EstateID");
