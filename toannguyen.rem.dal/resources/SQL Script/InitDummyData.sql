@@ -20,7 +20,7 @@ insert into estate (AddressID, Name, OwnerID, StatusID, EstateTypeID, PostTime, 
 			values (2, 'Nhà riêng 1', 3, 1, 2, '2017-05-06 05:06:07', '2017-05-06 05:06:07', 11000, 90, 2);
 insert into estate (AddressID, Name, OwnerID, StatusID, EstateTypeID, PostTime, EditTime, Price, Area, PhotoID)
 			values (1, 'Nhà riêng 2', 3, 1, 3, '2017-05-06 05:06:07', '2017-05-06 05:06:07', 12000, 100, 3);        
-
+            
 insert into estate_detail(EstateID, Bathroom, Bedroom, Cond, Description, Floor, Length, Width)
 			values(1, 6, 6, '3-years-old', 'Built for hire', 4, 25, 5);
 insert into estate_detail(EstateID, Bathroom, Bedroom, Cond, Description, Floor, Length, Width)

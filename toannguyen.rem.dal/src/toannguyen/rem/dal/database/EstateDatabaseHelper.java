@@ -50,6 +50,26 @@ public class EstateDatabaseHelper extends DatabaseHelper {
 			}
 		}
 	}
+	
+	protected Entity getEntityFromResultSet_onlyEstate(ResultSet resultSet) throws Exception {
+		UserDatabaseHelper userDatabaseHelper = new UserDatabaseHelper();
+		try {
+			int id = resultSet.getInt(EstateColumn.ID.getColumnName());
+			EstateEntity estateEntity = new EstateEntity(id, resultSet.getString(EstateColumn.NAME.getColumnName()),
+					getAddressEntityFromResultSet(resultSet),
+					resultSet.getInt(EstateColumn.STATUS_ID.getColumnName()) == EstateEntity.STATUS_AVAILABLE,
+					resultSet.getString(EstateTypeColumn.NAME.getColumnName()),
+					resultSet.getTimestamp(EstateColumn.POST_TIME.getColumnName()),
+					resultSet.getTimestamp(EstateColumn.EDIT_TIME.getColumnName()),
+					resultSet.getDouble(EstateColumn.PRICE.getColumnName()),
+					resultSet.getDouble(EstateColumn.AREA.getColumnName()));
+			return estateEntity;
+		} finally {
+			if (userDatabaseHelper != null) {
+				userDatabaseHelper.closeConnection();
+			}
+		}
+	}
 
 	private AddressEntity getAddressEntityFromResultSet(ResultSet resultSet) throws SQLException {
 		return new AddressEntity(resultSet.getInt(AddressColumn.ID.getColumnName()),
@@ -158,9 +178,10 @@ public class EstateDatabaseHelper extends DatabaseHelper {
 			builder.append(estateId + ";");
 			stmt = con.prepareStatement(builder.toString());
 			rs = stmt.executeQuery();
-			rs.next();
-			EstateDetailEntity entity = (EstateDetailEntity) getEstateDetailFromResultSet(rs);
-			return entity;
+			if (rs.next()) {
+				return (EstateDetailEntity) getEstateDetailFromResultSet(rs);
+			}
+			return null;
 		} finally {
 			closeQuery(stmt, rs);
 		}
@@ -319,56 +340,93 @@ public class EstateDatabaseHelper extends DatabaseHelper {
 		// insert into address table
 		AddressEntity addressEntity = null;
 		AddressDatabaseHelper addressDatabaseHelper = null;
+		EstateEntity rtEstate = null;
+		EstateDetailEntity rtDetail = null;
+		StringBuilder builder = new StringBuilder();
 		try {
 			addressDatabaseHelper = new AddressDatabaseHelper();
 			addressEntity = addressDatabaseHelper.insertAddress(reqEntity.getAddress());
+			// insert into estate (AddressID, Name, OwnerID,
+			// StatusID, EstateTypeID, PostTime, Price, Area, Photo)
+			// values (1, 1, 'Phòng cho thuê', 3, 1, 2, '2017-05-06 05:06:07',
+			// 12000, 80, 1);
+			builder.append("insert into " + EstateColumn.TABLE_NAME);
+			builder.append(" (" + EstateColumn.ADDRESS_ID + ", ");
+			builder.append(EstateColumn.NAME + ", ");
+			builder.append(EstateColumn.OWNER_ID + ", ");
+			builder.append(EstateColumn.STATUS_ID + ", ");
+			builder.append(EstateColumn.ESTATE_TYPE_ID + ", ");
+			builder.append(EstateColumn.POST_TIME + ", ");
+			builder.append(EstateColumn.EDIT_TIME + ", ");
+			builder.append(EstateColumn.PRICE + ", ");
+			builder.append(EstateColumn.AREA + ") ");
+			builder.append(" values (");
+			builder.append("'" + addressEntity.getId() + "', ");
+			builder.append("'" + reqEntity.getName() + "', ");
+			builder.append(reqEntity.getOwner().getId() + ", ");
+			builder.append("1, ");
+			builder.append(reqEntity.getType() + ", ");
+			Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+			builder.append("'" + timestamp.toString() + "', ");
+			builder.append("'" + timestamp.toString() + "', ");
+			builder.append(reqEntity.getPrice() + ", ");
+			builder.append(reqEntity.getArea() + ");");
+			executeUpdate(builder.toString());
+			rtEstate = queryEstateByAddressID_onlyEstate(addressEntity.getId());
+			if (rtEstate == null) {
+				throw new Exception("Server error after insert estate. Query return empty.");
+			}
+			// insert into estate detail
+			rtDetail = insertEstateDetail(reqEntity);
+			if (rtDetail == null) {
+				throw new Exception("Server error after insert detail. Query return empty.");
+			}
+			rtEstate.setDetail(rtDetail);
+			return rtEstate;
+		} catch (Exception e) {
+			if (addressEntity != null) {
+				addressDatabaseHelper.deleteByID(AddressColumn.TABLE_NAME, AddressColumn.ID.getColumnName(),
+						addressEntity.getId());
+			}
+			if (rtEstate != null) {
+				deleteByID(EstateColumn.TABLE_NAME, EstateColumn.ID.getColumnName(), rtEstate.getId());
+			}
+			if (rtDetail != null) {
+				deleteByID(EstateDetailColumn.TABLE_NAME, EstateDetailColumn.ID.getColumnName(), rtDetail.getId());
+			}
+			throw new Exception("Error when insert estate: " + e.getMessage() + " Query: " + builder.toString());
 		} finally {
 			if (addressDatabaseHelper != null) {
 				addressDatabaseHelper.closeConnection();
 			}
 		}
-		// insert into estate (AddressID, Name, OwnerID,
-		// StatusID, EstateTypeID, PostTime, Price, Area, Photo)
-		// values (1, 1, 'Phòng cho thuê', 3, 1, 2, '2017-05-06 05:06:07',
-		// 12000, 80, 1);
-		StringBuilder builder = new StringBuilder();
-		builder.append("insert into " + EstateColumn.TABLE_NAME);
-		builder.append(" (" + EstateColumn.ADDRESS_ID + ", ");
-		builder.append(EstateColumn.NAME + ", ");
-		builder.append(EstateColumn.OWNER_ID + ", ");
-		builder.append(EstateColumn.STATUS_ID + ", ");
-		builder.append(EstateColumn.ESTATE_TYPE_ID + ", ");
-		builder.append(EstateColumn.POST_TIME + ", ");
-		builder.append(EstateColumn.EDIT_TIME + ", ");
-		builder.append(EstateColumn.PRICE + ", ");
-		builder.append(EstateColumn.AREA + ") ");
-		builder.append(" values (");
-		builder.append("'" + addressEntity.getId() + "', ");
-		builder.append("'" + reqEntity.getName() + "', ");
-		builder.append(reqEntity.getOwner().getId() + ", ");
-		builder.append("1, ");
-		builder.append(reqEntity.getType() + ", ");
-		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-		builder.append("'" + timestamp.toString() + "', ");
-		builder.append("'" + timestamp.toString() + "', ");
-		builder.append(reqEntity.getPrice() + ", ");
-		builder.append(reqEntity.getArea() + "');");
-		executeUpdate(builder.toString());
-		EstateEntity rtEstate = queryEstateByAddressID(addressEntity.getId());
-		if (rtEstate == null) {
-			throw new Exception("Server error after insert estate. Query return empty.");
-		}
-		// insert into estate detail
-		EstateDetailEntity rtDetail = insertEstateDetail(reqEntity);
-		if (rtDetail == null) {
-			throw new Exception("Server error after insert detail. Query return empty.");
-		}
-		rtEstate.setDetail(rtDetail);
-		return rtEstate;
 	}
 
-	private EstateEntity queryEstateByAddressID(int id) throws Exception {
-		return (EstateEntity) super.queryByID(EstateColumn.TABLE_NAME, EstateColumn.ADDRESS_ID.getColumnName(), id);
+	private EstateEntity queryEstateByAddressID_onlyEstate(int id) throws Exception {
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		try {
+			StringBuilder builder = new StringBuilder();
+			builder.append("SELECT * FROM ");
+			builder.append(EstateColumn.TABLE_NAME + " e left join ");
+			builder.append(AddressColumn.TABLE_NAME + " a on e.");
+			builder.append(EstateColumn.ADDRESS_ID + " = a.");
+			builder.append(AddressColumn.ID);
+			builder.append(" left join ");
+			builder.append(EstateTypeColumn.TABLE_NAME + " t on e.");
+			builder.append(EstateColumn.ESTATE_TYPE_ID + " = t.");
+			builder.append(EstateTypeColumn.ID + " where e.");
+			builder.append(EstateColumn.ADDRESS_ID + " = ");
+			builder.append(id + ";");
+			stmt = con.prepareStatement(builder.toString());
+			rs = stmt.executeQuery();
+			if (rs.next()) {
+				return (EstateEntity) getEntityFromResultSet_onlyEstate(rs);
+			}
+			return null;
+		} finally {
+			closeQuery(stmt, rs);
+		}
 	}
 
 	private EstateDetailEntity insertEstateDetail(EstateEntity entity) throws Exception {
@@ -395,7 +453,11 @@ public class EstateDatabaseHelper extends DatabaseHelper {
 		builder.append(detail.getLength() + "','");
 		builder.append(detail.getWidth() + "');");
 		executeUpdate(builder.toString());
-		return queryEstateDetail(entity.getId());
+		EstateDetailEntity detailEntity = queryEstateDetail(entity.getId());
+		if (detailEntity != null) {
+			return detailEntity;
+		}
+		throw new Exception("Error after insert detail: Query return null");
 	}
 
 	public EstateEntity editEstate(EstateEntity reqEntity) throws Exception {
@@ -498,9 +560,10 @@ public class EstateDatabaseHelper extends DatabaseHelper {
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		StringBuilder builder = new StringBuilder();
-		builder.append("SELECT e.*, SUM(i.Rate) as SumRate FROM interested_estate i");
+		builder.append("SELECT e.*, a.*, t.*, SUM(i.Rate) as SumRate FROM interested_estate i");
 		builder.append(" left join estate e on i.EstateID = e.EstateID");
 		builder.append(" left join address a on a.AddressID = e.AddressID");
+		builder.append(" left join estate_type t on e.EstateTypeID = t.EstateTypeID");
 		builder.append(" group by i.EstateID");
 		builder.append(" order by SumRate desc");
 		builder.append(" limit " + count + ";");

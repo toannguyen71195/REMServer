@@ -33,6 +33,18 @@ public class EstateEntity extends Entity {
 		this.editTime = editTime;
 	}
 
+	public EstateEntity(int id, String name, AddressEntity address, boolean status, String type,
+			Timestamp postTime, Timestamp editTime, Double price, Double area) {
+		super(id, name);
+		this.address = address;
+		this.available = status;
+		this.type = type;
+		this.postTime = postTime;
+		this.price = price;
+		this.area = area;
+		this.editTime = editTime;
+	}
+
 	public UserEntity getOwner() {
 		return owner;
 	}

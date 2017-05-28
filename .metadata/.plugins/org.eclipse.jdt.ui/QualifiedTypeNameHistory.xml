@@ -23,7 +23,6 @@
 <fullyQualifiedTypeName name="com.google.gson.JsonObject"/>
 <fullyQualifiedTypeName name="toannguyen.rem.dal.mapping.TokenLoginColumn"/>
 <fullyQualifiedTypeName name="javax.ws.rs.POST"/>
-<fullyQualifiedTypeName name="java.io.BufferedInputStream"/>
 <fullyQualifiedTypeName name="toannguyen.rem.dal.mapping.InterestedEstateColumn"/>
 <fullyQualifiedTypeName name="toannguyen.rem.entity.CommentEntity"/>
 <fullyQualifiedTypeName name="toannguyen.rem.dal.mapping.CommentColumn"/>
@@ -36,10 +35,6 @@
 <fullyQualifiedTypeName name="toannguyen.rem.entity.PhotoEntity"/>
 <fullyQualifiedTypeName name="toannguyen.rem.entity.EstateEntity"/>
 <fullyQualifiedTypeName name="toannguyen.rem.dal.mapping.PhotoColumn"/>
-<fullyQualifiedTypeName name="toannguyen.rem.dal.mapping.AddressColumn"/>
-<fullyQualifiedTypeName name="toannguyen.rem.dal.mapping.EstateColumn"/>
-<fullyQualifiedTypeName name="toannguyen.rem.dal.mapping.EstateDetailColumn"/>
-<fullyQualifiedTypeName name="java.lang.Exception"/>
 <fullyQualifiedTypeName name="java.lang.System"/>
 <fullyQualifiedTypeName name="java.sql.Timestamp"/>
 <fullyQualifiedTypeName name="toannguyen.rem.server.response.UserAPIResponse"/>
@@ -50,6 +45,11 @@
 <fullyQualifiedTypeName name="java.sql.ResultSet"/>
 <fullyQualifiedTypeName name="java.lang.StringBuilder"/>
 <fullyQualifiedTypeName name="java.util.List"/>
-<fullyQualifiedTypeName name="toannguyen.rem.entity.EstateDetailEntity"/>
 <fullyQualifiedTypeName name="java.util.ArrayList"/>
+<fullyQualifiedTypeName name="toannguyen.rem.dal.mapping.AddressColumn"/>
+<fullyQualifiedTypeName name="java.io.BufferedInputStream"/>
+<fullyQualifiedTypeName name="toannguyen.rem.entity.EstateDetailEntity"/>
+<fullyQualifiedTypeName name="java.lang.Exception"/>
+<fullyQualifiedTypeName name="toannguyen.rem.dal.mapping.EstateColumn"/>
+<fullyQualifiedTypeName name="toannguyen.rem.dal.mapping.EstateDetailColumn"/>
 </qualifiedTypeNameHistroy>

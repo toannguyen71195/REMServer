@@ -34,41 +34,45 @@ public class AddressDatabaseHelper extends DatabaseHelper {
 	 */
 	public AddressEntity insertAddress(AddressEntity entity) throws Exception {
 		AddressEntity addressEntity = queryAddress(entity);
-		if (addressEntity != null) {
-			throw new Exception("Unable to add new address: duplicate address");
-		}
 		StringBuilder builder = new StringBuilder();
-		builder.append("insert into ");
-		builder.append(AddressColumn.TABLE_NAME);
-		builder.append(" (" + AddressColumn.CITY + ",");
-		builder.append(AddressColumn.DISTRICT + ",");
-		builder.append(AddressColumn.WARD + ",");
-		builder.append(AddressColumn.STREET + ",");
-		builder.append(AddressColumn.ADDRESS + ") values ('");
-		builder.append(entity.getCity() + "','");
-		builder.append(entity.getDistrict() + "','");
-		builder.append(entity.getWard() + "','");
-		builder.append(entity.getStreet() + "','");
-		builder.append(entity.getAddress() + "');");
-		executeUpdate(builder.toString());
-		addressEntity = queryAddress(entity);
-		if (addressEntity != null) {
-			return addressEntity;
+		try {
+			if (addressEntity != null) {
+				throw new Exception("Unable to add new address: duplicate address");
+			}
+			builder.append("insert into ");
+			builder.append(AddressColumn.TABLE_NAME);
+			builder.append(" (" + AddressColumn.CITY + ",");
+			builder.append(AddressColumn.DISTRICT + ",");
+			builder.append(AddressColumn.WARD + ",");
+			builder.append(AddressColumn.STREET + ",");
+			builder.append(AddressColumn.ADDRESS + ") values ('");
+			builder.append(entity.getCity() + "','");
+			builder.append(entity.getDistrict() + "','");
+			builder.append(entity.getWard() + "','");
+			builder.append(entity.getStreet() + "','");
+			builder.append(entity.getAddress() + "');");
+			executeUpdate(builder.toString());
+			addressEntity = queryAddress(entity);
+			if (addressEntity != null) {
+				return addressEntity;
+			}
+		} catch (Exception e) {
+			throw new Exception("Error when insert address: " + e.getMessage() + " Query: " + builder.toString());
 		}
 		throw new Exception("Error after insert address, query return empty");
 	}
 
-	private AddressEntity queryAddress(AddressEntity entity) throws SQLException, ClassNotFoundException, IOException {
+	private AddressEntity queryAddress(AddressEntity entity) throws Exception {
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		StringBuilder builder = new StringBuilder();
 		builder.append("select * from ");
 		builder.append(AddressColumn.TABLE_NAME + " where ");
-		builder.append(AddressColumn.CITY + " = '" + entity.getCity() + " and ");
-		builder.append(AddressColumn.DISTRICT + " = '" + entity.getDistrict() + " and ");
-		builder.append(AddressColumn.WARD + " = '" + entity.getWard() + " and ");
-		builder.append(AddressColumn.STREET + " = '" + entity.getStreet() + " and ");
-		builder.append(AddressColumn.ADDRESS + " = '" + entity.getAddress() + ";");
+		builder.append(AddressColumn.CITY + " = '" + entity.getCity() + "' and ");
+		builder.append(AddressColumn.DISTRICT + " = '" + entity.getDistrict() + "' and ");
+		builder.append(AddressColumn.WARD + " = '" + entity.getWard() + "' and ");
+		builder.append(AddressColumn.STREET + " = '" + entity.getStreet() + "' and ");
+		builder.append(AddressColumn.ADDRESS + " = '" + entity.getAddress() + "';");
 		try {
 			stmt = con.prepareStatement(builder.toString());
 			rs = stmt.executeQuery();
@@ -77,6 +81,8 @@ public class AddressDatabaseHelper extends DatabaseHelper {
 			} else {
 				return null;
 			}
+		} catch (Exception e) {
+			throw new Exception("Error when query address: " + e.getMessage());
 		} finally {
 			closeQuery(stmt, rs);
 		}
