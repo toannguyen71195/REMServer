@@ -4,15 +4,13 @@ public class AddressEntity extends Entity {
 	String city;
 	String district;
 	String ward;
-	String street;
 	String address;
 
-	public AddressEntity(int id, String city, String district, String ward, String street, String address) {
+	public AddressEntity(int id, String city, String district, String ward, String address) {
 		super(id);
 		this.city = city;
 		this.district = district;
 		this.ward = ward;
-		this.street = street;
 		this.address = address;
 	}
 
@@ -38,14 +36,6 @@ public class AddressEntity extends Entity {
 
 	public void setWard(String ward) {
 		this.ward = ward;
-	}
-
-	public String getStreet() {
-		return street;
-	}
-
-	public void setStreet(String street) {
-		this.street = street;
 	}
 
 	public String getAddress() {

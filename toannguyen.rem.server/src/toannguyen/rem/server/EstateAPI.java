@@ -8,6 +8,8 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 
+import org.json.JSONObject;
+
 import toannguyen.rem.dal.EstateDAL;
 import toannguyen.rem.entity.EstateDetailEntity;
 import toannguyen.rem.entity.EstateEntity;
@@ -100,8 +102,11 @@ public class EstateAPI {
 	public String post(String json) {
 		EstateAPIResponse response = new EstateAPIResponse();
 		try {
+			JSONObject jsonObject = new JSONObject(json);
 			EstateEntity reqEntity = JsonToEntityConverter.convertJsonStringToEntity(json, EstateEntity.class);
-			EstateEntity rtEntity = EstateDAL.getInstance().postEstate(reqEntity);
+			boolean isBroker = jsonObject.getBoolean("broker");
+			int userId = jsonObject.getJSONObject("owner").getInt("id");
+			EstateEntity rtEntity = EstateDAL.getInstance().postEstate(reqEntity, userId, isBroker);
 			return response.successResponse(rtEntity);
 		} catch (Exception e) {
 			return response.unsuccessResponse(e.getMessage());

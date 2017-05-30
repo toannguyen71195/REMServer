@@ -9,17 +9,19 @@ insert into users(UserType, UserName, FullName, Email, Phone, Address, Password)
 insert into users(UserType, UserName, FullName, Email, Phone, Address, Password) 
 			values (3, 'Toan Broker', 'Nguyen Bao Toan 3', 'nbtoan+3@apcs.vn', '4234', 'address', '123456');
     
-insert into address(City, District, Ward, Street, Address)
-			values('Hồ Chí Minh', '10', '15', 'Tô Hiến Thành', '266/46');
-insert into address(City, District, Ward, Street, Address)
-			values('Hồ Chí Minh', '5', '2', 'Nguyễn Văn Cừ', '227');
+insert into address(City, District, Ward, Address)
+			values('Hồ Chí Minh', '10', '15', '266/46 Tô Hiến Thành');
+insert into address(City, District, Ward, Address)
+			values('Hồ Chí Minh', '5', '2', '227 Nguyễn Văn Cừ');
+insert into address(City, District, Ward, Address)
+			values('Hồ Chí Minh', '5', '2', '227 Nguyễn Văn Cừ');
 
 insert into estate (AddressID, Name, OwnerID, StatusID, EstateTypeID, PostTime, EditTime, Price, Area, PhotoID)
 			values (1, 'Phòng cho thuê 1', 3, 1, 4, '2017-05-06 05:06:07', '2017-05-06 05:06:07', 10000, 80, 1);
 insert into estate (AddressID, Name, OwnerID, StatusID, EstateTypeID, PostTime, EditTime, Price, Area, PhotoID)
 			values (2, 'Nhà riêng 1', 3, 1, 2, '2017-05-06 05:06:07', '2017-05-06 05:06:07', 11000, 90, 2);
 insert into estate (AddressID, Name, OwnerID, StatusID, EstateTypeID, PostTime, EditTime, Price, Area, PhotoID)
-			values (1, 'Nhà riêng 2', 3, 1, 3, '2017-05-06 05:06:07', '2017-05-06 05:06:07', 12000, 100, 3);        
+			values (3, 'Nhà riêng 2', 3, 1, 3, '2017-05-06 05:06:07', '2017-05-06 05:06:07', 12000, 100, 3);        
             
 insert into estate_detail(EstateID, Bathroom, Bedroom, Cond, Description, Floor, Length, Width)
 			values(1, 6, 6, '3-years-old', 'Built for hire', 4, 25, 5);

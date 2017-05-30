@@ -21,7 +21,6 @@ public class AddressDatabaseHelper extends DatabaseHelper {
 				resultSet.getString(AddressColumn.CITY.getColumnName()),
 				resultSet.getString(AddressColumn.DISTRICT.getColumnName()),
 				resultSet.getString(AddressColumn.WARD.getColumnName()),
-				resultSet.getString(AddressColumn.STREET.getColumnName()),
 				resultSet.getString(AddressColumn.ADDRESS.getColumnName()));
 	}
 
@@ -30,7 +29,7 @@ public class AddressDatabaseHelper extends DatabaseHelper {
 	}
 
 	/*
-	 * throw Exception 1. Duplicate address 2. Db problem never return null
+	 * throw Exception 1. Duplicate address 2. Db problem, never return null
 	 */
 	public AddressEntity insertAddress(AddressEntity entity) throws Exception {
 		AddressEntity addressEntity = queryAddress(entity);
@@ -44,22 +43,20 @@ public class AddressDatabaseHelper extends DatabaseHelper {
 			builder.append(" (" + AddressColumn.CITY + ",");
 			builder.append(AddressColumn.DISTRICT + ",");
 			builder.append(AddressColumn.WARD + ",");
-			builder.append(AddressColumn.STREET + ",");
 			builder.append(AddressColumn.ADDRESS + ") values ('");
 			builder.append(entity.getCity() + "','");
 			builder.append(entity.getDistrict() + "','");
 			builder.append(entity.getWard() + "','");
-			builder.append(entity.getStreet() + "','");
 			builder.append(entity.getAddress() + "');");
 			executeUpdate(builder.toString());
 			addressEntity = queryAddress(entity);
 			if (addressEntity != null) {
 				return addressEntity;
 			}
+			throw new Exception("Error after insert address, query return empty");
 		} catch (Exception e) {
 			throw new Exception("Error when insert address: " + e.getMessage() + " Query: " + builder.toString());
 		}
-		throw new Exception("Error after insert address, query return empty");
 	}
 
 	private AddressEntity queryAddress(AddressEntity entity) throws Exception {
@@ -71,7 +68,6 @@ public class AddressDatabaseHelper extends DatabaseHelper {
 		builder.append(AddressColumn.CITY + " = '" + entity.getCity() + "' and ");
 		builder.append(AddressColumn.DISTRICT + " = '" + entity.getDistrict() + "' and ");
 		builder.append(AddressColumn.WARD + " = '" + entity.getWard() + "' and ");
-		builder.append(AddressColumn.STREET + " = '" + entity.getStreet() + "' and ");
 		builder.append(AddressColumn.ADDRESS + " = '" + entity.getAddress() + "';");
 		try {
 			stmt = con.prepareStatement(builder.toString());

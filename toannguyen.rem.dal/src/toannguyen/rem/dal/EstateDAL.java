@@ -67,10 +67,10 @@ public class EstateDAL extends EntityDAL {
 		}
 	}
 
-	public EstateEntity postEstate(EstateEntity reqEntity) throws Exception {
+	public EstateEntity postEstate(EstateEntity reqEntity, int userId, boolean isBroker) throws Exception {
 		EstateDatabaseHelper dbh = new EstateDatabaseHelper();
 		try {
-			return dbh.postEstate(reqEntity);
+			return dbh.postEstate(reqEntity, userId, isBroker);
 		} finally {
 			dbh.closeConnection();
 		}

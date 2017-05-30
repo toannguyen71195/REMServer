@@ -115,7 +115,6 @@ create table address (
     City varchar(50),
     District varchar(50),
     Ward varchar(50),
-    Street varchar(50),
     Address varchar(50)
 );
 

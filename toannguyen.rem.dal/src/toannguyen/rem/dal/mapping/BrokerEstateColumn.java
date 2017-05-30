@@ -1,15 +1,15 @@
 package toannguyen.rem.dal.mapping;
 
-public enum AddressColumn {
-	ID("AddressID"), CITY("City"), DISTRICT("District"), WARD("Ward"), ADDRESS("Address");
-
+public enum BrokerEstateColumn {
+	ESTATE_ID("EstateID"), BROKER_ID("BrokerID");
+	
 	String columnName;
 
-	private AddressColumn(String columnName) {
+	private BrokerEstateColumn(String columnName) {
 		this.columnName = columnName;
 	}
 
-	private AddressColumn(EntityColumn entityColumn) {
+	private BrokerEstateColumn(EntityColumn entityColumn) {
 		this.columnName = entityColumn.getColumnName();
 	}
 
@@ -17,7 +17,7 @@ public enum AddressColumn {
 		return columnName;
 	}
 
-	public static final String TABLE_NAME = "address";
+	public static final String TABLE_NAME = "broker_estate";
 	
 	@Override
 	public String toString() {
