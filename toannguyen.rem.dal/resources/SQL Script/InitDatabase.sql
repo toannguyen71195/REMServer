@@ -155,7 +155,8 @@ insert into appt_status values (4, 'Completed');
 create table appointment (
 	ApptID int primary key auto_increment,
     Address varchar(255),
-    Note varchar(255),
+    Note varchar(1025),
+    Title varchar(255),
     Time datetime,
     Status int references appt_status(StatusID),
     User1 int references users(UserID),

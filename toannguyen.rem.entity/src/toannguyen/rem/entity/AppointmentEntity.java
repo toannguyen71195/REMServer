@@ -26,4 +26,54 @@ public class AppointmentEntity extends Entity {
 		this.user1 = user1;
 		this.user2 = user2;
 	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public String getNote() {
+		return note;
+	}
+
+	public void setNote(String note) {
+		this.note = note;
+	}
+
+	public Timestamp getTime() {
+		return time;
+	}
+
+	public void setTime(Timestamp time) {
+		this.time = time;
+	}
+
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
+	}
+
+	public UserEntity getUser1() {
+		return user1;
+	}
+
+	public void setUser1(UserEntity user1) {
+		this.user1 = user1;
+	}
+
+	public UserEntity getUser2() {
+		return user2;
+	}
+
+	public void setUser2(UserEntity user2) {
+		this.user2 = user2;
+	}
+	
+	
 }
