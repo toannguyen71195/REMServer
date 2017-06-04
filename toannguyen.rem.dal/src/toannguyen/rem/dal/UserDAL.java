@@ -141,4 +141,13 @@ public class UserDAL extends EntityDAL {
 			dbh.closeConnection();
 		}
 	}
+
+	public List<UserEntity> searchUser(String query, int offset, int range) throws ClassNotFoundException, SQLException, IOException {
+		UserDatabaseHelper dbh = new UserDatabaseHelper();
+		try {
+			return dbh.searchUser(query, offset, range);
+		} finally {
+			dbh.closeConnection();
+		}
+	}
 }

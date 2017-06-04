@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import toannguyen.rem.dal.mapping.NoteColumn;
 import toannguyen.rem.dal.mapping.TokenLoginColumn;
@@ -188,6 +190,51 @@ public class UserDatabaseHelper extends DatabaseHelper {
 			} else {
 				return null;
 			}
+		} finally {
+			closeQuery(stmt, rs);
+		}
+	}
+
+	public List<UserEntity> searchUser(String query, int offset, int range) throws ClassNotFoundException, SQLException, IOException {
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		List<UserEntity> entities = new ArrayList<>();
+		try {
+			StringBuilder builder = new StringBuilder();
+			// select distinct * from
+			// (select * from users where FullName like 'query%'
+			// or UserName like 'query%'
+			// or Email like 'query%'
+			// or Phone like 'query%' union all
+			// select * from users where (Fullname like '%query%' and FullName
+			// not like 'query%')
+			// or (UserName like '%query%' and UserName not like 'query%')
+			// or (Email like '%query%' and Email not like 'query%')
+			// or (Phone like '%query%' and Phone not like 'query%')
+			// ) as us
+			builder.append("select distinct * from ");
+			builder.append("(select * from users where FullName like '$query%' ");
+			builder.append("or UserName like '$query%' ");
+			builder.append("or Email like '$query%' ");
+			builder.append("or Phone like '$query%' union all ");
+			builder.append("select * from users where (Fullname like '%$query%' and FullName ");
+			builder.append("not like '$query%') ");
+			builder.append("or (UserName like '%$query%' and UserName not like '$query%') ");
+			builder.append("or (Email like '%$query%' and Email not like '$query%') ");
+			builder.append("or (Phone like '%$query%' and Phone not like '$query%') ");
+			builder.append(") as us ");
+			builder.append("limit $offset, $range");
+			String q = builder.toString();
+			q.replaceAll("$query", query);
+			q.replaceAll("$offset", "" + offset);
+			q.replaceAll("$range", "" + range);
+			stmt = con.prepareStatement(q);
+			rs = stmt.executeQuery();
+			while (rs.next()) {
+				UserEntity entity = getEntityFromResultSet(rs);
+				entities.add(entity);
+			}
+			return entities;
 		} finally {
 			closeQuery(stmt, rs);
 		}

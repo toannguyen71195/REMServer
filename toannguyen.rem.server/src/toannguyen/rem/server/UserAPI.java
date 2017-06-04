@@ -99,7 +99,7 @@ public final class UserAPI {
 			return response.unsuccessResponse(e.getMessage());
 		}
 	}
-	
+
 	@POST
 	@Path("updateNote")
 	public String updateNote(String json) {
@@ -109,25 +109,25 @@ public final class UserAPI {
 			String userId = jsonObject.getString(NoteColumn.USER_ID.getColumnName());
 			String estateId = jsonObject.getString(NoteColumn.ESTATE_ID.getColumnName());
 			String note = jsonObject.getString(NoteColumn.NOTE.getColumnName());
-			UserDAL.getInstance().updateNote(userId, estateId, note); 
+			UserDAL.getInstance().updateNote(userId, estateId, note);
 			return response.successEmptyResponse("Update success");
 		} catch (Exception e) {
 			return response.unsuccessResponse(e.getMessage());
 		}
 	}
-	
+
 	@GET
 	@Path("getNote/{userId}-{estateId}")
 	public String getNote(@PathParam("userId") int userId, @PathParam("estateId") int estateId) {
 		UserAPIResponse response = new UserAPIResponse();
 		try {
-			String note = UserDAL.getInstance().getNote(userId, estateId); 
+			String note = UserDAL.getInstance().getNote(userId, estateId);
 			return response.successStringResponse("note", note);
 		} catch (Exception e) {
 			return response.unsuccessResponse(e.getMessage());
 		}
 	}
-	
+
 	@GET
 	@Path("/getInterested/{userId}")
 	public String getInterestedEstate(@PathParam("userId") int userId) {
@@ -147,7 +147,8 @@ public final class UserAPI {
 
 	@GET
 	@Path("/setInterested/{userId}-{estateId}-{rate}")
-	public String setInterested(@PathParam("estateId") int estateId, @PathParam("userId") int userId, @PathParam("rate") int rate) {
+	public String setInterested(@PathParam("estateId") int estateId, @PathParam("userId") int userId,
+			@PathParam("rate") int rate) {
 		EstateAPIResponse response = new EstateAPIResponse();
 		try {
 			UserDAL.getInstance().setInterestedEstate(userId, estateId, rate);
@@ -156,28 +157,30 @@ public final class UserAPI {
 			return response.unsuccessResponse(e.getMessage());
 		}
 	}
-	
+
 	@GET
 	@Path("/setVisited/{userId}-{estateId}")
 	public String setVisited(@PathParam("estateId") int estateId, @PathParam("userId") int userId) {
-//		EstateAPIResponse response = new EstateAPIResponse();
-//		try {
-//			UserDAL.getInstance().setVisitedEstate(userId, estateId);
-//			return response.successEmptyResponse("Update success");
-//		} catch (ClassNotFoundException | SQLException e) {
-//			return response.unsuccessResponse(e.getMessage());
-//		}
+		// EstateAPIResponse response = new EstateAPIResponse();
+		// try {
+		// UserDAL.getInstance().setVisitedEstate(userId, estateId);
+		// return response.successEmptyResponse("Update success");
+		// } catch (ClassNotFoundException | SQLException e) {
+		// return response.unsuccessResponse(e.getMessage());
+		// }
 		return null;
 	}
-	
-//	select distinct * from
-//	(select * from users where FullName like 'query%' 
-//							or UserName like 'query%' 
-//							or Email like 'query%'
-//							or Phone like 'query%' union all
-//	select * from users where (Fullname like '%query%' and FullName not like 'query%')
-//							or (UserName like '%query%' and UserName not like 'query%')
-//							or (Email like '%query%' and Email not like 'query%')
-//							or (Phone like '%query%' and Phone not like 'query%')
-//	) as us
+
+	@GET
+	@Path("/search/{query}-{offset}-{range}")
+	public String setVisited(@PathParam("query") String query, @PathParam("offset") int offset,
+			@PathParam("range") int	 range) {
+		UserAPIResponse response = new UserAPIResponse();
+		try {
+			List<UserEntity> entities = UserDAL.getInstance().searchUser(query, offset, range);
+			return response.successResponse(entities, "users");
+		} catch (ClassNotFoundException | SQLException | IOException e) {
+			return response.unsuccessResponse(e.getMessage());
+		}
+	}
 }
