@@ -112,7 +112,7 @@ public class AppointmentDatabaseHelper extends DatabaseHelper {
 		builder.append("'" + entity.getAddress() + "', ");
 		builder.append("'" + entity.getName() + "', ");
 		builder.append("'" + entity.getNote() + "', ");
-		builder.append(entity.getStatus() + ", ");
+		builder.append("1 , ");
 		builder.append("'" + entity.getTime() + "', ");
 		builder.append(entity.getUser1().getId() + ", ");
 		builder.append(entity.getUser2().getId() + ");");

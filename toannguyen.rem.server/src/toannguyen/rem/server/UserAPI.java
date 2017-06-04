@@ -169,4 +169,15 @@ public final class UserAPI {
 //		}
 		return null;
 	}
+	
+//	select distinct * from
+//	(select * from users where FullName like 'query%' 
+//							or UserName like 'query%' 
+//							or Email like 'query%'
+//							or Phone like 'query%' union all
+//	select * from users where (Fullname like '%query%' and FullName not like 'query%')
+//							or (UserName like '%query%' and UserName not like 'query%')
+//							or (Email like '%query%' and Email not like 'query%')
+//							or (Phone like '%query%' and Phone not like 'query%')
+//	) as us
 }
