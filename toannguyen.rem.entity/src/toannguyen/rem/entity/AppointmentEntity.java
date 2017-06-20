@@ -26,6 +26,16 @@ public class AppointmentEntity extends Entity {
 		this.user1 = user1;
 		this.user2 = user2;
 	}
+	
+	public AppointmentEntity(String name, String address, String note, UserEntity user1,
+			UserEntity user2) {
+		super(0, name);
+		this.address = address;
+		this.note = note;
+		this.status = 1;
+		this.user1 = user1;
+		this.user2 = user2;
+	}
 
 	public String getAddress() {
 		return address;

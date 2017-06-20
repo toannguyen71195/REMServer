@@ -1,6 +1,7 @@
 package toannguyen.rem.server;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.GET;
@@ -8,6 +9,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import toannguyen.rem.dal.EstateDAL;
@@ -40,6 +42,18 @@ public class EstateAPI {
 		try {
 			List<EstateEntity> estateEntity = EstateDAL.getInstance().getEstateByOwnerID(id);
 			return response.successResponse(estateEntity, EstateEntity.ESTATE_LIST);
+		} catch (Exception e) {
+			return response.unsuccessResponse(e.getMessage());
+		}
+	}
+	
+	@GET
+	@Path("/getByID/{id}")
+	public String getByID(@PathParam("id") int id) {
+		TypicalAPIResponse response = new TypicalAPIResponse();
+		try {
+			EstateEntity estateEntity = EstateDAL.getInstance().getEstateByID(id);
+			return response.successResponse(estateEntity);
 		} catch (Exception e) {
 			return response.unsuccessResponse(e.getMessage());
 		}
@@ -142,18 +156,39 @@ public class EstateAPI {
 	@POST
 	@Path("upPhotoList")
 	public String upPhotoList(String json) {
-		// EstateAPIResponse response = new EstateAPIResponse();
-		// try {
-		// PhotoEntity reqEntity =
-		// JsonToEntityConverter.convertJsonStringToEntity(json,
-		// PhotoEntity.class);
-		// EstateDAL.getInstance().upRepresentPhoto(reqEntity);
-		// return response.successEmptyResponse("Update success");
-		// } catch (Exception e) {
-		// return response.unsuccessResponse(e.getMessage());
-		// }
-		return null;
+		 EstateAPIResponse response = new EstateAPIResponse();
+		 try {
+			 JSONObject jsonObject = new JSONObject(json);
+			 int id = jsonObject.getInt("id");
+			 List<PhotoEntity> entities = new ArrayList<>();
+			 JSONArray array = jsonObject.getJSONArray("photos");
+			 int avatar = jsonObject.getInt("avatar");
+			 for (int i = 0; i < array.length(); i++) {
+				 JSONObject object = array.getJSONObject(i);
+				 PhotoEntity entity = JsonToEntityConverter.convertJsonStringToEntity(object.toString(), PhotoEntity.class);
+				 entities.add(entity);
+			 }
+			 EstateDAL.getInstance().postPhotos(id, entities, avatar);
+			 return response.successEmptyResponse("Update success");
+		 } catch (Exception e) {
+			 return response.unsuccessResponse(e.getMessage());
+		 }
 	}
+	
+	@GET
+	@Path("getPhotoList/{estateId}") 
+	public String getPhotoList(@PathParam("estateId") int estateId) {
+		EstateAPIResponse response = new EstateAPIResponse();
+		 try {
+			 List<PhotoEntity> photoEntities = EstateDAL.getInstance().getPhotos(estateId);
+			 return response.successResponse(photoEntities, "photos");
+		 } catch (Exception e) {
+			 return response.unsuccessResponse(e.getMessage());
+		 }
+	}
+	
+	
+	
 	/*
 	 * @POST
 	 * 

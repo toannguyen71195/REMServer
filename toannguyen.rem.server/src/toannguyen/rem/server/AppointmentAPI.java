@@ -1,5 +1,8 @@
 package toannguyen.rem.server;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import javax.ws.rs.GET;
@@ -11,7 +14,7 @@ import org.json.JSONObject;
 
 import toannguyen.rem.dal.AppointmentDAL;
 import toannguyen.rem.entity.AppointmentEntity;
-import toannguyen.rem.entity.json.JsonToEntityConverter;
+import toannguyen.rem.entity.UserEntity;
 import toannguyen.rem.server.response.AppointmentAPIResponse;
 
 @Path("/appointment")
@@ -54,7 +57,13 @@ public class AppointmentAPI {
 	public String book(String json) {
 		AppointmentAPIResponse response = new AppointmentAPIResponse();
 		try {
-			AppointmentEntity entity = JsonToEntityConverter.convertJsonStringToEntity(json, AppointmentEntity.class);
+			JSONObject object = new JSONObject(json);
+			AppointmentEntity entity = new AppointmentEntity(object.getString("name"), 
+					object.getString("address"), object.getString("note"), new UserEntity(object.getJSONObject("user1").getInt("id")),
+					new UserEntity(object.getJSONObject("user2").getInt("id")));
+			SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm a dd/MM/yyyy");
+			Date time = dateFormat.parse(object.getString("time"));
+			entity.setTime(new Timestamp(time.getTime()));
 			AppointmentDAL.getInstance().book(entity);
 			return response.successEmptyResponse("Book success");
 		} catch (Exception e) {

@@ -13,7 +13,7 @@ public class PhotoEntity extends Entity {
 		this.photo = photo;
 		this.estateID = esId;
 	}
-
+	
 	public String getPhoto() {
 		return photo;
 	}

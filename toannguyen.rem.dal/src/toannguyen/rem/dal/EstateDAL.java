@@ -97,7 +97,7 @@ public class EstateDAL extends EntityDAL {
 	public void upRepresentPhoto(PhotoEntity reqEntity) throws Exception {
 		EstateDatabaseHelper dbh = new EstateDatabaseHelper();
 		try {
-			dbh.upRepresentPhoto(reqEntity);
+			dbh.upRepresentPhoto(reqEntity, reqEntity.getEstateID(), reqEntity.getTime());
 		} finally {
 			dbh.closeConnection();
 		}
@@ -107,6 +107,33 @@ public class EstateDAL extends EntityDAL {
 		EstateDatabaseHelper dbh = new EstateDatabaseHelper();
 		try {
 			return dbh.queryTopRateEstate(count);
+		} finally {
+			dbh.closeConnection();
+		}
+	}
+
+	public void postPhotos(int id, List<PhotoEntity> entities, int avatar) throws Exception {
+		EstateDatabaseHelper dbh = new EstateDatabaseHelper();
+		try {
+			dbh.postPhotos(id, entities, avatar);
+		} finally {
+			dbh.closeConnection();
+		}
+	}
+
+	public List<PhotoEntity> getPhotos(int estateId) throws SQLException, ClassNotFoundException {
+		EstateDatabaseHelper dbh = new EstateDatabaseHelper();
+		try {
+			return dbh.getPhotos(estateId);
+		} finally {
+			dbh.closeConnection();
+		}
+	}
+
+	public EstateEntity getEstateByID(int id) throws Exception {
+		EstateDatabaseHelper dbh = new EstateDatabaseHelper();
+		try {
+			return dbh.queryByID(id);
 		} finally {
 			dbh.closeConnection();
 		}

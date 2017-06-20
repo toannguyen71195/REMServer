@@ -2,6 +2,7 @@ package toannguyen.rem.server.response;
 
 import java.util.List;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
@@ -25,6 +26,19 @@ public class TypicalAPIResponse extends APIResponse {
 		jsonObject.add(listTag, jsonElement);
 		jsonObject.addProperty(Entity.STATUS_KEY, true);
 		return jsonObject.toString();
+	}
+
+	public String successStringListResponse(List<String> wards, String tag) {
+		// TODO Auto-generated method stub
+		JsonArray array = new JsonArray();
+		for (String s : wards) {
+			JsonObject jsonObject = new JsonObject();
+			jsonObject.addProperty("name", s);
+			array.add(jsonObject);
+		}
+		JsonObject rs = new JsonObject();
+		rs.add(tag, array);
+		return rs.toString();
 	}
 
 }

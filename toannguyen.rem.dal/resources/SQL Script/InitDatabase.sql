@@ -30,8 +30,8 @@ alter table users
 add foreign key (UserType) references user_type (TypeID);
 
 insert into user_type values (1, 'Buyer');
-insert into user_type values (2, 'Owner');
-insert into user_type values (3, 'Broker');
+insert into user_type values (2, 'Owner/Broker');
+insert into user_type values (3, 'Buyer/Owner/Broker');
 
 /* ESTATE */
 
@@ -39,9 +39,9 @@ create table estate (
 	EstateID int primary key auto_increment,
 	AddressID int,
     EstateTypeID int,
-    Name varchar(50),
+    Name varchar(255),
     OwnerID int,
-    Rate int check (1 <= rate <= 5),
+    Rate int,
     StatusID int,
     PostTime datetime,
     EditTime datetime,
@@ -59,7 +59,7 @@ create table interested_estate (
 create table visited_estate (
 	EstateID int references estate (EstateID),
     BuyerID int references users (UserID),
-    isVisited bool,
+    isVisited boolean,
     Time datetime
 );
 

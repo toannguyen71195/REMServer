@@ -38,6 +38,10 @@ public class UserEntity extends Entity {
 	// this.imageEntity = image;
 	// }
 
+	public UserEntity(int id) {
+		super(id);
+	}
+
 	public String getEmail() {
 		return email;
 	}

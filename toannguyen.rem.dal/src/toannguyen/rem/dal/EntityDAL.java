@@ -1,7 +1,5 @@
 package toannguyen.rem.dal;
 
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.List;
 
 import toannguyen.rem.dal.database.DatabaseHelper;

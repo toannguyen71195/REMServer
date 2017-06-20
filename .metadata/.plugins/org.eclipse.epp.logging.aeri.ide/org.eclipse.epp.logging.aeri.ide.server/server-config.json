@@ -1,7 +1,7 @@
 {
   "version": "v1",
   "title": "Eclipse",
-  "timestamp": 1496124573986,
+  "timestamp": 1497972984073,
   "ttl": 10080,
   "helpUrl": "https://dev.eclipse.org/recommenders/community/aeri/v2/help/",
   "feedbackUrl": "http://ctrlflow.com/automated-error-reporting",
@@ -67,5 +67,5 @@
     "org.eclipse.pde.core::The current target platform contains errors*",
     "org.eclipse.ui::Conflicting handlers for*"
   ],
-  "problemsZipLastDownloadTimestamp": 1496124926445
+  "problemsZipLastDownloadTimestamp": 1497973330995
 }
