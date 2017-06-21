@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <qualifiedTypeNameHistroy>
-<fullyQualifiedTypeName name="toannguyen.rem.dal.mapping.TokenLoginColumn"/>
 <fullyQualifiedTypeName name="toannguyen.rem.dal.mapping.InterestedEstateColumn"/>
 <fullyQualifiedTypeName name="toannguyen.rem.entity.CommentEntity"/>
 <fullyQualifiedTypeName name="toannguyen.rem.dal.mapping.CommentColumn"/>
@@ -31,7 +30,6 @@
 <fullyQualifiedTypeName name="toannguyen.rem.server.response.AppointmentAPIResponse"/>
 <fullyQualifiedTypeName name="toannguyen.rem.dal.AppointmentDAL"/>
 <fullyQualifiedTypeName name="toannguyen.rem.dal.mapping.AppointmentColumn"/>
-<fullyQualifiedTypeName name="toannguyen.rem.server.response.UserAPIResponse"/>
 <fullyQualifiedTypeName name="toannguyen.rem.entity.json.JsonToEntityConverter"/>
 <fullyQualifiedTypeName name="toannguyen.rem.dal.EstateDAL"/>
 <fullyQualifiedTypeName name="java.util.ArrayList"/>
@@ -60,4 +58,6 @@
 <fullyQualifiedTypeName name="com.google.gson.JsonArray"/>
 <fullyQualifiedTypeName name="com.google.gson.JsonObject"/>
 <fullyQualifiedTypeName name="javax.json.Json"/>
+<fullyQualifiedTypeName name="toannguyen.rem.server.response.UserAPIResponse"/>
+<fullyQualifiedTypeName name="toannguyen.rem.dal.mapping.PhotoNoteColumn"/>
 </qualifiedTypeNameHistroy>

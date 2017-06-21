@@ -10,6 +10,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.google.gson.JsonObject;
@@ -20,8 +21,10 @@ import toannguyen.rem.dal.mapping.NoteColumn;
 import toannguyen.rem.dal.mapping.UserColumn;
 import toannguyen.rem.entity.Entity;
 import toannguyen.rem.entity.EstateEntity;
+import toannguyen.rem.entity.PhotoEntity;
 import toannguyen.rem.entity.UserEntity;
 import toannguyen.rem.entity.json.ErrorMessage;
+import toannguyen.rem.entity.json.JsonToEntityConverter;
 import toannguyen.rem.server.response.EstateAPIResponse;
 import toannguyen.rem.server.response.UserAPIResponse;
 
@@ -106,8 +109,8 @@ public final class UserAPI {
 		UserAPIResponse response = new UserAPIResponse();
 		try {
 			JSONObject jsonObject = new JSONObject(json);
-			String userId = jsonObject.getString(NoteColumn.USER_ID.getColumnName());
-			String estateId = jsonObject.getString(NoteColumn.ESTATE_ID.getColumnName());
+			int userId = jsonObject.getInt(NoteColumn.USER_ID.getColumnName());
+			int estateId = jsonObject.getInt(NoteColumn.ESTATE_ID.getColumnName());
 			String note = jsonObject.getString(NoteColumn.NOTE.getColumnName());
 			UserDAL.getInstance().updateNote(userId, estateId, note);
 			return response.successEmptyResponse("Update success");
@@ -126,6 +129,40 @@ public final class UserAPI {
 		} catch (Exception e) {
 			return response.unsuccessResponse(e.getMessage());
 		}
+	}
+	
+	@POST
+	@Path("upPhotoNote")
+	public String upPhotoList(String json) {
+		 UserAPIResponse response = new UserAPIResponse();
+		 try {
+			 JSONObject jsonObject = new JSONObject(json);
+			 int uid = jsonObject.getInt("UserID");
+			 int eid = jsonObject.getInt("EstateID");
+			 List<PhotoEntity> entities = new ArrayList<>();
+			 JSONArray array = jsonObject.getJSONArray("photos");
+			 for (int i = 0; i < array.length(); i++) {
+				 JSONObject object = array.getJSONObject(i);
+				 PhotoEntity entity = JsonToEntityConverter.convertJsonStringToEntity(object.toString(), PhotoEntity.class);
+				 entities.add(entity);
+			 }
+			 UserDAL.getInstance().postPhotos(uid, eid, entities);
+			 return response.successEmptyResponse("Update success");
+		 } catch (Exception e) {
+			 return response.unsuccessResponse(e.getMessage());
+		 }
+	}
+	
+	@GET
+	@Path("getPhotoNote/{userId}-{estateId}") 
+	public String getPhotoList(@PathParam("userId") int userId, @PathParam("estateId") int estateId) {
+		UserAPIResponse response = new UserAPIResponse();
+		 try {
+			 List<PhotoEntity> photoEntities = UserDAL.getInstance().getPhotos(userId, estateId);
+			 return response.successResponse(photoEntities, "photos");
+		 } catch (Exception e) {
+			 return response.unsuccessResponse(e.getMessage());
+		 }
 	}
 
 	@GET

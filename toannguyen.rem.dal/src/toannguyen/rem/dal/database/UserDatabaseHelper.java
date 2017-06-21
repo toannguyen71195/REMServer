@@ -8,8 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import toannguyen.rem.dal.mapping.NoteColumn;
+import toannguyen.rem.dal.mapping.PhotoNoteColumn;
 import toannguyen.rem.dal.mapping.TokenLoginColumn;
 import toannguyen.rem.dal.mapping.UserColumn;
+import toannguyen.rem.entity.PhotoEntity;
 import toannguyen.rem.entity.UserEntity;
 
 public class UserDatabaseHelper extends DatabaseHelper {
@@ -32,6 +34,11 @@ public class UserDatabaseHelper extends DatabaseHelper {
 		fullName = resultSet.getString(UserColumn.FULL_NAME.getColumnName());
 		phone = resultSet.getString(UserColumn.PHONE.getColumnName());
 		return new UserEntity(id, name, fullName, email, phone, password, address, type);
+	}
+	
+	protected PhotoEntity getPhotoEntityFromResultSet(ResultSet resultSet) throws SQLException {
+		return new PhotoEntity(resultSet.getInt(PhotoNoteColumn.ID.getColumnName()),
+				resultSet.getString(PhotoNoteColumn.PHOTO.getColumnName()));
 	}
 
 	public UserEntity getUserByID(int id) throws Exception {
@@ -143,7 +150,7 @@ public class UserDatabaseHelper extends DatabaseHelper {
 		closeQuery(stmt, rs);
 	}
 
-	public void updateNote(String userId, String estateId, String note) throws SQLException {
+	public void updateNote(int userId, int estateId, String note) throws SQLException {
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		try {
@@ -157,9 +164,8 @@ public class UserDatabaseHelper extends DatabaseHelper {
 			if (rs.next()) { // update note
 				builder = new StringBuilder();
 				builder.append("update " + NoteColumn.TABLE_NAME);
-				builder.append("set " + NoteColumn.NOTE + " = '" + note + "'");
-				builder.append("where " + NoteColumn.ID + " = " + rs.getInt(NoteColumn.ID.getColumnName()) + ";");
-				builder.append(NoteColumn.ESTATE_ID + " = " + estateId + ";");
+				builder.append(" set " + NoteColumn.NOTE + " = '" + note + "'");
+				builder.append(" where " + NoteColumn.ID + " = " + rs.getInt(NoteColumn.ID.getColumnName()) + ";");
 				executeUpdate(builder.toString());
 			} else { // insert note
 				builder = new StringBuilder();
@@ -235,6 +241,65 @@ public class UserDatabaseHelper extends DatabaseHelper {
 				entities.add(entity);
 			}
 			return entities;
+		} finally {
+			closeQuery(stmt, rs);
+		}
+	}
+
+	public void postPhotos(int uid, int eid, List<PhotoEntity> entities) throws Exception {
+		// clear all
+		try {
+			StringBuilder builder = new StringBuilder();
+			builder = new StringBuilder();
+			builder.append("delete from " + PhotoNoteColumn.TABLE_NAME);
+			builder.append(" where ");
+			builder.append(PhotoNoteColumn.USER_ID + " = ");
+			builder.append(uid + " and ");
+			builder.append(PhotoNoteColumn.ESTATE_ID + " = ");
+			builder.append(eid + ";");
+			executeUpdate(builder.toString());
+		} catch (Exception e) {
+			throw new Exception("Error clear photo: " + e.getMessage());
+		}
+		// insert all
+		try {
+			StringBuilder builder = new StringBuilder();
+			for (int i = 0; i < entities.size(); ++i) {
+				PhotoEntity reqEntity = entities.get(i);
+				builder = new StringBuilder();
+				builder.append("insert into " + PhotoNoteColumn.TABLE_NAME);
+				builder.append(" (" + PhotoNoteColumn.PHOTO + ", ");
+				builder.append(PhotoNoteColumn.USER_ID + ", ");
+				builder.append(PhotoNoteColumn.ESTATE_ID + ") ");
+				builder.append("values ('" + reqEntity.getPhoto() + "',");
+				builder.append(uid + ", ");
+				builder.append(eid + ");");
+				executeUpdate(builder.toString());
+			}
+		} catch (Exception e) {
+			throw new Exception("Error insert photo: " + e.getMessage());
+		}
+
+	}
+
+	public List<PhotoEntity> getPhotos(int userId, int estateId) throws SQLException {
+		List<PhotoEntity> photoEntities = new ArrayList<>();
+		StringBuilder builder = new StringBuilder();
+		builder = new StringBuilder();
+		builder.append("select * from " + PhotoNoteColumn.TABLE_NAME);
+		builder.append(" where ");
+		builder.append(PhotoNoteColumn.ESTATE_ID + " = " + estateId + " and ");
+		builder.append(PhotoNoteColumn.USER_ID + " = " + userId + ";");
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		try {
+			stmt = con.prepareStatement(builder.toString());
+			rs = stmt.executeQuery();
+			while (rs.next()) {
+				PhotoEntity entity = getPhotoEntityFromResultSet(rs);
+				photoEntities.add(entity);
+			}
+			return photoEntities;
 		} finally {
 			closeQuery(stmt, rs);
 		}

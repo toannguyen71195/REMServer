@@ -17,7 +17,7 @@ public enum PhotoNoteColumn {
 		return columnName;
 	}
 
-	public static final String TABLE_NAME = "note";
+	public static final String TABLE_NAME = "photo_note";
 
 	@Override
 	public String toString() {

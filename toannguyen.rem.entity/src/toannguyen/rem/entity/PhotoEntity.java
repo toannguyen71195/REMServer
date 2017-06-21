@@ -14,6 +14,11 @@ public class PhotoEntity extends Entity {
 		this.estateID = esId;
 	}
 	
+	public PhotoEntity(int id, String photo) {
+		super(id);
+		this.photo = photo;
+	}
+
 	public String getPhoto() {
 		return photo;
 	}

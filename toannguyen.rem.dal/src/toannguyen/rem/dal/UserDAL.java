@@ -9,6 +9,7 @@ import toannguyen.rem.dal.database.UserDatabaseHelper;
 import toannguyen.rem.dal.mapping.UserColumn;
 import toannguyen.rem.entity.Entity;
 import toannguyen.rem.entity.EstateEntity;
+import toannguyen.rem.entity.PhotoEntity;
 import toannguyen.rem.entity.UserEntity;
 
 public class UserDAL extends EntityDAL {
@@ -100,7 +101,7 @@ public class UserDAL extends EntityDAL {
 		}
 	}
 
-	public void updateNote(String userId, String estateId, String note) throws ClassNotFoundException, SQLException {
+	public void updateNote(int userId, int estateId, String note) throws ClassNotFoundException, SQLException {
 		UserDatabaseHelper dbh = null;
 		try {
 			dbh = new UserDatabaseHelper();
@@ -146,6 +147,24 @@ public class UserDAL extends EntityDAL {
 		UserDatabaseHelper dbh = new UserDatabaseHelper();
 		try {
 			return dbh.searchUser(query, offset, range);
+		} finally {
+			dbh.closeConnection();
+		}
+	}
+
+	public void postPhotos(int uid, int eid, List<PhotoEntity> entities) throws Exception {
+		UserDatabaseHelper dbh = new UserDatabaseHelper();
+		try {
+			dbh.postPhotos(uid, eid, entities);
+		} finally {
+			dbh.closeConnection();
+		}
+	}
+
+	public List<PhotoEntity> getPhotos(int userId, int estateId) throws SQLException, ClassNotFoundException {
+		UserDatabaseHelper dbh = new UserDatabaseHelper();
+		try {
+			return dbh.getPhotos(userId, estateId);
 		} finally {
 			dbh.closeConnection();
 		}

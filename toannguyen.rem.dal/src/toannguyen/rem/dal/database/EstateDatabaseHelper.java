@@ -79,8 +79,8 @@ public class EstateDatabaseHelper extends DatabaseHelper {
 				resultSet.getString(AddressColumn.WARD.getColumnName()),
 				resultSet.getString(AddressColumn.ADDRESS.getColumnName()));
 	}
-
-	private PhotoEntity getPhotoEntityFromResultSet(ResultSet resultSet) throws SQLException {
+	
+	protected PhotoEntity getPhotoEntityFromResultSet(ResultSet resultSet) throws SQLException {
 		return new PhotoEntity(resultSet.getInt(PhotoColumn.ID.getColumnName()),
 				resultSet.getString(PhotoColumn.PHOTO.getColumnName()),
 				resultSet.getInt(PhotoColumn.ESTATE_ID.getColumnName()));
