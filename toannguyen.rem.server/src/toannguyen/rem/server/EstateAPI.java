@@ -16,6 +16,7 @@ import toannguyen.rem.dal.EstateDAL;
 import toannguyen.rem.entity.EstateDetailEntity;
 import toannguyen.rem.entity.EstateEntity;
 import toannguyen.rem.entity.PhotoEntity;
+import toannguyen.rem.entity.SearchEstateEntity;
 import toannguyen.rem.entity.json.JsonToEntityConverter;
 import toannguyen.rem.server.response.EstateAPIResponse;
 import toannguyen.rem.server.response.TypicalAPIResponse;
@@ -46,7 +47,7 @@ public class EstateAPI {
 			return response.unsuccessResponse(e.getMessage());
 		}
 	}
-	
+
 	@GET
 	@Path("/getByID/{id}")
 	public String getByID(@PathParam("id") int id) {
@@ -70,7 +71,7 @@ public class EstateAPI {
 			return response.unsuccessResponse(e.getMessage());
 		}
 	}
-	
+
 	@GET
 	@Path("/getTopRate/{count}")
 	public String getTopRate(@PathParam("count") int count) {
@@ -156,39 +157,57 @@ public class EstateAPI {
 	@POST
 	@Path("upPhotoList")
 	public String upPhotoList(String json) {
-		 EstateAPIResponse response = new EstateAPIResponse();
-		 try {
-			 JSONObject jsonObject = new JSONObject(json);
-			 int id = jsonObject.getInt("id");
-			 List<PhotoEntity> entities = new ArrayList<>();
-			 JSONArray array = jsonObject.getJSONArray("photos");
-			 int avatar = jsonObject.getInt("avatar");
-			 for (int i = 0; i < array.length(); i++) {
-				 JSONObject object = array.getJSONObject(i);
-				 PhotoEntity entity = JsonToEntityConverter.convertJsonStringToEntity(object.toString(), PhotoEntity.class);
-				 entities.add(entity);
-			 }
-			 EstateDAL.getInstance().postPhotos(id, entities, avatar);
-			 return response.successEmptyResponse("Update success");
-		 } catch (Exception e) {
-			 return response.unsuccessResponse(e.getMessage());
-		 }
+		EstateAPIResponse response = new EstateAPIResponse();
+		try {
+			JSONObject jsonObject = new JSONObject(json);
+			int id = jsonObject.getInt("id");
+			List<PhotoEntity> entities = new ArrayList<>();
+			JSONArray array = jsonObject.getJSONArray("photos");
+			int avatar = jsonObject.getInt("avatar");
+			for (int i = 0; i < array.length(); i++) {
+				JSONObject object = array.getJSONObject(i);
+				PhotoEntity entity = JsonToEntityConverter.convertJsonStringToEntity(object.toString(),
+						PhotoEntity.class);
+				entities.add(entity);
+			}
+			EstateDAL.getInstance().postPhotos(id, entities, avatar);
+			return response.successEmptyResponse("Update success");
+		} catch (Exception e) {
+			return response.unsuccessResponse(e.getMessage());
+		}
 	}
-	
+
 	@GET
-	@Path("getPhotoList/{estateId}") 
+	@Path("getPhotoList/{estateId}")
 	public String getPhotoList(@PathParam("estateId") int estateId) {
 		EstateAPIResponse response = new EstateAPIResponse();
-		 try {
-			 List<PhotoEntity> photoEntities = EstateDAL.getInstance().getPhotos(estateId);
-			 return response.successResponse(photoEntities, "photos");
-		 } catch (Exception e) {
-			 return response.unsuccessResponse(e.getMessage());
-		 }
+		try {
+			List<PhotoEntity> photoEntities = EstateDAL.getInstance().getPhotos(estateId);
+			return response.successResponse(photoEntities, "photos");
+		} catch (Exception e) {
+			return response.unsuccessResponse(e.getMessage());
+		}
 	}
-	
-	
-	
+
+	@POST
+	@Path("search/{page}")
+	public String search(String searchEntityJson, @PathParam("page") int page) {
+		EstateAPIResponse response = new EstateAPIResponse();
+		try {
+			EstateEntity estateEntity = JsonToEntityConverter.convertJsonStringToEntity(searchEntityJson, EstateEntity.class);
+			SearchEstateEntity searchEntity = null;
+			try {
+				searchEntity = new SearchEstateEntity(estateEntity);
+			} catch (Exception e) {
+				throw new Exception("Error parse to search entity: " + e.getMessage());
+			}
+			List<EstateEntity> estateEntities = EstateDAL.getInstance().search(searchEntity, page);
+			return response.successResponse(estateEntities, "estates");
+		} catch (Exception e) {
+			return response.unsuccessResponse(e.getMessage());
+		}
+	}
+
 	/*
 	 * @POST
 	 * 

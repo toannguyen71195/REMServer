@@ -17,8 +17,8 @@ public class EstateEntity extends Entity {
 	String type;
 	Timestamp postTime;
 	Timestamp editTime;
-	Double price;
-	Double area;
+	double price;
+	double area;
 
 	public EstateEntity(int id, String name, UserEntity owner, AddressEntity address, boolean status, String type,
 			Timestamp postTime, Timestamp editTime, Double price, Double area) {
@@ -101,19 +101,19 @@ public class EstateEntity extends Entity {
 		this.postTime = postTime;
 	}
 
-	public Double getPrice() {
+	public double getPrice() {
 		return price;
 	}
 
-	public void setPrice(Double price) {
+	public void setPrice(double price) {
 		this.price = price;
 	}
 
-	public Double getArea() {
+	public double getArea() {
 		return area;
 	}
 
-	public void setArea(Double area) {
+	public void setArea(double area) {
 		this.area = area;
 	}
 

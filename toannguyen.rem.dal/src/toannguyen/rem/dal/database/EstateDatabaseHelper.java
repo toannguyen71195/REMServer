@@ -19,9 +19,13 @@ import toannguyen.rem.entity.Entity;
 import toannguyen.rem.entity.EstateDetailEntity;
 import toannguyen.rem.entity.EstateEntity;
 import toannguyen.rem.entity.PhotoEntity;
+import toannguyen.rem.entity.SearchEstateEntity;
 import toannguyen.rem.entity.UserEntity;
 
 public class EstateDatabaseHelper extends DatabaseHelper {
+
+	private static final int PAGE_COUNT = 6;
+	boolean first = true;
 
 	public EstateDatabaseHelper() throws ClassNotFoundException, SQLException {
 		super();
@@ -79,7 +83,7 @@ public class EstateDatabaseHelper extends DatabaseHelper {
 				resultSet.getString(AddressColumn.WARD.getColumnName()),
 				resultSet.getString(AddressColumn.ADDRESS.getColumnName()));
 	}
-	
+
 	protected PhotoEntity getPhotoEntityFromResultSet(ResultSet resultSet) throws SQLException {
 		return new PhotoEntity(resultSet.getInt(PhotoColumn.ID.getColumnName()),
 				resultSet.getString(PhotoColumn.PHOTO.getColumnName()),
@@ -547,7 +551,8 @@ public class EstateDatabaseHelper extends DatabaseHelper {
 			if (rs.next()) {
 				upID = rs.getInt(PhotoColumn.ID.getColumnName());
 			} else {
-				throw new Exception("This photo cannot be found in DB, please upload again ");// + builder.toString());
+				throw new Exception("This photo cannot be found in DB, please upload again ");// +
+																								// builder.toString());
 			}
 		} finally {
 			closeQuery(stmt, rs);
@@ -664,5 +669,106 @@ public class EstateDatabaseHelper extends DatabaseHelper {
 		} finally {
 			closeQuery(stmt, rs);
 		}
+	}
+
+	public List<EstateEntity> search(SearchEstateEntity searchEntity, int page) throws Exception {
+		// SELECT * FROM estate e
+		// left join address a on a.AddressID = e.AddressID
+		// left join estate_type t on e.EstateTypeID = t.EstateTypeID
+		// left join estate_detail d on e.EstateID = d.EstateID
+		// where
+		// a.City = "" and
+		// a.District = "" and
+		// a.Ward = "" and
+		// a.Address like "%%" and
+		// t.TypeName = "" and
+		// e.Area > 1 and e.Area < 1 and
+		// e.Price > 1 and e.Price < 1 and
+		// d.Floor > 1 and d.Floor < 1 and
+		// d.Bedroom > 1 and d.Bedroom < 1 and
+		// d.Bathroom > 1 and d.Bathroom < 1 and
+		// d.Cond = ""
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		StringBuilder builder = new StringBuilder();
+		try {
+			builder.append("SELECT * FROM estate e");
+			builder.append(" left join address a on a.AddressID = e.AddressID");
+			builder.append(" left join estate_type t on e.EstateTypeID = t.EstateTypeID");
+			builder.append(" left join estate_detail d on e.EstateID = d.EstateID");
+			builder.append(" where ");
+			first = true;
+			builder.append(addConditionToQuery(addToSearchQueryEqual(searchEntity.getAddress().getCity(), "a.City")));
+			builder.append(
+					addConditionToQuery(addToSearchQueryEqual(searchEntity.getAddress().getDistrict(), "a.District")));
+			builder.append(addConditionToQuery(addToSearchQueryEqual(searchEntity.getAddress().getWard(), "a.Ward")));
+			builder.append(
+					addConditionToQuery(addToSearchQueryLike(searchEntity.getAddress().getAddress(), "a.Address")));
+			builder.append(addConditionToQuery(addToSearchQueryEqual(searchEntity.getType(), "t.TypeName")));
+			builder.append(addConditionToQuery(
+					addToSearchQueryBetween(searchEntity.getAreaMin(), searchEntity.getAreaMax(), "e.Area")));
+			builder.append(addConditionToQuery(
+					addToSearchQueryBetween(searchEntity.getPriceMin(), searchEntity.getPriceMax(), "e.Price")));
+			builder.append(addConditionToQuery(
+					addToSearchQueryBetween(searchEntity.getFloarMin(), searchEntity.getFloorMax(), "d.Floor")));
+			builder.append(addConditionToQuery(
+					addToSearchQueryBetween(searchEntity.getBedMin(), searchEntity.getBedMax(), "d.Bedroom")));
+			builder.append(addConditionToQuery(
+					addToSearchQueryBetween(searchEntity.getBathMin(), searchEntity.getBathMax(), "d.Bathroom")));
+			builder.append(addConditionToQuery(addToSearchQueryEqual(searchEntity.getDirection(), "d.Cond")));
+			builder.append(" limit " + page * PAGE_COUNT + ", " + PAGE_COUNT);
+		} catch (Exception e) {
+			throw new Exception("Error build query: " + e.getMessage());
+		}
+		try {
+			stmt = con.prepareStatement(builder.toString());
+			rs = stmt.executeQuery();
+			List<EstateEntity> entities = new ArrayList<>();
+			while (rs.next()) {
+				entities.add((EstateEntity) getEntityFromResultSet(rs));
+			}
+			return entities;
+		} catch (Exception e) {
+			throw new Exception("Error parse result: " + e.getMessage());
+		} finally {
+			closeQuery(stmt, rs);
+		}
+	}
+
+	private String addConditionToQuery(String condition) {
+		if (condition.isEmpty()) {
+			return "";
+		}
+		if (first) {
+			first = false;
+			return condition;
+		}
+		return " and " + condition;
+	}
+
+	private String addToSearchQueryEqual(String data, String column) {
+		if (data != null && !data.isEmpty()) {
+			return " " + column + " = '" + data + "'";
+		}
+		return "";
+	}
+
+	private String addToSearchQueryLike(String data, String column) {
+		if (data != null && !data.isEmpty()) {
+			return " " + column + " like '%" + data + "%'";
+		}
+		return "";
+	}
+
+	private String addToSearchQueryBetween(int dataFrom, int dataTo, String column) {
+		if (dataFrom == -1) {
+			return "";
+		}
+		StringBuilder builder = new StringBuilder();
+		builder.append(" " + column + " >= " + dataFrom);
+		if (dataTo != -1) {
+			builder.append(" and " + column + " <= " + dataTo);
+		}
+		return builder.toString();
 	}
 }

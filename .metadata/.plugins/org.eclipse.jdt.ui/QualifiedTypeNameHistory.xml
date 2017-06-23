@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <qualifiedTypeNameHistroy>
-<fullyQualifiedTypeName name="toannguyen.rem.dal.mapping.InterestedEstateColumn"/>
-<fullyQualifiedTypeName name="toannguyen.rem.entity.CommentEntity"/>
 <fullyQualifiedTypeName name="toannguyen.rem.dal.mapping.CommentColumn"/>
 <fullyQualifiedTypeName name="toannguyen.rem.dal.database.AddressDatabaseHelper"/>
-<fullyQualifiedTypeName name="toannguyen.rem.entity.AddressEntity"/>
-<fullyQualifiedTypeName name="toannguyen.rem.entity.EstateEntity"/>
 <fullyQualifiedTypeName name="java.lang.System"/>
 <fullyQualifiedTypeName name="toannguyen.rem.dal.mapping.UserColumn"/>
 <fullyQualifiedTypeName name="toannguyen.rem.dal.mapping.NoteColumn"/>
@@ -15,7 +11,6 @@
 <fullyQualifiedTypeName name="java.io.BufferedInputStream"/>
 <fullyQualifiedTypeName name="toannguyen.rem.entity.EstateDetailEntity"/>
 <fullyQualifiedTypeName name="toannguyen.rem.dal.mapping.EstateDetailColumn"/>
-<fullyQualifiedTypeName name="toannguyen.rem.entity.Entity"/>
 <fullyQualifiedTypeName name="javax.ws.rs.GET"/>
 <fullyQualifiedTypeName name="javax.ws.rs.Path"/>
 <fullyQualifiedTypeName name="toannguyen.rem.server.response.TypicalAPIResponse"/>
@@ -30,11 +25,9 @@
 <fullyQualifiedTypeName name="toannguyen.rem.server.response.AppointmentAPIResponse"/>
 <fullyQualifiedTypeName name="toannguyen.rem.dal.AppointmentDAL"/>
 <fullyQualifiedTypeName name="toannguyen.rem.dal.mapping.AppointmentColumn"/>
-<fullyQualifiedTypeName name="toannguyen.rem.entity.json.JsonToEntityConverter"/>
 <fullyQualifiedTypeName name="toannguyen.rem.dal.EstateDAL"/>
 <fullyQualifiedTypeName name="java.util.ArrayList"/>
 <fullyQualifiedTypeName name="toannguyen.rem.entity.PhotoEntity"/>
-<fullyQualifiedTypeName name="java.lang.StringBuilder"/>
 <fullyQualifiedTypeName name="toannguyen.rem.dal.database.EstateDatabaseHelper"/>
 <fullyQualifiedTypeName name="toannguyen.rem.dal.EntityDAL"/>
 <fullyQualifiedTypeName name="toannguyen.rem.dal.mapping.EstateColumn"/>
@@ -50,7 +43,6 @@
 <fullyQualifiedTypeName name="java.util.Date"/>
 <fullyQualifiedTypeName name="java.sql.Timestamp"/>
 <fullyQualifiedTypeName name="javax.websocket.server.PathParam"/>
-<fullyQualifiedTypeName name="javax.ws.rs.PathParam"/>
 <fullyQualifiedTypeName name="toannguyen.rem.dal.DataDAL"/>
 <fullyQualifiedTypeName name="toannguyen.rem.dal.database.DataDatabaseHelper"/>
 <fullyQualifiedTypeName name="org.json.JSONArray"/>
@@ -60,4 +52,12 @@
 <fullyQualifiedTypeName name="javax.json.Json"/>
 <fullyQualifiedTypeName name="toannguyen.rem.server.response.UserAPIResponse"/>
 <fullyQualifiedTypeName name="toannguyen.rem.dal.mapping.PhotoNoteColumn"/>
+<fullyQualifiedTypeName name="toannguyen.rem.entity.Entity"/>
+<fullyQualifiedTypeName name="toannguyen.rem.entity.json.JsonToEntityConverter"/>
+<fullyQualifiedTypeName name="javax.ws.rs.PathParam"/>
+<fullyQualifiedTypeName name="toannguyen.rem.entity.EstateEntity"/>
+<fullyQualifiedTypeName name="java.lang.Integer"/>
+<fullyQualifiedTypeName name="toannguyen.rem.entity.AddressEntity"/>
+<fullyQualifiedTypeName name="toannguyen.rem.entity.SearchEstateEntity"/>
+<fullyQualifiedTypeName name="java.lang.StringBuilder"/>
 </qualifiedTypeNameHistroy>

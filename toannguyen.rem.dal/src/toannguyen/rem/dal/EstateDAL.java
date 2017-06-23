@@ -7,6 +7,7 @@ import toannguyen.rem.dal.database.EstateDatabaseHelper;
 import toannguyen.rem.entity.EstateDetailEntity;
 import toannguyen.rem.entity.EstateEntity;
 import toannguyen.rem.entity.PhotoEntity;
+import toannguyen.rem.entity.SearchEstateEntity;
 
 public class EstateDAL extends EntityDAL {
 	private static EstateDAL _instance;
@@ -134,6 +135,15 @@ public class EstateDAL extends EntityDAL {
 		EstateDatabaseHelper dbh = new EstateDatabaseHelper();
 		try {
 			return dbh.queryByID(id);
+		} finally {
+			dbh.closeConnection();
+		}
+	}
+
+	public List<EstateEntity> search(SearchEstateEntity searchEntity, int page) throws Exception {
+		EstateDatabaseHelper dbh = new EstateDatabaseHelper();
+		try {
+			return dbh.search(searchEntity, page);
 		} finally {
 			dbh.closeConnection();
 		}
