@@ -133,7 +133,8 @@ public class EstateDatabaseHelper extends DatabaseHelper {
 			builder.append(EstateColumn.ESTATE_TYPE_ID + " = t.");
 			builder.append(EstateTypeColumn.ID + " where e.");
 			builder.append(EstateColumn.OWNER_ID + " = ");
-			builder.append(id + ";");
+			builder.append(id);
+			builder.append(" order by " + EstateColumn.POST_TIME + " desc;");
 			stmt = con.prepareStatement(builder.toString());
 			rs = stmt.executeQuery();
 			while (rs.next()) {
@@ -235,7 +236,8 @@ public class EstateDatabaseHelper extends DatabaseHelper {
 			builder.append(EstateTypeColumn.ID);
 			builder.append(" where i.");
 			builder.append(InterestedEstateColumn.USER_ID + " = ");
-			builder.append(userId + ";");
+			builder.append(userId);
+			builder.append(" order by " + EstateColumn.POST_TIME + " desc;");
 			stmt = con.prepareStatement(builder.toString());
 			rs = stmt.executeQuery();
 			while (rs.next()) {

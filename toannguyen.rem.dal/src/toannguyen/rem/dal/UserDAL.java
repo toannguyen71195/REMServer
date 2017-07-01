@@ -117,7 +117,11 @@ public class UserDAL extends EntityDAL {
 		UserDatabaseHelper dbh = null;
 		try {
 			dbh = new UserDatabaseHelper();
-			return dbh.getNote(userId, estateId);
+			String note = dbh.getNote(userId, estateId);
+			if (note == null) {
+				return "";
+			}
+			return note;
 		} finally {
 			if (dbh != null) {
 				dbh.closeConnection();
