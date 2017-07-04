@@ -207,6 +207,20 @@ public class EstateAPI {
 			return response.unsuccessResponse(e.getMessage());
 		}
 	}
+	
+	@POST
+	@Path("searchGPS/{page}")
+	public String searchGPS(String json, @PathParam("page") int page) {
+		EstateAPIResponse response = new EstateAPIResponse();
+		try {
+			JSONObject jsonObject = new JSONObject(json);
+			String address = jsonObject.getString("address");
+			List<EstateEntity> estateEntities = EstateDAL.getInstance().searchGPS(address, page);
+			return response.successResponse(estateEntities, "estates");
+		} catch (Exception e) {
+			return response.unsuccessResponse(e.getMessage());
+		}
+	}
 
 	/*
 	 * @POST

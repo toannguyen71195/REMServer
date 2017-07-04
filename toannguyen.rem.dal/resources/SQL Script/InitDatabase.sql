@@ -160,7 +160,8 @@ create table appointment (
     Time datetime,
     Status int references appt_status(StatusID),
     User1 int references users(UserID),
-    User2 int references users(UserID)
+    User2 int references users(UserID),
+    EstateID int
 );
 
 /* MESSAGE */

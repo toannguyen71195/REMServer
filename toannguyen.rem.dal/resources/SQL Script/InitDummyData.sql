@@ -88,6 +88,7 @@ insert into visited_estate (EstateID, BuyerID, Time)
 insert into visited_estate (EstateID, BuyerID, Time)
 			values (2, 1, '2017-05-06 05:06:07');
 
+/*
 insert into appointment (Title, Address, Note, Time, Status, User1, User2)
 		values ("Appt 1", "Moon", "let go to the moon", '2017-06-15 05:06:07', 1, 1, 2);
 insert into appointment (Title, Address, Note, Time, Status, User1, User2)
@@ -96,4 +97,4 @@ insert into appointment (Title, Address, Note, Time, Status, User1, User2)
 		values ("Appt 3", "Moon", "let go to the moon", '2017-06-15 05:06:07', 3, 3, 4);
 insert into appointment (Title, Address, Note, Time, Status, User1, User2)
 		values ("Appt 4", "Moon", "let go to the moon", '2017-06-15 05:06:07', 1, 4, 1);
-
+*/

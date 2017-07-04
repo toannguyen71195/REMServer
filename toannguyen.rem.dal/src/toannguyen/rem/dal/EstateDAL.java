@@ -148,4 +148,13 @@ public class EstateDAL extends EntityDAL {
 			dbh.closeConnection();
 		}
 	}
+
+	public List<EstateEntity> searchGPS(String address, int page) throws Exception {
+		EstateDatabaseHelper dbh = new EstateDatabaseHelper();
+		try {
+			return dbh.searchGPS(address, page);
+		} finally {
+			dbh.closeConnection();
+		}
+	}
 }

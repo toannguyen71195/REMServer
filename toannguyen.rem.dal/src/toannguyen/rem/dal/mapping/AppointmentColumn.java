@@ -1,7 +1,8 @@
 package toannguyen.rem.dal.mapping;
 
 public enum AppointmentColumn {
-	ID("ApptID"), TITLE("Title"), ADDRESS("Address"), NOTE("Note"), TIME("Time"), STATUS("Status"), USER1("User1"), USER2("User2");
+	ID("ApptID"), TITLE("Title"), ADDRESS("Address"), NOTE("Note"), TIME("Time"), STATUS("Status"), USER1(
+			"User1"), USER2("User2"), ESTATE_ID("EstateID");
 
 	String columnName;
 

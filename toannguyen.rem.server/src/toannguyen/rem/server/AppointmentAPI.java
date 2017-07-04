@@ -60,7 +60,8 @@ public class AppointmentAPI {
 			JSONObject object = new JSONObject(json);
 			AppointmentEntity entity = new AppointmentEntity(object.getString("name"), 
 					object.getString("address"), object.getString("note"), new UserEntity(object.getJSONObject("user1").getInt("id")),
-					new UserEntity(object.getJSONObject("user2").getInt("id")));
+					new UserEntity(object.getJSONObject("user2").getInt("id")),
+					object.getInt("estate"));
 			SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm a dd/MM/yyyy");
 			Date time = dateFormat.parse(object.getString("time"));
 			entity.setTime(new Timestamp(time.getTime()));

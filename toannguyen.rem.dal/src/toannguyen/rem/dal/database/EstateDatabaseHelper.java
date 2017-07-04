@@ -773,4 +773,41 @@ public class EstateDatabaseHelper extends DatabaseHelper {
 		}
 		return builder.toString();
 	}
+
+	public List<EstateEntity> searchGPS(String address, int page) throws Exception {
+		// Select *, FullAddress,
+		// levenshtein(FullAddress, 'xxx') as distance
+		// from (SELECT *, concat(Address, ', ', Ward, ', ', District, ',
+		// ',City) as FullAddress
+		// FROM address) as a
+		// left join estate e on a.AddressID = e.AddressID
+		// left join estate_type t on e.EstateTypeID = t.EstateTypeID
+		// left join estate_detail d on e.EstateID = d.EstateID
+		// order by distance;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		StringBuilder builder = new StringBuilder();
+		builder.append("Select *, FullAddress,");
+		builder.append(" levenshtein(FullAddress, '" + address + "') as distance");
+		builder.append(" from (SELECT *, concat(Address, ', ', Ward, ', ', District, ', ',City) as FullAddress");
+		builder.append(" FROM address) as a");
+		builder.append(" left join estate e on a.AddressID = e.AddressID");
+		builder.append(" left join estate_type t on e.EstateTypeID = t.EstateTypeID");
+		builder.append(" left join estate_detail d on e.EstateID = d.EstateID");
+		builder.append(" order by distance");
+		builder.append(" limit " + page * PAGE_COUNT + ", " + PAGE_COUNT);
+		try {
+			stmt = con.prepareStatement(builder.toString());
+			rs = stmt.executeQuery();
+			List<EstateEntity> entities = new ArrayList<>();
+			while (rs.next()) {
+				entities.add((EstateEntity) getEntityFromResultSet(rs));
+			}
+			return entities;
+		} catch (Exception e) {
+			throw new Exception("Error parse result: " + e.getMessage());
+		} finally {
+			closeQuery(stmt, rs);
+		}
+	}
 }

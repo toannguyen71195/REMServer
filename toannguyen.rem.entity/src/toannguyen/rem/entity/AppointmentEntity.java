@@ -15,9 +15,10 @@ public class AppointmentEntity extends Entity {
 	int status;
 	UserEntity user1;
 	UserEntity user2;
+	int estate;
 	
 	public AppointmentEntity(int id, String name, String address, String note, Timestamp time, int status, UserEntity user1,
-			UserEntity user2) {
+			UserEntity user2, int estate) {
 		super(id, name);
 		this.address = address;
 		this.note = note;
@@ -25,16 +26,18 @@ public class AppointmentEntity extends Entity {
 		this.status = status;
 		this.user1 = user1;
 		this.user2 = user2;
+		this.estate = estate;
 	}
 	
 	public AppointmentEntity(String name, String address, String note, UserEntity user1,
-			UserEntity user2) {
+			UserEntity user2, int estate) {
 		super(0, name);
 		this.address = address;
 		this.note = note;
 		this.status = 1;
 		this.user1 = user1;
 		this.user2 = user2;
+		this.estate = estate;
 	}
 
 	public String getAddress() {
@@ -84,6 +87,15 @@ public class AppointmentEntity extends Entity {
 	public void setUser2(UserEntity user2) {
 		this.user2 = user2;
 	}
+
+	public int getEstate() {
+		return estate;
+	}
+
+	public void setEstate(int estate) {
+		this.estate = estate;
+	}
+	
 	
 	
 }

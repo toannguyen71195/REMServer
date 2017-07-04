@@ -38,7 +38,8 @@ public class AppointmentDatabaseHelper extends DatabaseHelper {
 				resultSet.getString(AppointmentColumn.ADDRESS.getColumnName()),
 				resultSet.getString(AppointmentColumn.NOTE.getColumnName()),
 				resultSet.getTimestamp(AppointmentColumn.TIME.getColumnName()),
-				resultSet.getInt(AppointmentColumn.STATUS.getColumnName()), userEntity1, userEntity2);
+				resultSet.getInt(AppointmentColumn.STATUS.getColumnName()), userEntity1, userEntity2,
+				resultSet.getInt(AppointmentColumn.ESTATE_ID.getColumnName()));
 	}
 
 	public List<AppointmentEntity> getListAppointment(int userId) throws Exception {
@@ -108,14 +109,16 @@ public class AppointmentDatabaseHelper extends DatabaseHelper {
 		builder.append(AppointmentColumn.STATUS + ", ");
 		builder.append(AppointmentColumn.TIME + ", ");
 		builder.append(AppointmentColumn.USER1 + ", ");
-		builder.append(AppointmentColumn.USER2 + ") values (");
+		builder.append(AppointmentColumn.USER2 + ", ");
+		builder.append(AppointmentColumn.ESTATE_ID + ") values (");
 		builder.append("'" + entity.getAddress() + "', ");
 		builder.append("'" + entity.getName() + "', ");
 		builder.append("'" + entity.getNote() + "', ");
 		builder.append("1 , ");
 		builder.append("'" + entity.getTime() + "', ");
 		builder.append(entity.getUser1().getId() + ", ");
-		builder.append(entity.getUser2().getId() + ");");
+		builder.append(entity.getUser2().getId() + ", ");
+		builder.append(entity.getEstate() + ");");
 		executeUpdate(builder.toString());
 	}
 
