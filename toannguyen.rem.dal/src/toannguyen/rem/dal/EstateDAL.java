@@ -41,10 +41,10 @@ public class EstateDAL extends EntityDAL {
 		}
 	}
 
-	public List<EstateEntity> getNewEstate(int count) throws Exception {
+	public List<EstateEntity> getNewEstate(int page) throws Exception {
 		EstateDatabaseHelper dbh = new EstateDatabaseHelper();
 		try {
-			return dbh.queryNewEstate(count);
+			return dbh.queryNewEstate(page);
 		} finally {
 			dbh.closeConnection();
 		}
@@ -149,10 +149,28 @@ public class EstateDAL extends EntityDAL {
 		}
 	}
 
-	public List<EstateEntity> searchGPS(String address, int page) throws Exception {
+	public List<EstateEntity> searchText(String text, int page) throws Exception {
 		EstateDatabaseHelper dbh = new EstateDatabaseHelper();
 		try {
-			return dbh.searchGPS(address, page);
+			return dbh.searchText(text, page);
+		} finally {
+			dbh.closeConnection();
+		}
+	}
+
+	public List<EstateEntity> searchGPS(double lat, double lng, int dist, int page) throws Exception {
+		EstateDatabaseHelper dbh = new EstateDatabaseHelper();
+		try {
+			return dbh.searchGPS(lat, lng, dist, page);
+		} finally {
+			dbh.closeConnection();
+		}
+	}
+
+	public void updateStatus(int estateId, int status) throws SQLException, ClassNotFoundException {
+		EstateDatabaseHelper dbh = new EstateDatabaseHelper();
+		try {
+			dbh.updateStatus(estateId, status);
 		} finally {
 			dbh.closeConnection();
 		}

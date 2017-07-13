@@ -61,11 +61,11 @@ public class EstateAPI {
 	}
 
 	@GET
-	@Path("/getNew/{count}")
-	public String getRecentEstate(@PathParam("count") int count) {
+	@Path("/getNew/{page}")
+	public String getRecentEstate(@PathParam("page") int page) {
 		TypicalAPIResponse response = new TypicalAPIResponse();
 		try {
-			List<EstateEntity> estateEntities = EstateDAL.getInstance().getNewEstate(count);
+			List<EstateEntity> estateEntities = EstateDAL.getInstance().getNewEstate(page);
 			return response.successResponse(estateEntities, EstateEntity.ESTATE_LIST);
 		} catch (Exception e) {
 			return response.unsuccessResponse(e.getMessage());
@@ -214,9 +214,35 @@ public class EstateAPI {
 		EstateAPIResponse response = new EstateAPIResponse();
 		try {
 			JSONObject jsonObject = new JSONObject(json);
-			String address = jsonObject.getString("address");
-			List<EstateEntity> estateEntities = EstateDAL.getInstance().searchGPS(address, page);
+			double lat = jsonObject.getDouble("latitude");
+			double lng = jsonObject.getDouble("longitude");
+			int dist = jsonObject.getInt("distance");
+			List<EstateEntity> estateEntities = EstateDAL.getInstance().searchGPS(lat, lng, dist, page);
 			return response.successResponse(estateEntities, "estates");
+		} catch (Exception e) {
+			return response.unsuccessResponse(e.getMessage());
+		}
+	}
+	
+	@GET
+	@Path("searchText/{text}/{page}")
+	public String searchText(@PathParam("text") String text, @PathParam("page") int page) {
+		EstateAPIResponse response = new EstateAPIResponse();
+		try {
+			List<EstateEntity> estateEntities = EstateDAL.getInstance().searchText(text, page);
+			return response.successResponse(estateEntities, "estates");
+		} catch (Exception e) {
+			return response.unsuccessResponse(e.getMessage());
+		}
+	}
+	
+	@GET
+	@Path("updateStatus/{estateId}-{status}")
+	public String updateStatus(@PathParam("estateId") int estateId, @PathParam("status") int status) {
+		EstateAPIResponse response = new EstateAPIResponse();
+		try {
+			EstateDAL.getInstance().updateStatus(estateId, status);
+			return response.successEmptyResponse("Update success");
 		} catch (Exception e) {
 			return response.unsuccessResponse(e.getMessage());
 		}

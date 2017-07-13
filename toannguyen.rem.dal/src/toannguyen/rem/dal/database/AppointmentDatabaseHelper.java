@@ -52,7 +52,8 @@ public class AppointmentDatabaseHelper extends DatabaseHelper {
 			builder.append(AppointmentColumn.TABLE_NAME);
 			builder.append(" where ");
 			builder.append(AppointmentColumn.USER1 + " = " + userId);
-			builder.append(" or " + AppointmentColumn.USER2 + " = " + userId + ";");
+			builder.append(" or " + AppointmentColumn.USER2 + " = " + userId);
+			builder.append(" order by " + AppointmentColumn.TIME + " desc");
 			stmt = con.prepareStatement(builder.toString());
 			rs = stmt.executeQuery();
 			while (rs.next()) {

@@ -173,4 +173,22 @@ public class UserDAL extends EntityDAL {
 			dbh.closeConnection();
 		}
 	}
+
+	public boolean checkInterestedEstate(int userId, int estateId) throws SQLException, ClassNotFoundException {
+		UserDatabaseHelper dbh = new UserDatabaseHelper();
+		try {
+			return dbh.checkInterestedEstate(userId, estateId);
+		} finally {
+			dbh.closeConnection();
+		}
+	}
+
+	public void updateRequest(int userId, int estateId) throws Exception {
+		UserDatabaseHelper dbh = new UserDatabaseHelper();
+		try {
+			dbh.updateRequest(userId, estateId);
+		} finally {
+			dbh.closeConnection();
+		}
+	}
 }

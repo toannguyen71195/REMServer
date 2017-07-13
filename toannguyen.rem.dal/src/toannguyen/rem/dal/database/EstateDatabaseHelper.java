@@ -147,12 +147,12 @@ public class EstateDatabaseHelper extends DatabaseHelper {
 		}
 	}
 
-	public List<EstateEntity> queryNewEstate(int count) throws Exception {
+	public List<EstateEntity> queryNewEstate(int page) throws Exception {
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		List<EstateEntity> result = new ArrayList<>();
+		StringBuilder builder = new StringBuilder();
 		try {
-			StringBuilder builder = new StringBuilder();
 			builder.append("SELECT * FROM ");
 			builder.append(EstateColumn.TABLE_NAME + " e left join ");
 			builder.append(AddressColumn.TABLE_NAME + " a on e.");
@@ -164,7 +164,7 @@ public class EstateDatabaseHelper extends DatabaseHelper {
 			builder.append(EstateTypeColumn.ID + " where e.");
 			builder.append(EstateColumn.STATUS_ID + " = " + EstateEntity.STATUS_AVAILABLE);
 			builder.append(" order by " + EstateColumn.POST_TIME + " desc");
-			builder.append(" limit " + count + ";");
+			builder.append(" limit " + page * PAGE_COUNT + ", " + PAGE_COUNT);
 			stmt = con.prepareStatement(builder.toString());
 			rs = stmt.executeQuery();
 			while (rs.next()) {
@@ -172,6 +172,8 @@ public class EstateDatabaseHelper extends DatabaseHelper {
 				result.add(entity);
 			}
 			return result;
+		} catch (Exception e) {
+			throw new Exception("Error query new estates: " + e.getMessage() + ". Query: " + builder.toString());
 		} finally {
 			closeQuery(stmt, rs);
 		}
@@ -207,7 +209,9 @@ public class EstateDatabaseHelper extends DatabaseHelper {
 					rs.getString(EstateDetailColumn.DESCRIPTION.getColumnName()),
 					rs.getInt(EstateDetailColumn.FLOOR.getColumnName()),
 					rs.getDouble(EstateDetailColumn.LENGTH.getColumnName()),
-					rs.getDouble(EstateDetailColumn.WIDTH.getColumnName()));
+					rs.getDouble(EstateDetailColumn.WIDTH.getColumnName()),
+					rs.getDouble(EstateDetailColumn.LATITUDE.getColumnName()),
+					rs.getDouble(EstateDetailColumn.LONGITUDE.getColumnName()));
 			return detailEntity;
 		} catch (Exception e) {
 			throw new Exception("rs detail " + e.getMessage());
@@ -465,15 +469,19 @@ public class EstateDatabaseHelper extends DatabaseHelper {
 		builder.append(EstateDetailColumn.DESCRIPTION + ",");
 		builder.append(EstateDetailColumn.FLOOR + ",");
 		builder.append(EstateDetailColumn.LENGTH + ",");
-		builder.append(EstateDetailColumn.WIDTH + ") values ('");
+		builder.append(EstateDetailColumn.WIDTH + ",");
+		builder.append(EstateDetailColumn.LATITUDE + ",");
+		builder.append(EstateDetailColumn.LONGITUDE + ") values ('");
 		builder.append(entity.getId() + "','");
 		builder.append(detail.getBathroom() + "','");
 		builder.append(detail.getBedroom() + "','");
 		builder.append(detail.getCondition() + "','");
-		builder.append(detail.getDescription() + "','");
-		builder.append(detail.getFloor() + "','");
-		builder.append(detail.getLength() + "','");
-		builder.append(detail.getWidth() + "');");
+		builder.append(detail.getDescription() + "', ");
+		builder.append(detail.getFloor() + ", ");
+		builder.append(detail.getLength() + ", ");
+		builder.append(detail.getWidth() + ", ");
+		builder.append(detail.getLatitude() + ", ");
+		builder.append(detail.getLongitude() + ");");
 		executeUpdate(builder.toString());
 		EstateDetailEntity detailEntity = queryEstateDetail(entity.getId());
 		if (detailEntity != null) {
@@ -718,6 +726,8 @@ public class EstateDatabaseHelper extends DatabaseHelper {
 			builder.append(addConditionToQuery(
 					addToSearchQueryBetween(searchEntity.getBathMin(), searchEntity.getBathMax(), "d.Bathroom")));
 			builder.append(addConditionToQuery(addToSearchQueryEqual(searchEntity.getDirection(), "d.Cond")));
+			builder.append(" and ");
+			builder.append(EstateColumn.STATUS_ID + " = " + EstateEntity.STATUS_AVAILABLE);
 			builder.append(" limit " + page * PAGE_COUNT + ", " + PAGE_COUNT);
 		} catch (Exception e) {
 			throw new Exception("Error build query: " + e.getMessage());
@@ -794,6 +804,8 @@ public class EstateDatabaseHelper extends DatabaseHelper {
 		builder.append(" left join estate e on a.AddressID = e.AddressID");
 		builder.append(" left join estate_type t on e.EstateTypeID = t.EstateTypeID");
 		builder.append(" left join estate_detail d on e.EstateID = d.EstateID");
+		builder.append(" where ");
+		builder.append(EstateColumn.STATUS_ID + " = " + EstateEntity.STATUS_AVAILABLE);
 		builder.append(" order by distance");
 		builder.append(" limit " + page * PAGE_COUNT + ", " + PAGE_COUNT);
 		try {
@@ -809,5 +821,98 @@ public class EstateDatabaseHelper extends DatabaseHelper {
 		} finally {
 			closeQuery(stmt, rs);
 		}
+	}
+
+	public List<EstateEntity> searchText(String text, int page) throws Exception {
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		StringBuilder builder = new StringBuilder();
+		builder.append("Select * from (Select *, (levenshtein_ratio(FullAddress, '");
+		builder.append(text + "')) as Distance");
+		builder.append(" FROM (select e.*, a.City, a.District, a.Ward, a.Address,");
+		builder.append(" t.TypeName, d.Bathroom, d.Bedroom, d.Cond, d.Description,");
+		builder.append(" d.Floor, d.Length, d.Width, d.Longitude, d.Latitude,");
+		builder.append(" concat(Address, ', ', Ward, ', ', District, ', ', City)");
+		builder.append(" as FullAddress from address a");
+		builder.append(" left join estate e on a.AddressID = e.AddressID");
+		builder.append(" left join estate_type t on e.EstateTypeID = t.EstateTypeID");
+		builder.append(" left join estate_detail d on e.EstateID = d.EstateID) as tmp1) as tmp2");
+		builder.append(" where (");
+		builder.append(" MATCH(Name) AGAINST('");
+		builder.append(text + "' IN NATURAL LANGUAGE MODE)");
+		builder.append(" or MATCH(TypeName) AGAINST('");
+		builder.append(text + "' IN NATURAL LANGUAGE MODE)");
+		builder.append(" or MATCH(Description) AGAINST('");
+		builder.append(text + "' IN NATURAL LANGUAGE MODE))");
+		builder.append(" and StatusID = 1");
+		builder.append(" order by Distance desc");
+		builder.append(" limit " + page * PAGE_COUNT + ", " + PAGE_COUNT);
+		try {
+			stmt = con.prepareStatement(builder.toString());
+			rs = stmt.executeQuery();
+			List<EstateEntity> entities = new ArrayList<>();
+			while (rs.next()) {
+				entities.add((EstateEntity) getEntityFromResultSet(rs));
+			}
+			return entities;
+		} catch (Exception e) {
+			throw new Exception("Error parse result: " + e.getMessage());
+		} finally {
+			closeQuery(stmt, rs);
+		}
+	}
+
+	public List<EstateEntity> searchGPS(double lat, double lng, int dist, int page) throws Exception {
+		// select * from (
+		// SELECT e.*, a.City, a.District, a.Ward, a.Address, t.TypeName,
+		// d.Bathroom, d.Bedroom,
+		// d.Cond, d.Description, d.Floor, d.Length, d.Width, d.Longitude,
+		// d.Latitude,
+		// gpsDistance(d.Latitude, d.Longitude, 10.778759, 106.665939) as
+		// Distance
+		// FROM estate e
+		// left join address a on e.AddressID = a.AddressID
+		// left join estate_type t on e.EstateTypeID = t.EstateTypeID
+		// left join estate_detail d on e.EstateID = d.EstateID
+		// where e.StatusID = 1
+		// order by Distance, PostTime desc) as tmp
+		// where Distance < 5000
+		// limit 0, 6
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		StringBuilder builder = new StringBuilder();
+		builder.append("select * from (SELECT e.*, a.City, a.District, a.Ward, a.Address,");
+		builder.append(" t.TypeName,d.Bathroom, d.Bedroom, d.Cond, d.Description,");
+		builder.append(" d.Floor, d.Length, d.Width, d.Longitude, d.Latitude,");
+		builder.append(" gpsDistance(d.Latitude, d.Longitude, " + lat + ", " + lng + ") as Distance");
+		builder.append(" FROM estate e");
+		builder.append(" left join address a on e.AddressID = a.AddressID");
+		builder.append(" left join estate_type t on e.EstateTypeID = t.EstateTypeID");
+		builder.append(" left join estate_detail d on e.EstateID = d.EstateID");
+		builder.append(" where e.StatusID = 1");
+		builder.append(" order by Distance, PostTime desc) as tmp");
+		builder.append(" where Distance < " + (dist * 1000));
+		builder.append(" limit " + page * PAGE_COUNT + ", " + PAGE_COUNT);
+		try {
+			stmt = con.prepareStatement(builder.toString());
+			rs = stmt.executeQuery();
+			List<EstateEntity> entities = new ArrayList<>();
+			while (rs.next()) {
+				entities.add((EstateEntity) getEntityFromResultSet(rs));
+			}
+			return entities;
+		} catch (Exception e) {
+			throw new Exception("Error parse result: " + e.getMessage());
+		} finally {
+			closeQuery(stmt, rs);
+		}
+	}
+
+	public void updateStatus(int estateId, int status) throws SQLException {
+		StringBuilder builder = new StringBuilder();
+		builder.append("update estate set StatusID = ");
+		builder.append(status + "where EstateID = ");
+		builder.append(estateId);
+		executeUpdate(builder.toString());
 	}
 }

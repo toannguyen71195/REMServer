@@ -130,39 +130,40 @@ public final class UserAPI {
 			return response.unsuccessResponse(e.getMessage());
 		}
 	}
-	
+
 	@POST
 	@Path("upPhotoNote")
 	public String upPhotoList(String json) {
-		 UserAPIResponse response = new UserAPIResponse();
-		 try {
-			 JSONObject jsonObject = new JSONObject(json);
-			 int uid = jsonObject.getInt("UserID");
-			 int eid = jsonObject.getInt("EstateID");
-			 List<PhotoEntity> entities = new ArrayList<>();
-			 JSONArray array = jsonObject.getJSONArray("photos");
-			 for (int i = 0; i < array.length(); i++) {
-				 JSONObject object = array.getJSONObject(i);
-				 PhotoEntity entity = JsonToEntityConverter.convertJsonStringToEntity(object.toString(), PhotoEntity.class);
-				 entities.add(entity);
-			 }
-			 UserDAL.getInstance().postPhotos(uid, eid, entities);
-			 return response.successEmptyResponse("Update success");
-		 } catch (Exception e) {
-			 return response.unsuccessResponse(e.getMessage());
-		 }
+		UserAPIResponse response = new UserAPIResponse();
+		try {
+			JSONObject jsonObject = new JSONObject(json);
+			int uid = jsonObject.getInt("UserID");
+			int eid = jsonObject.getInt("EstateID");
+			List<PhotoEntity> entities = new ArrayList<>();
+			JSONArray array = jsonObject.getJSONArray("photos");
+			for (int i = 0; i < array.length(); i++) {
+				JSONObject object = array.getJSONObject(i);
+				PhotoEntity entity = JsonToEntityConverter.convertJsonStringToEntity(object.toString(),
+						PhotoEntity.class);
+				entities.add(entity);
+			}
+			UserDAL.getInstance().postPhotos(uid, eid, entities);
+			return response.successEmptyResponse("Update success");
+		} catch (Exception e) {
+			return response.unsuccessResponse(e.getMessage());
+		}
 	}
-	
+
 	@GET
-	@Path("getPhotoNote/{userId}-{estateId}") 
+	@Path("getPhotoNote/{userId}-{estateId}")
 	public String getPhotoList(@PathParam("userId") int userId, @PathParam("estateId") int estateId) {
 		UserAPIResponse response = new UserAPIResponse();
-		 try {
-			 List<PhotoEntity> photoEntities = UserDAL.getInstance().getPhotos(userId, estateId);
-			 return response.successResponse(photoEntities, "photos");
-		 } catch (Exception e) {
-			 return response.unsuccessResponse(e.getMessage());
-		 }
+		try {
+			List<PhotoEntity> photoEntities = UserDAL.getInstance().getPhotos(userId, estateId);
+			return response.successResponse(photoEntities, "photos");
+		} catch (Exception e) {
+			return response.unsuccessResponse(e.getMessage());
+		}
 	}
 
 	@GET
@@ -196,28 +197,55 @@ public final class UserAPI {
 	}
 
 	@GET
-	@Path("/setVisited/{userId}-{estateId}")
-	public String setVisited(@PathParam("estateId") int estateId, @PathParam("userId") int userId) {
-		// EstateAPIResponse response = new EstateAPIResponse();
-		// try {
-		// UserDAL.getInstance().setVisitedEstate(userId, estateId);
-		// return response.successEmptyResponse("Update success");
-		// } catch (ClassNotFoundException | SQLException e) {
-		// return response.unsuccessResponse(e.getMessage());
-		// }
-		return null;
-	}
-
-	@GET
-	@Path("/search/{query}-{offset}-{range}")
-	public String setVisited(@PathParam("query") String query, @PathParam("offset") int offset,
-			@PathParam("range") int	 range) {
-		UserAPIResponse response = new UserAPIResponse();
+	@Path("/checkInterested/{userId}-{estateId}")
+	public String setInterested(@PathParam("estateId") int estateId, @PathParam("userId") int userId) {
+		EstateAPIResponse response = new EstateAPIResponse();
 		try {
-			List<UserEntity> entities = UserDAL.getInstance().searchUser(query, offset, range);
-			return response.successResponse(entities, "users");
-		} catch (ClassNotFoundException | SQLException | IOException e) {
+			boolean b = UserDAL.getInstance().checkInterestedEstate(userId, estateId);
+			return response.successBooleanResponse("interested", b);
+		} catch (ClassNotFoundException | SQLException e) {
 			return response.unsuccessResponse(e.getMessage());
 		}
 	}
+
+	@GET
+	@Path("/updateRequest/{userId}-{estateId}")
+	public String updateRequest(@PathParam("userId") int userId, @PathParam("estateId") int estateId) {
+		UserAPIResponse response = new UserAPIResponse();
+		try {
+			UserDAL.getInstance().updateRequest(userId, estateId);
+			return response.successEmptyResponse("Update success");
+		} catch (Exception e) {
+			return response.unsuccessResponse(e.getMessage());
+		}
+	}
+
+	// @GET
+	// @Path("/setVisited/{userId}-{estateId}")
+	// public String setVisited(@PathParam("estateId") int estateId,
+	// @PathParam("userId") int userId) {
+	// EstateAPIResponse response = new EstateAPIResponse();
+	// try {
+	// UserDAL.getInstance().setVisitedEstate(userId, estateId);
+	// return response.successEmptyResponse("Update success");
+	// } catch (ClassNotFoundException | SQLException e) {
+	// return response.unsuccessResponse(e.getMessage());
+	// }
+	// return null;
+	// }
+
+	// @GET
+	// @Path("/search/{query}-{offset}-{range}")
+	// public String setVisited(@PathParam("query") String query,
+	// @PathParam("offset") int offset,
+	// @PathParam("range") int range) {
+	// UserAPIResponse response = new UserAPIResponse();
+	// try {
+	// List<UserEntity> entities = UserDAL.getInstance().searchUser(query,
+	// offset, range);
+	// return response.successResponse(entities, "users");
+	// } catch (ClassNotFoundException | SQLException | IOException e) {
+	// return response.unsuccessResponse(e.getMessage());
+	// }
+	// }
 }

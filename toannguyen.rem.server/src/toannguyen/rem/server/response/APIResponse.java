@@ -22,6 +22,13 @@ public abstract class APIResponse {
 		return jsonObject.toString();
 	}
 	
+	public String successBooleanResponse(String key, boolean b) {
+		JsonObject jsonObject = new JsonObject();
+		jsonObject.addProperty(Entity.STATUS_KEY, true);
+		jsonObject.addProperty(key, b);
+		return jsonObject.toString();
+	}
+	
 	public String successStringResponse(String field, String message) {
 		JsonObject jsonObject = new JsonObject();
 		jsonObject.addProperty(Entity.STATUS_KEY, true);

@@ -7,10 +7,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import toannguyen.rem.dal.mapping.InterestedEstateColumn;
 import toannguyen.rem.dal.mapping.NoteColumn;
+import toannguyen.rem.dal.mapping.NotificationColumn;
 import toannguyen.rem.dal.mapping.PhotoNoteColumn;
 import toannguyen.rem.dal.mapping.TokenLoginColumn;
 import toannguyen.rem.dal.mapping.UserColumn;
+import toannguyen.rem.entity.EstateEntity;
 import toannguyen.rem.entity.PhotoEntity;
 import toannguyen.rem.entity.UserEntity;
 
@@ -303,6 +306,59 @@ public class UserDatabaseHelper extends DatabaseHelper {
 		} finally {
 			closeQuery(stmt, rs);
 		}
+	}
+
+	public boolean checkInterestedEstate(int userId, int estateId) throws SQLException {
+		StringBuilder builder = new StringBuilder();
+		builder = new StringBuilder();
+		builder.append("select * from " + InterestedEstateColumn.TABLE_NAME);
+		builder.append(" where ");
+		builder.append(InterestedEstateColumn.ESTATE_ID + " = " + estateId + " and ");
+		builder.append(InterestedEstateColumn.USER_ID + " = " + userId + ";");
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		try {
+			stmt = con.prepareStatement(builder.toString());
+			rs = stmt.executeQuery();
+			if (rs.next()) {
+				return true;
+			}
+			return false;
+		} finally {
+			closeQuery(stmt, rs);
+		}
+	}
+
+	public void updateRequest(int userId, int estateId) throws Exception {
+		EstateDatabaseHelper estateDatabaseHelper = null;
+		EstateEntity estateEntity;
+		UserEntity buyer;
+		try {
+			estateDatabaseHelper = new EstateDatabaseHelper();
+			buyer = getUserByID(userId);
+			estateEntity = estateDatabaseHelper.queryByID(estateId);
+			if (estateEntity == null || buyer == null) {
+				throw new Exception("Estate or user does not exist!");
+			}
+		} finally {
+			if (estateDatabaseHelper != null) {
+				estateDatabaseHelper.closeConnection();
+			}
+		}
+		StringBuilder builder = new StringBuilder();
+		builder.append("insert into " + NotificationColumn.TABLE_NAME);
+		builder.append(" (" + NotificationColumn.USER_ID + ", ");
+		builder.append(NotificationColumn.REQUEST_ID + ", ");
+		builder.append(NotificationColumn.ESTATE_ID + ", ");
+		builder.append(NotificationColumn.MESSAGE + ", ");
+		builder.append(NotificationColumn.NOTI_TYPE + ") ");
+		builder.append("values (" + userId + ",");
+		builder.append(estateId + ", ");
+		builder.append(estateEntity.getOwner().getId() + ", ");
+		builder.append("'Yêu cầu cập nhập đã bán bất động sản " + estateEntity.getName());
+		builder.append(" bởi người dùng " + buyer.getFullName() + "', ");
+		builder.append("1);");
+		executeUpdate(builder.toString());
 	}
 
 	// private String saveImage(String base64String) throws IOException {

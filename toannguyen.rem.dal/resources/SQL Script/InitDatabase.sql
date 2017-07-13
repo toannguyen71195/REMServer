@@ -102,7 +102,9 @@ create table estate_detail (
     Description varchar(1020),
     Floor int,
     Length double,
-    Width double
+    Width double,
+    Longitude double,
+    Latitude double
 );
 
 create table broker_estate (
@@ -185,3 +187,21 @@ create table token_resetPassword (
 	UserID int references users(UserID),
     token varchar(5)
 );
+
+/* NOTIFICATION */
+
+create table noti_type (
+	TypeID int,
+    TypeName varchar(20)
+);
+
+create table notification (
+	ID int primary key auto_increment,
+	UserID int references users(UserID),
+    RequestID int references users(UserID),
+    EstateID int references estate(EstateID),
+    Message text,
+    NotiType int
+);
+
+drop table notification

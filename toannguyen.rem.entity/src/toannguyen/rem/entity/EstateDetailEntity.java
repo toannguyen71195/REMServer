@@ -6,11 +6,10 @@ public class EstateDetailEntity extends Entity {
 	String condition;
 	String description;
 	int floor;
-	double length;
-	double width;
+	double length, width, longitude, latitude;
 
 	public EstateDetailEntity(int id, int bathroom, int bedroom, String condition, String description, int floor,
-			double length, double width) {
+			double length, double width, double d, double e) {
 		super(id);
 		this.bathroom = bathroom;
 		this.bedroom = bedroom;
@@ -19,6 +18,8 @@ public class EstateDetailEntity extends Entity {
 		this.floor = floor;
 		this.length = length;
 		this.width = width;
+		latitude = d;
+		longitude = e;
 	}
 
 	public int getBathroom() {
@@ -76,5 +77,23 @@ public class EstateDetailEntity extends Entity {
 	public void setWidth(double width) {
 		this.width = width;
 	}
+
+	public double getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(double longitude) {
+		this.longitude = longitude;
+	}
+
+	public double getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(double latitude) {
+		this.latitude = latitude;
+	}
+	
+	
 
 }

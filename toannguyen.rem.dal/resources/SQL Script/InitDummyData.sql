@@ -72,7 +72,6 @@ insert into estate_detail(EstateID, Bathroom, Bedroom, Cond, Description, Floor)
 insert into estate_detail(EstateID, Bathroom, Bedroom, Cond, Description, Floor)
 			values(10, 2, 2, '', 'Description Description Description Description Description Description Description Description\n Description Description Description Description Description Description Description Description Description Description Description Description Description Description Description Description\n Description Description Description Description Description Description\n\n Description Description Description Description Description Description\n Description Description Description Description\n Description Description Description Description Description\n Description Description\n Description Description Description Description Description Description Description\n\n Description Description Description Description', 1);
 
-
             
 insert into interested_estate (EstateID, BuyerID, Rate)
 			values (1, 1, 3);
@@ -87,14 +86,3 @@ insert into visited_estate (EstateID, BuyerID, Time)
 			values (1, 1, '2017-05-06 05:06:07');
 insert into visited_estate (EstateID, BuyerID, Time)
 			values (2, 1, '2017-05-06 05:06:07');
-
-/*
-insert into appointment (Title, Address, Note, Time, Status, User1, User2)
-		values ("Appt 1", "Moon", "let go to the moon", '2017-06-15 05:06:07', 1, 1, 2);
-insert into appointment (Title, Address, Note, Time, Status, User1, User2)
-		values ("Appt 2", "Moon", "let go to the moon", '2017-06-15 05:06:07', 2, 2, 3);
-insert into appointment (Title, Address, Note, Time, Status, User1, User2)
-		values ("Appt 3", "Moon", "let go to the moon", '2017-06-15 05:06:07', 3, 3, 4);
-insert into appointment (Title, Address, Note, Time, Status, User1, User2)
-		values ("Appt 4", "Moon", "let go to the moon", '2017-06-15 05:06:07', 1, 4, 1);
-*/

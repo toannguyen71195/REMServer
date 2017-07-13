@@ -38,7 +38,8 @@ BEGIN
     RETURN c; 
 END $$
 
-CREATE FUNCTION levenshtein_ratio( s1 text, s2 text ) RETURNS int(11)
+CREATE FUNCTION levenshtein_ratio( s1 text, s2 text ) 
+	RETURNS int(11)
     DETERMINISTIC
 BEGIN 
     DECLARE s1_len, s2_len, max_len INT; 
@@ -50,5 +51,18 @@ BEGIN
     END IF; 
     RETURN ROUND((1 - LEVENSHTEIN(s1, s2) / max_len) * 100); 
 END $$
-  
+
+CREATE FUNCTION gpsDistance (lat1 DOUBLE, lng1 DOUBLE, lat2 DOUBLE, lng2 DOUBLE)
+    RETURNS DOUBLE NO SQL DETERMINISTIC
+BEGIN
+    DECLARE dist DOUBLE;
+    SET dist = 2 * 6371008.771415059 * ASIN(
+        SQRT(
+            POW(SIN((RADIANS(lat2) - RADIANS(lat1)) / 2), 2)
+            + COS(RADIANS(lat1)) * COS(RADIANS(lat2)) * POW(SIN((RADIANS(lng2) - RADIANS(lng1)) / 2), 2)
+        )
+    );
+    RETURN dist;
+END$$
+
 DELIMITER ;

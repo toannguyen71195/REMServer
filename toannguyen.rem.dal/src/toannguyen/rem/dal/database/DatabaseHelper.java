@@ -13,15 +13,15 @@ import toannguyen.rem.entity.Entity;
 
 public abstract class DatabaseHelper {
 	
-//	private static final String USE_REM_DATABASE = "use estate_manager";
-//	private static final String CONNECTION_NAME = "jdbc:mysql://localhost:3306/";
-//	private static final String CONNECTION_ID = "root";
-//	private static final String CONNECTION_PASSWORD = "toannguyen";
-	
 	private static final String USE_REM_DATABASE = "use estate_manager";
-	private static final String CONNECTION_NAME = "jdbc:mysql://mysql8.db4free.net:3307/estate_manager" + "?useUnicode=true&characterEncoding=UTF8";
-	private static final String CONNECTION_ID = "toannguyen";
+	private static final String CONNECTION_NAME = "jdbc:mysql://localhost:3306/";
+	private static final String CONNECTION_ID = "root";
 	private static final String CONNECTION_PASSWORD = "toannguyen";
+	
+//	private static final String USE_REM_DATABASE = "use estate_manager";
+//	private static final String CONNECTION_NAME = "jdbc:mysql://mysql8.db4free.net:3307/estate_manager" + "?useUnicode=true&characterEncoding=UTF8";
+//	private static final String CONNECTION_ID = "toannguyen";
+//	private static final String CONNECTION_PASSWORD = "toannguyen";
 	
 	protected Connection con;
 
