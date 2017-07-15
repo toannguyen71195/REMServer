@@ -9,6 +9,7 @@ import toannguyen.rem.dal.database.UserDatabaseHelper;
 import toannguyen.rem.dal.mapping.UserColumn;
 import toannguyen.rem.entity.Entity;
 import toannguyen.rem.entity.EstateEntity;
+import toannguyen.rem.entity.NotificationEntity;
 import toannguyen.rem.entity.PhotoEntity;
 import toannguyen.rem.entity.UserEntity;
 
@@ -187,6 +188,24 @@ public class UserDAL extends EntityDAL {
 		UserDatabaseHelper dbh = new UserDatabaseHelper();
 		try {
 			dbh.updateRequest(userId, estateId);
+		} finally {
+			dbh.closeConnection();
+		}
+	}
+
+	public void reportSpam(int userId) throws SQLException, ClassNotFoundException {
+		UserDatabaseHelper dbh = new UserDatabaseHelper();
+		try {
+			dbh.reportSpam(userId);
+		} finally {
+			dbh.closeConnection();
+		}
+	}
+
+	public List<NotificationEntity> getNoti(int userId) throws Exception {
+		UserDatabaseHelper dbh = new UserDatabaseHelper();
+		try {
+			return dbh.getNoti(userId);
 		} finally {
 			dbh.closeConnection();
 		}

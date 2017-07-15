@@ -204,4 +204,7 @@ create table notification (
     NotiType int
 );
 
-drop table notification
+create table report_user (
+	UserID int references users(UserID),
+    ReportMessage text
+);

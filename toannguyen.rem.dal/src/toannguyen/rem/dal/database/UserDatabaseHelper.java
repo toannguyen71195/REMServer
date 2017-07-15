@@ -14,6 +14,7 @@ import toannguyen.rem.dal.mapping.PhotoNoteColumn;
 import toannguyen.rem.dal.mapping.TokenLoginColumn;
 import toannguyen.rem.dal.mapping.UserColumn;
 import toannguyen.rem.entity.EstateEntity;
+import toannguyen.rem.entity.NotificationEntity;
 import toannguyen.rem.entity.PhotoEntity;
 import toannguyen.rem.entity.UserEntity;
 
@@ -37,6 +38,27 @@ public class UserDatabaseHelper extends DatabaseHelper {
 		fullName = resultSet.getString(UserColumn.FULL_NAME.getColumnName());
 		phone = resultSet.getString(UserColumn.PHONE.getColumnName());
 		return new UserEntity(id, name, fullName, email, phone, password, address, type);
+	}
+	
+	protected NotificationEntity getNotiFromResultSet(ResultSet resultSet) throws Exception {
+		int userId, requestId, estateId;
+		userId = resultSet.getInt(NotificationColumn.USER_ID.getColumnName());
+		requestId = resultSet.getInt(NotificationColumn.REQUEST_ID.getColumnName());
+		estateId = resultSet.getInt(NotificationColumn.ESTATE_ID.getColumnName());
+		EstateDatabaseHelper estateDbh = null;
+		try {
+			estateDbh = new EstateDatabaseHelper();
+			EstateEntity estate = estateDbh.queryByID(estateId);
+			UserEntity user = getUserByID(userId);
+			UserEntity request = getUserByID(requestId);
+			return new NotificationEntity(resultSet.getInt(NotificationColumn.ID.getColumnName()), 
+					user, request, estate, resultSet.getString(NotificationColumn.MESSAGE.getColumnName()), 
+					resultSet.getInt(NotificationColumn.NOTI_TYPE.getColumnName()));
+		} finally {
+			if (estateDbh != null) {
+				estateDbh.closeConnection();
+			}
+		}
 	}
 	
 	protected PhotoEntity getPhotoEntityFromResultSet(ResultSet resultSet) throws SQLException {
@@ -359,6 +381,36 @@ public class UserDatabaseHelper extends DatabaseHelper {
 		builder.append(" bởi người dùng " + buyer.getFullName() + "', ");
 		builder.append("1);");
 		executeUpdate(builder.toString());
+	}
+
+	public void reportSpam(int userId) throws SQLException {
+		StringBuilder builder = new StringBuilder();
+		builder.append("insert into report_user (UserID, ReportMessage) values (");
+		builder.append(userId + ", '");
+		builder.append("Report spam request');");
+		executeUpdate(builder.toString());
+	}
+
+	public List<NotificationEntity> getNoti(int userId) throws Exception {
+		List<NotificationEntity> entities = new ArrayList<>();
+		StringBuilder builder = new StringBuilder();
+		builder = new StringBuilder();
+		builder.append("select * from " + NotificationColumn.TABLE_NAME);
+		builder.append(" where ");
+		builder.append(NotificationColumn.REQUEST_ID + " = " + userId + ";");
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		try {
+			stmt = con.prepareStatement(builder.toString());
+			rs = stmt.executeQuery();
+			while (rs.next()) {
+				NotificationEntity entity = getNotiFromResultSet(rs);
+				entities.add(entity);
+			}
+			return entities;
+		} finally {
+			closeQuery(stmt, rs);
+		}
 	}
 
 	// private String saveImage(String base64String) throws IOException {

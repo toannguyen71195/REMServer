@@ -21,6 +21,7 @@ import toannguyen.rem.dal.mapping.NoteColumn;
 import toannguyen.rem.dal.mapping.UserColumn;
 import toannguyen.rem.entity.Entity;
 import toannguyen.rem.entity.EstateEntity;
+import toannguyen.rem.entity.NotificationEntity;
 import toannguyen.rem.entity.PhotoEntity;
 import toannguyen.rem.entity.UserEntity;
 import toannguyen.rem.entity.json.ErrorMessage;
@@ -215,6 +216,30 @@ public final class UserAPI {
 		try {
 			UserDAL.getInstance().updateRequest(userId, estateId);
 			return response.successEmptyResponse("Update success");
+		} catch (Exception e) {
+			return response.unsuccessResponse(e.getMessage());
+		}
+	}
+	
+	@GET
+	@Path("/getNoti/{userId}")
+	public String getNoti(@PathParam("userId") int userId) {
+		UserAPIResponse response = new UserAPIResponse();
+		try {
+			List<NotificationEntity> entities =	UserDAL.getInstance().getNoti(userId);
+			return response.successResponse(entities, "notifications");
+		} catch (Exception e) {
+			return response.unsuccessResponse(e.getMessage());
+		}
+	}
+	
+	@GET
+	@Path("/reportSpam/{userId}")
+	public String reportSpam(@PathParam("userId") int userId) {
+		UserAPIResponse response = new UserAPIResponse();
+		try {
+			UserDAL.getInstance().reportSpam(userId);
+			return response.successEmptyResponse("Report success");
 		} catch (Exception e) {
 			return response.unsuccessResponse(e.getMessage());
 		}
