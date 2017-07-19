@@ -2,7 +2,7 @@ package toannguyen.rem.dal.mapping;
 
 public enum UserColumn {
 	ID("UserID"), USER_TYPE("UserType"), USER_NAME("UserName"), FULL_NAME("FullName"), EMAIL("Email"), ADDRESS(
-			"Address"), PASSWORD("Password"), PHONE("Phone");
+			"Address"), PASSWORD("Password"), PHONE("Phone"), AVATAR("Avatar");
 
 	String columnName;
 

@@ -13,6 +13,7 @@ import toannguyen.rem.dal.mapping.NotificationColumn;
 import toannguyen.rem.dal.mapping.PhotoNoteColumn;
 import toannguyen.rem.dal.mapping.TokenLoginColumn;
 import toannguyen.rem.dal.mapping.UserColumn;
+import toannguyen.rem.dal.utils.StringUtils;
 import toannguyen.rem.entity.EstateEntity;
 import toannguyen.rem.entity.NotificationEntity;
 import toannguyen.rem.entity.PhotoEntity;
@@ -28,7 +29,7 @@ public class UserDatabaseHelper extends DatabaseHelper {
 	protected UserEntity getEntityFromResultSet(ResultSet resultSet)
 			throws SQLException, ClassNotFoundException, IOException {
 		int id, type;
-		String email, password, address, name, fullName, phone;
+		String email, password, address, name, fullName, phone, avt;
 		id = resultSet.getInt(UserColumn.ID.getColumnName());
 		type = resultSet.getInt(UserColumn.USER_TYPE.getColumnName());
 		email = resultSet.getString(UserColumn.EMAIL.getColumnName());
@@ -37,7 +38,8 @@ public class UserDatabaseHelper extends DatabaseHelper {
 		name = resultSet.getString(UserColumn.USER_NAME.getColumnName());
 		fullName = resultSet.getString(UserColumn.FULL_NAME.getColumnName());
 		phone = resultSet.getString(UserColumn.PHONE.getColumnName());
-		return new UserEntity(id, name, fullName, email, phone, password, address, type);
+		avt = resultSet.getString(UserColumn.AVATAR.getColumnName());
+		return new UserEntity(id, name, fullName, email, phone, password, address, type, avt);
 	}
 	
 	protected NotificationEntity getNotiFromResultSet(ResultSet resultSet) throws Exception {
@@ -367,6 +369,8 @@ public class UserDatabaseHelper extends DatabaseHelper {
 				estateDatabaseHelper.closeConnection();
 			}
 		}
+		String tmp1 = StringUtils.decodeUnicode("Yêu cầu cập nhập đã bán bất động sản");
+		String tmp2 = StringUtils.decodeUnicode("bởi người dùng");
 		StringBuilder builder = new StringBuilder();
 		builder.append("insert into " + NotificationColumn.TABLE_NAME);
 		builder.append(" (" + NotificationColumn.USER_ID + ", ");
@@ -377,18 +381,19 @@ public class UserDatabaseHelper extends DatabaseHelper {
 		builder.append("values (" + userId + ",");
 		builder.append(estateId + ", ");
 		builder.append(estateEntity.getOwner().getId() + ", ");
-		builder.append("'Yêu cầu cập nhập đã bán bất động sản " + estateEntity.getName());
-		builder.append(" bởi người dùng " + buyer.getFullName() + "', ");
+		builder.append("'" + tmp1  + estateEntity.getName());
+		builder.append(" " + tmp2 + " " + buyer.getFullName() + "', ");
 		builder.append("1);");
 		executeUpdate(builder.toString());
 	}
 
-	public void reportSpam(int userId) throws SQLException {
+	public void reportSpam(int userId, int notiId) throws SQLException, ClassNotFoundException, IOException {
 		StringBuilder builder = new StringBuilder();
 		builder.append("insert into report_user (UserID, ReportMessage) values (");
 		builder.append(userId + ", '");
 		builder.append("Report spam request');");
 		executeUpdate(builder.toString());
+		deleteByID(NotificationColumn.TABLE_NAME, NotificationColumn.ID.getColumnName(), notiId);
 	}
 
 	public List<NotificationEntity> getNoti(int userId) throws Exception {
@@ -411,6 +416,10 @@ public class UserDatabaseHelper extends DatabaseHelper {
 		} finally {
 			closeQuery(stmt, rs);
 		}
+	}
+
+	public void deleteNoti(int notiId) throws ClassNotFoundException, SQLException, IOException {
+		deleteByID(NotificationColumn.TABLE_NAME, NotificationColumn.ID.getColumnName(), notiId);
 	}
 
 	// private String saveImage(String base64String) throws IOException {

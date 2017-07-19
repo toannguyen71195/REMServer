@@ -91,7 +91,8 @@ public final class UserAPI {
 					jsonObject.getString(UserColumn.EMAIL.getColumnName()),
 					jsonObject.getString(UserColumn.PHONE.getColumnName()),
 					jsonObject.getString(UserColumn.PASSWORD.getColumnName()), "",
-					jsonObject.getInt(UserColumn.USER_TYPE.getColumnName()));
+					jsonObject.getInt(UserColumn.USER_TYPE.getColumnName()),
+					"");
 			UserEntity userEntity = UserDAL.getInstance().register(entity);
 			if (userEntity != null) {
 				String token = UserDAL.getInstance().createLoginToken(userEntity.getId());
@@ -234,11 +235,23 @@ public final class UserAPI {
 	}
 	
 	@GET
-	@Path("/reportSpam/{userId}")
-	public String reportSpam(@PathParam("userId") int userId) {
+	@Path("/deleteNoti/{notiId}")
+	public String deleteNoti(@PathParam("notiId") int notiId) {
 		UserAPIResponse response = new UserAPIResponse();
 		try {
-			UserDAL.getInstance().reportSpam(userId);
+			UserDAL.getInstance().deleteNoti(notiId);
+			return response.successEmptyResponse("Update success");
+		} catch (Exception e) {
+			return response.unsuccessResponse(e.getMessage());
+		}
+	}
+	
+	@GET
+	@Path("/reportSpam/{userId}-{notiId}")
+	public String reportSpam(@PathParam("userId") int userId, @PathParam("notiId") int notiId) {
+		UserAPIResponse response = new UserAPIResponse();
+		try {
+			UserDAL.getInstance().reportSpam(userId, notiId);
 			return response.successEmptyResponse("Report success");
 		} catch (Exception e) {
 			return response.unsuccessResponse(e.getMessage());

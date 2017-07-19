@@ -35,9 +35,10 @@ public class AddressDatabaseHelper extends DatabaseHelper {
 		AddressEntity addressEntity = queryAddress(entity);
 		StringBuilder builder = new StringBuilder();
 		try {
-			if (addressEntity != null) {
-				throw new Exception("Unable to add new address: duplicate address");
-			}
+			// if (addressEntity != null) {
+			// throw new Exception("Unable to add new address: duplicate
+			// address");
+			// }
 			builder.append("insert into ");
 			builder.append(AddressColumn.TABLE_NAME);
 			builder.append(" (" + AddressColumn.CITY + ",");

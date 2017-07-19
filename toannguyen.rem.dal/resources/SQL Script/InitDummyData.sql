@@ -8,6 +8,10 @@ insert into users(UserType, UserName, FullName, Email, Phone, Address, Password)
 			values (2, 'test3', 'tester', 'test@test.vn', '2234', 'address', '3');
 insert into users(UserType, UserName, FullName, Email, Phone, Address, Password) 
 			values (3, 'test3', 'Nguyen Bao Toan 3', 'nbtoan+3@apcs.vn', '4234', 'address', '4');
+insert into users(UserType, UserName, FullName, Email, Phone, Address, Password) 
+			values (1, 'toan1', 'Toan Buyer', 'test@test.vn', '1234', 'address', '1');
+insert into users(UserType, UserName, FullName, Email, Phone, Address, Password) 
+			values (2, 'toan2', 'Toan Owner', 'test@test.vn', '2234', 'address', '2');
     
 insert into address(City, District, Ward, Address)
 			values('Hồ Chí Minh', 'Tân Phú', 'Hiệp Tân', '239 - 241 và 278 Hòa Bình');

@@ -247,7 +247,7 @@ public class EstateAPI {
 			return response.unsuccessResponse(e.getMessage());
 		}
 	}
-
+	
 	/*
 	 * @POST
 	 * 

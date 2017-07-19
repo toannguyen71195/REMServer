@@ -193,10 +193,10 @@ public class UserDAL extends EntityDAL {
 		}
 	}
 
-	public void reportSpam(int userId) throws SQLException, ClassNotFoundException {
+	public void reportSpam(int userId, int notiId) throws SQLException, ClassNotFoundException, IOException {
 		UserDatabaseHelper dbh = new UserDatabaseHelper();
 		try {
-			dbh.reportSpam(userId);
+			dbh.reportSpam(userId, notiId);
 		} finally {
 			dbh.closeConnection();
 		}
@@ -206,6 +206,15 @@ public class UserDAL extends EntityDAL {
 		UserDatabaseHelper dbh = new UserDatabaseHelper();
 		try {
 			return dbh.getNoti(userId);
+		} finally {
+			dbh.closeConnection();
+		}
+	}
+
+	public void deleteNoti(int notiId) throws ClassNotFoundException, SQLException, IOException {
+		UserDatabaseHelper dbh = new UserDatabaseHelper();
+		try {
+			dbh.deleteNoti(notiId);
 		} finally {
 			dbh.closeConnection();
 		}

@@ -10,9 +10,10 @@ public class UserEntity extends Entity {
 	private int typeId;
 	private String fullName;
 	private String phone;
+	private String avatar;
 	// private ImageEntity imageEntity;
 
-	public UserEntity(int id, String name, String fullName, String email, String phone, String password, String address, int typeId) {
+	public UserEntity(int id, String name, String fullName, String email, String phone, String password, String address, int typeId, String avatar) {
 		super(id, name);
 		this.fullName = fullName;
 		this.email = email;
@@ -20,6 +21,7 @@ public class UserEntity extends Entity {
 		this.address = address;
 		this.typeId = typeId;
 		this.phone = phone;
+		this.avatar = avatar;
 	}
 
 	// public UserEntity(String id, String name, String email, String password,
@@ -88,6 +90,14 @@ public class UserEntity extends Entity {
 
 	public void setPhone(String phone) {
 		this.phone = phone;
+	}
+
+	public String getAvatar() {
+		return avatar;
+	}
+
+	public void setAvatar(String avatar) {
+		this.avatar = avatar;
 	}
 
 	
