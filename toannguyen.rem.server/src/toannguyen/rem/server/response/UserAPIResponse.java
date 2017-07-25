@@ -9,9 +9,10 @@ import toannguyen.rem.entity.json.EntityToJsonConverter;
 
 public class UserAPIResponse extends TypicalAPIResponse {
 
-	public String loginSuccess(UserEntity entity, String token) {
+	public String loginSuccess(UserEntity entity, String token, int estateNum) {
 		JsonElement jsonUser = EntityToJsonConverter.convertEntityToJson(entity);
 		JsonObject jsonObject = (JsonObject) jsonUser;
+		jsonObject.addProperty("estate", estateNum);
 		jsonObject.addProperty(Entity.STATUS_KEY, true);
 		jsonObject.addProperty(UserEntity.TOKEN, token);
 		return jsonObject.toString();

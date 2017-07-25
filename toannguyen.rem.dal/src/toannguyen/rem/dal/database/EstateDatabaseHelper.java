@@ -146,6 +146,28 @@ public class EstateDatabaseHelper extends DatabaseHelper {
 			closeQuery(stmt, rs);
 		}
 	}
+	
+	public int queryEstateNumberByOwnerID(int id) throws Exception {
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		try {
+			StringBuilder builder = new StringBuilder();
+			builder.append("SELECT * FROM ");
+			builder.append(EstateColumn.TABLE_NAME + " e ");
+			builder.append(" where e.");
+			builder.append(EstateColumn.OWNER_ID + " = ");
+			builder.append(id);
+			stmt = con.prepareStatement(builder.toString());
+			rs = stmt.executeQuery();
+			int t = 0;
+			while (rs.next()) {
+				t++;
+			}
+			return t;
+		} finally {
+			closeQuery(stmt, rs);
+		}
+	}
 
 	public List<EstateEntity> queryNewEstate(int page) throws Exception {
 		PreparedStatement stmt = null;
@@ -249,6 +271,28 @@ public class EstateDatabaseHelper extends DatabaseHelper {
 				entities.add(entity);
 			}
 			return entities;
+		} finally {
+			closeQuery(stmt, rs);
+		}
+	}
+	
+	public int queryInterestedEstateNumber(int userId) throws Exception {
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		try {
+			StringBuilder builder = new StringBuilder();
+			builder.append("SELECT * FROM ");
+			builder.append(InterestedEstateColumn.TABLE_NAME + " i");
+			builder.append(" where i.");
+			builder.append(InterestedEstateColumn.USER_ID + " = ");
+			builder.append(userId);
+			stmt = con.prepareStatement(builder.toString());
+			rs = stmt.executeQuery();
+			int t = 0;
+			while (rs.next()) {
+				t++;
+			}
+			return t;
 		} finally {
 			closeQuery(stmt, rs);
 		}

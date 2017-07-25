@@ -14,7 +14,6 @@
 <fullyQualifiedTypeName name="com.sun.jersey.core.impl.provider.entity.XMLJAXBElementProvider.App"/>
 <fullyQualifiedTypeName name="toannguyen.rem.server.response.AppointmentAPIResponse"/>
 <fullyQualifiedTypeName name="toannguyen.rem.dal.AppointmentDAL"/>
-<fullyQualifiedTypeName name="toannguyen.rem.dal.EstateDAL"/>
 <fullyQualifiedTypeName name="toannguyen.rem.entity.PhotoEntity"/>
 <fullyQualifiedTypeName name="toannguyen.rem.dal.EntityDAL"/>
 <fullyQualifiedTypeName name="toannguyen.rem.dal.mapping.EstateColumn"/>
@@ -60,4 +59,5 @@
 <fullyQualifiedTypeName name="java.util.List"/>
 <fullyQualifiedTypeName name="toannguyen.rem.dal.mapping.UserColumn"/>
 <fullyQualifiedTypeName name="toannguyen.rem.dal.mapping.NotificationColumn"/>
+<fullyQualifiedTypeName name="toannguyen.rem.dal.EstateDAL"/>
 </qualifiedTypeNameHistroy>

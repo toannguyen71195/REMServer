@@ -175,4 +175,22 @@ public class EstateDAL extends EntityDAL {
 			dbh.closeConnection();
 		}
 	}
+	
+	public int getEstateNumberOwner(int id) throws Exception {
+		EstateDatabaseHelper dbh = new EstateDatabaseHelper();
+		try {
+			return dbh.queryEstateNumberByOwnerID(id);
+		} finally {
+			dbh.closeConnection();
+		}
+	}
+	
+	public int getInterestedEstateNumber(int id) throws Exception {
+		EstateDatabaseHelper dbh = new EstateDatabaseHelper();
+		try {
+			return dbh.queryInterestedEstateNumber(id);
+		} finally {
+			dbh.closeConnection();
+		}
+	}
 }

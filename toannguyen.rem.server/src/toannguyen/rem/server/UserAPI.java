@@ -1,6 +1,5 @@
 package toannguyen.rem.server;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,11 +54,17 @@ public final class UserAPI {
 			UserEntity userEntity = UserDAL.getInstance().logIn(username, password);
 			if (userEntity != null) {
 				String token = UserDAL.getInstance().createLoginToken(userEntity.getId());
-				return response.loginSuccess(userEntity, token);
+				int estateNum;
+				if (userEntity.getTypeId() == 1) {
+					estateNum = EstateDAL.getInstance().getInterestedEstateNumber(userEntity.getId());
+				} else {
+					estateNum = EstateDAL.getInstance().getEstateNumberOwner(userEntity.getId());
+				}
+				return response.loginSuccess(userEntity, token, estateNum);
 			} else {
 				return response.unsuccessResponse(ErrorMessage.LOGIN_ERROR);
 			}
-		} catch (ClassNotFoundException | SQLException | IOException e) {
+		} catch (Exception e) {
 			return response.unsuccessResponse(e.getMessage());
 		}
 	}
@@ -71,11 +76,17 @@ public final class UserAPI {
 		try {
 			UserEntity userEntity = UserDAL.getInstance().logIn(token);
 			if (userEntity != null) {
-				return response.successResponse(userEntity);
+				int estateNum;
+				if (userEntity.getTypeId() == 1) {
+					estateNum = EstateDAL.getInstance().getInterestedEstateNumber(userEntity.getId());
+				} else {
+					estateNum = EstateDAL.getInstance().getEstateNumberOwner(userEntity.getId());
+				}
+				return response.loginSuccess(userEntity, token, estateNum);
 			} else {
 				return response.unsuccessResponse(ErrorMessage.TOKEN_ERROR);
 			}
-		} catch (ClassNotFoundException | SQLException | IOException e) {
+		} catch (Exception e) {
 			return response.unsuccessResponse(e.getMessage());
 		}
 	}
@@ -96,7 +107,7 @@ public final class UserAPI {
 			UserEntity userEntity = UserDAL.getInstance().register(entity);
 			if (userEntity != null) {
 				String token = UserDAL.getInstance().createLoginToken(userEntity.getId());
-				return response.loginSuccess(userEntity, token);
+				return response.loginSuccess(userEntity, token, 0);
 			} else {
 				return response.unsuccessResponse("Server unknown error!");
 			}
