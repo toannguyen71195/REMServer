@@ -785,7 +785,7 @@ public class EstateDatabaseHelper extends DatabaseHelper {
 			}
 			return entities;
 		} catch (Exception e) {
-			throw new Exception("Error parse result: " + e.getMessage());
+			throw new Exception("Error parse result: " + e.getMessage()  + ". Query: " + builder.toString());
 		} finally {
 			closeQuery(stmt, rs);
 		}
@@ -900,7 +900,7 @@ public class EstateDatabaseHelper extends DatabaseHelper {
 			}
 			return entities;
 		} catch (Exception e) {
-			throw new Exception("Error parse result: " + e.getMessage());
+			throw new Exception("Error parse result: " + e.getMessage() + ". Query: " + builder.toString());
 		} finally {
 			closeQuery(stmt, rs);
 		}

@@ -4,6 +4,8 @@ import java.sql.SQLException;
 import java.util.List;
 
 import toannguyen.rem.dal.database.EstateDatabaseHelper;
+import toannguyen.rem.dal.utils.SearchUtils;
+import toannguyen.rem.entity.AddressEntity;
 import toannguyen.rem.entity.EstateDetailEntity;
 import toannguyen.rem.entity.EstateEntity;
 import toannguyen.rem.entity.PhotoEntity;
@@ -152,6 +154,15 @@ public class EstateDAL extends EntityDAL {
 	public List<EstateEntity> searchText(String text, int page) throws Exception {
 		EstateDatabaseHelper dbh = new EstateDatabaseHelper();
 		try {
+			String district = SearchUtils.getDistrictFromQuery(text);
+			String estateType = SearchUtils.getEstateTypeFromQuery(text);
+			if (!district.isEmpty() || !estateType.isEmpty()) {
+				SearchEstateEntity searchEntity = new SearchEstateEntity(new AddressEntity(0, "", district, "", ""), estateType);
+				List<EstateEntity> l1 = dbh.search(searchEntity, page);
+				if (!l1.isEmpty()) {
+					return l1;
+				}
+			}
 			return dbh.searchText(text, page);
 		} finally {
 			dbh.closeConnection();

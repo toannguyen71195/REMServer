@@ -20,9 +20,24 @@ public class SearchEstateEntity {
 		setBathRange(entity);
 		direction = entity.getDetail().getCondition();
 	}
+	
+	public SearchEstateEntity(AddressEntity entity, String type) {
+		address = entity;
+		this.type = type;
+		setAreaRange(null);
+		setPriceRange(null);
+		setFloarRange(null);
+		setBedRange(null);
+		setBathRange(null);
+		direction = "";
+	}
 
 	private void setBathRange(EstateEntity entity) {
 		bathMax = -1;
+		bathMin = -1;
+		if (entity == null) {
+			return;
+		}
 		switch (entity.getDetail().getBedroom()) {
 		case 1:
 			bathMin = 1;
@@ -51,6 +66,10 @@ public class SearchEstateEntity {
 
 	private void setBedRange(EstateEntity entity) {
 		bedMax = -1;
+		bedMin = -1;
+		if (entity == null) {
+			return;
+		}
 		switch (entity.getDetail().getBedroom()) {
 		case 1:
 			bedMin = 1;
@@ -85,6 +104,10 @@ public class SearchEstateEntity {
 		// 3+
 		// 4+
 		// 5+
+		floarMin = -1;
+		if (entity == null) {
+			return;
+		}
 		switch (entity.getDetail().getFloor()) {
 		case 1:
 			floarMin = 0;
@@ -131,6 +154,10 @@ public class SearchEstateEntity {
 		// 7000 - 10000
 		// 10000 - 20000
 		// \> 20000
+		priceMin = -1;
+		if (entity == null) {
+			return;
+		}
 		switch ((int) entity.getPrice()) {
 		case 1:
 			priceMin = 0;
@@ -188,6 +215,10 @@ public class SearchEstateEntity {
 		// 200 - 300
 		// 300 - 500
 		// \> 500
+		areaMin = -1;
+		if (entity == null) {
+			return;
+		}
 		switch ((int) entity.getArea()) {
 		case 1:
 			areaMin = 0;

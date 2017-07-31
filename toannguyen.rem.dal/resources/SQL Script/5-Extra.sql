@@ -22,25 +22,25 @@ insert into address(City, District, Ward, Address)
 			values('Hồ Chí Minh', '2', 'Thảo Điền', 'Dự án Masteri Thảo Điền, Đường Xa Lộ Hà Nội');
 
 insert into estate (AddressID, Name, OwnerID, StatusID, EstateTypeID, PostTime, EditTime, Price, Area, PhotoID)
-			values (11, 'CĂN HỘ TÂN PHÚ RICHSTAR NOVALAND, GIÁ CHỈ 1,6 TỶ/CĂN 2PN, LH: 0908389894', 2, 1, 1, '2017-05-06 05:06:07', '2017-05-06 05:06:07', 1600, 65, 33);
+			values (11, 'Căn hộ Tân Phú Richstar Novaland, giá chỉ 1,6 tỷ/căn 2pn, lh: 0908389894', 2, 1, 1, '2017-05-06 05:06:07', '2017-05-06 05:06:07', 1600, 65, 33);
 insert into estate (AddressID, Name, OwnerID, StatusID, EstateTypeID, PostTime, EditTime, Price, Area, PhotoID)
-			values (12, 'CẦN BÁN GẤP CĂN HỘ 3PN CHỈ 1,99 TỶ NHẬN NHÀ LIỀN, HỖ TRỢ VAY 80%, LS 6,4% CỐ ĐỊNH', 3, 1, 1, '2017-05-06 05:06:07', '2017-05-06 05:06:07', 1990, 92.23, 38);
+			values (12, 'Cần bán gấp căn hộ 3pn chỉ 1,99 tỷ nhận nhà liền, hỗ trợ vay 80%, ls 6,4% cố định', 3, 1, 1, '2017-05-06 05:06:07', '2017-05-06 05:06:07', 1990, 92.23, 38);
 insert into estate (AddressID, Name, OwnerID, StatusID, EstateTypeID, PostTime, EditTime, Price, Area, PhotoID)
-			values (13, 'CĂN HỘ TRUNG TÂM QUẬN THỦ ĐỨC, NHẬN NHÀ Ở NGAY, SỔ HỒNG CUỐI NĂM. LH PKD: 0964606646', 2, 1, 1, '2017-05-06 05:06:07', '2017-05-06 05:06:07', 1250, 79, 40);
+			values (13, 'Căn hộ trung tâm quận thủ đức, nhận nhà ở ngay, sổ hồng cuối năm. Lh pkd: 0964606646', 2, 1, 1, '2017-05-06 05:06:07', '2017-05-06 05:06:07', 1250, 79, 40);
 insert into estate (AddressID, Name, OwnerID, StatusID, EstateTypeID, PostTime, EditTime, Price, Area, PhotoID)
-			values (14, 'CHÍNH CHỦ BÁN LẠI CĂN HỘ CITISOHO BLOCK A, B VÀ C GIÁ TỐT. LIÊN HỆ 0942000865', 3, 1, 1, '2017-05-06 05:06:07', '2017-05-06 05:06:07', 1080, -1, 45);
+			values (14, 'Chính chủ bán lại căn hộ citisoho block a, b và c giá tốt. Liên hệ 0942000865', 3, 1, 1, '2017-05-06 05:06:07', '2017-05-06 05:06:07', 1080, -1, 45);
 insert into estate (AddressID, Name, OwnerID, StatusID, EstateTypeID, PostTime, EditTime, Price, Area, PhotoID)
-			values (15, 'SÀI GÒN PANORAMA - CHỈ 17 TRIỆU/THÁNG BẠN ĐÃ SỞ HỮU CĂN HỘ LIỀN KỀ PHÚ MỸ HƯNG', 2, 1, 1, '2017-05-06 05:06:07', '2017-05-06 05:06:07', 1700, 55.3, 48);
+			values (15, 'Sài gòn panorama - chỉ 17 triệu/tháng bạn đã sở hữu căn hộ liền kề phú mỹ hưng', 2, 1, 1, '2017-05-06 05:06:07', '2017-05-06 05:06:07', 1700, 55.3, 48);
 insert into estate (AddressID, Name, OwnerID, StatusID, EstateTypeID, PostTime, EditTime, Price, Area, PhotoID)
-			values (16, 'BÁN CĂN HỘ CAO CẤP DUY NHẤT TẠI TÂY BẮC SÀI GÒN, NGAY CẠNH TRƯỜNG CHINH - CỘNG HÒA. GIÁ CHỈ 19TR/M2', 3, 1, 1, '2017-05-06 05:06:07', '2017-05-06 05:06:07', 931, 49, 51);
+			values (16, 'Bán căn hộ cao cấp duy nhất tại tây bắc sài gòn, ngay cạnh trường chinh - cộng hòa. Giá chỉ 19tr/m2', 3, 1, 1, '2017-05-06 05:06:07', '2017-05-06 05:06:07', 931, 49, 51);
 insert into estate (AddressID, Name, OwnerID, StatusID, EstateTypeID, PostTime, EditTime, Price, Area, PhotoID)
-			values (17, '20 SNB CĂN HỘ SẮP NHẬN NHÀ 1/2018, GIÁP TÂN PHÚ, CHỈ 900TR/CĂN, GÓP 8TR/THÁNG. LH: 0935358383', 2, 1, 1, '2017-05-06 05:06:07', '2017-05-06 05:06:07', 1200, 63, 54);
+			values (17, '20 snb căn hộ sắp nhận nhà 1/2018, giáp tân phú, chỉ 900tr/căn, góp 8tr/tháng. Lh: 0935358383', 2, 1, 1, '2017-05-06 05:06:07', '2017-05-06 05:06:07', 1200, 63, 54);
 insert into estate (AddressID, Name, OwnerID, StatusID, EstateTypeID, PostTime, EditTime, Price, Area, PhotoID)
-			values (18, 'CẦN BÁN SHOPHOUSE - BIỆT THỰ XÂY SẴN MẶT TIỀN SONG HÀNH - AN PHÚ - QUẬN 2. LH: 0969949999', 3, 1, 3, '2017-05-06 05:06:07', '2017-05-06 05:06:07', 5000, 140, 57);
+			values (18, 'Cần bán shophouse - biệt thự xây sẵn mặt tiền song hành - an phú - quận 2. Lh: 0969949999', 3, 1, 3, '2017-05-06 05:06:07', '2017-05-06 05:06:07', 5000, 140, 57);
 insert into estate (AddressID, Name, OwnerID, StatusID, EstateTypeID, PostTime, EditTime, Price, Area, PhotoID)
-			values (19, 'CHÍNH CHỦ BÁN NHÀ 1 TRỆT 1 LẦU GIÁ TỪ 450 TRIỆU ĐẾN 720 TRIỆU', 2, 1, 2, '2017-05-06 05:06:07', '2017-05-06 05:06:07', 680, 40, 59);
+			values (19, 'Chính chủ bán nhà 1 trệt 1 lầu giá từ 450 triệu đến 720 triệu', 2, 1, 2, '2017-05-06 05:06:07', '2017-05-06 05:06:07', 680, 40, 59);
 insert into estate (AddressID, Name, OwnerID, StatusID, EstateTypeID, PostTime, EditTime, Price, Area, PhotoID)
-			values (20, 'KẸT TIỀN BÁN GẤP CĂN HỘ MASTERI THẢO ĐIỀN, CAM KẾT GIÁ THẬT LH: 0933859311', 3, 1, 1, '2017-05-06 05:06:07', '2017-05-06 05:06:07', 2400, 60, 63);
+			values (20, 'Kẹt tiền bán gấp căn hộ masteri thảo điền, cam kết giá thật lh: 0933859311', 3, 1, 1, '2017-05-06 05:06:07', '2017-05-06 05:06:07', 2400, 60, 63);
 
 insert into estate_detail(EstateID, Bathroom, Bedroom, Cond, Description, Floor)
 			values(11, 2, 2, '', 'Description Description Description Description Description Description Description Description\n Description Description Description Description Description Description Description Description Description Description Description Description Description Description Description Description\n Description Description Description Description Description Description\n\n Description Description Description Description Description Description\n Description Description Description Description\n Description Description Description Description Description\n Description Description\n Description Description Description Description Description Description Description\n\n Description Description Description Description', 1);
