@@ -1,6 +1,7 @@
 package toannguyen.rem.dal.mapping;
 
 public enum NotificationColumn {
+	
 	ID("ID"), USER_ID("UserID"), REQUEST_ID("RequestID"), ESTATE_ID("EstateID"), MESSAGE("Message"), NOTI_TYPE("NotiType");
 
 	String columnName;

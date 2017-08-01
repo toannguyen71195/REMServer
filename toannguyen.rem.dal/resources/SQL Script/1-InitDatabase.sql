@@ -208,3 +208,15 @@ create table report_user (
 	UserID int references users(UserID),
     ReportMessage text
 );
+
+/* PERSONAL COMMENT */
+
+create table comment (
+	ID int primary key auto_increment,
+    User1 int,
+    User2 int,
+    EstateID int,
+    Message varchar(255),
+    Time datetime
+);
+

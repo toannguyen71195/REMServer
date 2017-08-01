@@ -13,6 +13,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import toannguyen.rem.dal.EstateDAL;
+import toannguyen.rem.entity.CommentEntity;
 import toannguyen.rem.entity.EstateDetailEntity;
 import toannguyen.rem.entity.EstateEntity;
 import toannguyen.rem.entity.PhotoEntity;
@@ -243,6 +244,45 @@ public class EstateAPI {
 		try {
 			EstateDAL.getInstance().updateStatus(estateId, status);
 			return response.successEmptyResponse("Update success");
+		} catch (Exception e) {
+			return response.unsuccessResponse(e.getMessage());
+		}
+	}
+	
+	@POST
+	@Path("comment") 
+	public String comment(String json) {
+		EstateAPIResponse response = new EstateAPIResponse();
+		try {
+			CommentEntity commentEntity = JsonToEntityConverter.convertJsonStringToEntity(json, CommentEntity.class);
+			EstateDAL.getInstance().postComment(commentEntity);
+			return response.successEmptyResponse("Update success");
+		} catch (Exception e) {
+			return response.unsuccessResponse(e.getMessage());
+		}
+	}
+	
+	@POST
+	@Path("answerComment") 
+	public String answerComment(String json) {
+		EstateAPIResponse response = new EstateAPIResponse();
+		try {
+			CommentEntity commentEntity = JsonToEntityConverter.convertJsonStringToEntity(json, CommentEntity.class);
+			EstateDAL.getInstance().answerComment(commentEntity);
+			return response.successEmptyResponse("Update success");
+		} catch (Exception e) {
+			return response.unsuccessResponse(e.getMessage());
+		}
+	}
+	
+	@GET
+	@Path("getComment/{estateId}-{ownerId}-{buyerId}") 
+	public String getComment(@PathParam("estateId") int estateId, @PathParam("ownerId") int ownerId,
+			@PathParam("buyerId") int buyerId) {
+		EstateAPIResponse response = new EstateAPIResponse();
+		try {
+			List<CommentEntity> entities = EstateDAL.getInstance().getComment(estateId, ownerId, buyerId);
+			return response.successResponse(entities, "comments");
 		} catch (Exception e) {
 			return response.unsuccessResponse(e.getMessage());
 		}

@@ -6,6 +6,7 @@ import java.util.List;
 import toannguyen.rem.dal.database.EstateDatabaseHelper;
 import toannguyen.rem.dal.utils.SearchUtils;
 import toannguyen.rem.entity.AddressEntity;
+import toannguyen.rem.entity.CommentEntity;
 import toannguyen.rem.entity.EstateDetailEntity;
 import toannguyen.rem.entity.EstateEntity;
 import toannguyen.rem.entity.PhotoEntity;
@@ -200,6 +201,33 @@ public class EstateDAL extends EntityDAL {
 		EstateDatabaseHelper dbh = new EstateDatabaseHelper();
 		try {
 			return dbh.queryInterestedEstateNumber(id);
+		} finally {
+			dbh.closeConnection();
+		}
+	}
+
+	public void postComment(CommentEntity commentEntity) throws SQLException, ClassNotFoundException {
+		EstateDatabaseHelper dbh = new EstateDatabaseHelper();
+		try {
+			dbh.postComment(commentEntity);
+		} finally {
+			dbh.closeConnection();
+		}
+	}
+
+	public List<CommentEntity> getComment(int estateId, int ownerId, int buyerId) throws ClassNotFoundException, SQLException {
+		EstateDatabaseHelper dbh = new EstateDatabaseHelper();
+		try {
+			return dbh.getComment(estateId, ownerId, buyerId);
+		} finally {
+			dbh.closeConnection();
+		}
+	}
+
+	public void answerComment(CommentEntity commentEntity) throws SQLException, ClassNotFoundException {
+		EstateDatabaseHelper dbh = new EstateDatabaseHelper();
+		try {
+			dbh.answerComment(commentEntity);
 		} finally {
 			dbh.closeConnection();
 		}

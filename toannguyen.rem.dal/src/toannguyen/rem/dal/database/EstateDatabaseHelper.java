@@ -9,12 +9,15 @@ import java.util.List;
 
 import toannguyen.rem.dal.mapping.AddressColumn;
 import toannguyen.rem.dal.mapping.BrokerEstateColumn;
+import toannguyen.rem.dal.mapping.CommentColumn;
 import toannguyen.rem.dal.mapping.EstateColumn;
 import toannguyen.rem.dal.mapping.EstateDetailColumn;
 import toannguyen.rem.dal.mapping.EstateTypeColumn;
 import toannguyen.rem.dal.mapping.InterestedEstateColumn;
+import toannguyen.rem.dal.mapping.NotificationColumn;
 import toannguyen.rem.dal.mapping.PhotoColumn;
 import toannguyen.rem.entity.AddressEntity;
+import toannguyen.rem.entity.CommentEntity;
 import toannguyen.rem.entity.Entity;
 import toannguyen.rem.entity.EstateDetailEntity;
 import toannguyen.rem.entity.EstateEntity;
@@ -88,6 +91,14 @@ public class EstateDatabaseHelper extends DatabaseHelper {
 		return new PhotoEntity(resultSet.getInt(PhotoColumn.ID.getColumnName()),
 				resultSet.getString(PhotoColumn.PHOTO.getColumnName()),
 				resultSet.getInt(PhotoColumn.ESTATE_ID.getColumnName()));
+	}
+	
+	protected CommentEntity getCommentEntityFromResultSet(ResultSet resultSet) throws SQLException {
+		return new CommentEntity(resultSet.getInt(CommentColumn.ID.getColumnName()), 
+				resultSet.getString(CommentColumn.MESSAGE.getColumnName()),
+				resultSet.getInt(CommentColumn.USER_ID1.getColumnName()),
+				resultSet.getInt(CommentColumn.USER_ID2.getColumnName()),
+				resultSet.getInt(CommentColumn.ESTATE_ID.getColumnName()));
 	}
 
 	public List<EstateEntity> queryAllEstate() throws Exception {
@@ -957,6 +968,96 @@ public class EstateDatabaseHelper extends DatabaseHelper {
 		builder.append("update estate set StatusID = ");
 		builder.append(status + "where EstateID = ");
 		builder.append(estateId);
+		executeUpdate(builder.toString());
+	}
+
+	public void postComment(CommentEntity entity) throws SQLException {
+		StringBuilder builder = new StringBuilder();
+		builder.append("insert into ");
+		builder.append(CommentColumn.TABLE_NAME);
+		builder.append(" (" + CommentColumn.MESSAGE + ", ");
+		builder.append(CommentColumn.USER_ID1 + ", ");
+		builder.append(CommentColumn.USER_ID2 + ", ");
+		builder.append(CommentColumn.TIME + ", ");
+		builder.append(CommentColumn.ESTATE_ID + ") values (");
+		builder.append("'" + entity.getMessage() + "', ");
+		builder.append(entity.getUser1() + ", ");
+		builder.append(entity.getUser2() + ", ");
+		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+		builder.append("'" + timestamp.toString() + "', ");
+		builder.append(entity.getEstateId() + ");");
+		executeUpdate(builder.toString());
+		
+		builder = new StringBuilder();
+		builder.append("insert into " + NotificationColumn.TABLE_NAME);
+		builder.append(" (" + NotificationColumn.USER_ID + ", ");
+		builder.append(NotificationColumn.REQUEST_ID + ", ");
+		builder.append(NotificationColumn.ESTATE_ID + ", ");
+		builder.append(NotificationColumn.MESSAGE + ", ");
+		builder.append(NotificationColumn.NOTI_TYPE + ") ");
+		builder.append("values (" + entity.getUser1() + ",");
+		builder.append(entity.getUser2() + ", ");
+		builder.append(entity.getEstateId() + ", ");
+		builder.append("'question', ");
+		builder.append(" ");
+		builder.append("2);");
+		executeUpdate(builder.toString());
+	}
+
+	public List<CommentEntity> getComment(int estateId, int ownerId, int buyerId) throws SQLException {
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		List<CommentEntity> entities = new ArrayList<>();
+		try {
+			StringBuilder builder = new StringBuilder();
+			builder.append("SELECT * FROM ");
+			builder.append(CommentColumn.TABLE_NAME);
+			builder.append(" where ");
+			builder.append(CommentColumn.USER_ID1 + " = " + buyerId);
+			builder.append(" or " + CommentColumn.USER_ID2 + " = " + ownerId);
+			builder.append(" order by " + CommentColumn.TIME + " desc");
+			stmt = con.prepareStatement(builder.toString());
+			rs = stmt.executeQuery();
+			while (rs.next()) {
+				CommentEntity entity = (CommentEntity) getCommentEntityFromResultSet(rs);
+				entities.add(entity);
+			}
+			return entities;
+		} finally {
+			closeQuery(stmt, rs);
+		}
+	}
+
+	public void answerComment(CommentEntity entity) throws SQLException {
+		StringBuilder builder = new StringBuilder();
+		builder.append("insert into ");
+		builder.append(CommentColumn.TABLE_NAME);
+		builder.append(" (" + CommentColumn.MESSAGE + ", ");
+		builder.append(CommentColumn.USER_ID1 + ", ");
+		builder.append(CommentColumn.USER_ID2 + ", ");
+		builder.append(CommentColumn.TIME + ", ");
+		builder.append(CommentColumn.ESTATE_ID + ") values (");
+		builder.append("'" + entity.getMessage() + "', ");
+		builder.append(entity.getUser1() + ", ");
+		builder.append(entity.getUser2() + ", ");
+		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+		builder.append("'" + timestamp.toString() + "', ");
+		builder.append(entity.getEstateId() + ");");
+		executeUpdate(builder.toString());
+		
+		builder = new StringBuilder();
+		builder.append("insert into " + NotificationColumn.TABLE_NAME);
+		builder.append(" (" + NotificationColumn.USER_ID + ", ");
+		builder.append(NotificationColumn.REQUEST_ID + ", ");
+		builder.append(NotificationColumn.ESTATE_ID + ", ");
+		builder.append(NotificationColumn.MESSAGE + ", ");
+		builder.append(NotificationColumn.NOTI_TYPE + ") ");
+		builder.append("values (" + entity.getUser2() + ",");
+		builder.append(entity.getUser1() + ", ");
+		builder.append(entity.getEstateId() + ", ");
+		builder.append("'question', ");
+		builder.append(" ");
+		builder.append("3);");
 		executeUpdate(builder.toString());
 	}
 }
