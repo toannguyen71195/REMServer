@@ -276,12 +276,24 @@ public class EstateAPI {
 	}
 	
 	@GET
-	@Path("getComment/{estateId}-{ownerId}-{buyerId}") 
-	public String getComment(@PathParam("estateId") int estateId, @PathParam("ownerId") int ownerId,
+	@Path("getCommentBuyer/{estateId}-{buyerId}") 
+	public String getCommentBuyer(@PathParam("estateId") int estateId,
 			@PathParam("buyerId") int buyerId) {
 		EstateAPIResponse response = new EstateAPIResponse();
 		try {
-			List<CommentEntity> entities = EstateDAL.getInstance().getComment(estateId, ownerId, buyerId);
+			List<CommentEntity> entities = EstateDAL.getInstance().getCommentBuyer(estateId, buyerId);
+			return response.successResponse(entities, "comments");
+		} catch (Exception e) {
+			return response.unsuccessResponse(e.getMessage());
+		}
+	}
+	
+	@GET
+	@Path("getCommentOwner/{estateId}-{ownerId}") 
+	public String getCommentOwner(@PathParam("estateId") int estateId, @PathParam("ownerId") int ownerId) {
+		EstateAPIResponse response = new EstateAPIResponse();
+		try {
+			List<CommentEntity> entities = EstateDAL.getInstance().getCommentOwner(estateId, ownerId);
 			return response.successResponse(entities, "comments");
 		} catch (Exception e) {
 			return response.unsuccessResponse(e.getMessage());

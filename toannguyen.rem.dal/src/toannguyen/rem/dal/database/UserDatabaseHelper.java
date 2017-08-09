@@ -158,10 +158,10 @@ public class UserDatabaseHelper extends DatabaseHelper {
 		}
 		// insert
 		builder = new StringBuilder();
-		builder.append("insert into users(UserType, UserName, FullName, Email, Phone, Address, Password) ");
+		builder.append("insert into users(UserType, UserName, FullName, Email, Phone, Address, Password, Avatar) ");
 		builder.append("values (" + entity.getTypeId() + ",'" + entity.getName() + "','");
 		builder.append(entity.getFullName() + "','" + entity.getEmail() + "','");
-		builder.append(entity.getPhone() + "','" + entity.getAddress() + "','" + entity.getPassword() + "');");
+		builder.append(entity.getPhone() + "','" + entity.getAddress() + "','" + entity.getPassword() + "', '" + StringUtils.DEFAULT_AVATAR + "');");
 		executeUpdate(builder.toString());
 		return queryLogin(entity.getName(), entity.getPassword());
 
@@ -379,8 +379,8 @@ public class UserDatabaseHelper extends DatabaseHelper {
 		builder.append(NotificationColumn.MESSAGE + ", ");
 		builder.append(NotificationColumn.NOTI_TYPE + ") ");
 		builder.append("values (" + userId + ",");
-		builder.append(estateId + ", ");
 		builder.append(estateEntity.getOwner().getId() + ", ");
+		builder.append(estateId + ", ");
 		builder.append("'" + tmp1  + estateEntity.getName());
 		builder.append(" " + tmp2 + " " + buyer.getFullName() + "', ");
 		builder.append("1);");

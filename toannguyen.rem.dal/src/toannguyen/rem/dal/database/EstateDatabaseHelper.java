@@ -16,6 +16,7 @@ import toannguyen.rem.dal.mapping.EstateTypeColumn;
 import toannguyen.rem.dal.mapping.InterestedEstateColumn;
 import toannguyen.rem.dal.mapping.NotificationColumn;
 import toannguyen.rem.dal.mapping.PhotoColumn;
+import toannguyen.rem.dal.mapping.UserColumn;
 import toannguyen.rem.entity.AddressEntity;
 import toannguyen.rem.entity.CommentEntity;
 import toannguyen.rem.entity.Entity;
@@ -60,23 +61,16 @@ public class EstateDatabaseHelper extends DatabaseHelper {
 	}
 
 	protected Entity getEntityFromResultSet_onlyEstate(ResultSet resultSet) throws Exception {
-		UserDatabaseHelper userDatabaseHelper = new UserDatabaseHelper();
-		try {
-			int id = resultSet.getInt(EstateColumn.ID.getColumnName());
-			EstateEntity estateEntity = new EstateEntity(id, resultSet.getString(EstateColumn.NAME.getColumnName()),
-					getAddressEntityFromResultSet(resultSet),
-					resultSet.getInt(EstateColumn.STATUS_ID.getColumnName()) == EstateEntity.STATUS_AVAILABLE,
-					resultSet.getString(EstateTypeColumn.NAME.getColumnName()),
-					resultSet.getTimestamp(EstateColumn.POST_TIME.getColumnName()),
-					resultSet.getTimestamp(EstateColumn.EDIT_TIME.getColumnName()),
-					resultSet.getDouble(EstateColumn.PRICE.getColumnName()),
-					resultSet.getDouble(EstateColumn.AREA.getColumnName()));
-			return estateEntity;
-		} finally {
-			if (userDatabaseHelper != null) {
-				userDatabaseHelper.closeConnection();
-			}
-		}
+		int id = resultSet.getInt(EstateColumn.ID.getColumnName());
+		EstateEntity estateEntity = new EstateEntity(id, resultSet.getString(EstateColumn.NAME.getColumnName()),
+				getAddressEntityFromResultSet(resultSet),
+				resultSet.getInt(EstateColumn.STATUS_ID.getColumnName()) == EstateEntity.STATUS_AVAILABLE,
+				resultSet.getString(EstateTypeColumn.NAME.getColumnName()),
+				resultSet.getTimestamp(EstateColumn.POST_TIME.getColumnName()),
+				resultSet.getTimestamp(EstateColumn.EDIT_TIME.getColumnName()),
+				resultSet.getDouble(EstateColumn.PRICE.getColumnName()),
+				resultSet.getDouble(EstateColumn.AREA.getColumnName()));
+		return estateEntity;
 	}
 
 	private AddressEntity getAddressEntityFromResultSet(ResultSet resultSet) throws SQLException {
@@ -92,13 +86,26 @@ public class EstateDatabaseHelper extends DatabaseHelper {
 				resultSet.getString(PhotoColumn.PHOTO.getColumnName()),
 				resultSet.getInt(PhotoColumn.ESTATE_ID.getColumnName()));
 	}
-	
-	protected CommentEntity getCommentEntityFromResultSet(ResultSet resultSet) throws SQLException {
-		return new CommentEntity(resultSet.getInt(CommentColumn.ID.getColumnName()), 
-				resultSet.getString(CommentColumn.MESSAGE.getColumnName()),
-				resultSet.getInt(CommentColumn.USER_ID1.getColumnName()),
-				resultSet.getInt(CommentColumn.USER_ID2.getColumnName()),
-				resultSet.getInt(CommentColumn.ESTATE_ID.getColumnName()));
+
+	protected CommentEntity getCommentEntityFromResultSet(ResultSet resultSet) throws Exception {
+		UserDatabaseHelper dbh = new UserDatabaseHelper();
+		try {
+			int id1 = resultSet.getInt(CommentColumn.USER_ID1.getColumnName());
+			int id2 = resultSet.getInt(CommentColumn.USER_ID2.getColumnName());
+			String user1 = ((UserEntity) dbh.queryByID(UserColumn.TABLE_NAME, UserColumn.ID.getColumnName(), id1))
+					.getFullName();
+			String user2 = ((UserEntity) dbh.queryByID(UserColumn.TABLE_NAME, UserColumn.ID.getColumnName(), id2))
+					.getFullName();
+			return new CommentEntity(resultSet.getInt(CommentColumn.ID.getColumnName()),
+					user1, id1, user2, id2,
+					resultSet.getInt(CommentColumn.ESTATE_ID.getColumnName()),
+					resultSet.getString(CommentColumn.QUESTION.getColumnName()),
+					resultSet.getString(CommentColumn.ANSWER.getColumnName()));
+		} finally {
+			if (dbh != null) {
+				dbh.closeConnection();
+			}
+		}
 	}
 
 	public List<EstateEntity> queryAllEstate() throws Exception {
@@ -157,7 +164,7 @@ public class EstateDatabaseHelper extends DatabaseHelper {
 			closeQuery(stmt, rs);
 		}
 	}
-	
+
 	public int queryEstateNumberByOwnerID(int id) throws Exception {
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
@@ -286,7 +293,7 @@ public class EstateDatabaseHelper extends DatabaseHelper {
 			closeQuery(stmt, rs);
 		}
 	}
-	
+
 	public int queryInterestedEstateNumber(int userId) throws Exception {
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
@@ -796,7 +803,7 @@ public class EstateDatabaseHelper extends DatabaseHelper {
 			}
 			return entities;
 		} catch (Exception e) {
-			throw new Exception("Error parse result: " + e.getMessage()  + ". Query: " + builder.toString());
+			throw new Exception("Error parse result: " + e.getMessage() + ". Query: " + builder.toString());
 		} finally {
 			closeQuery(stmt, rs);
 		}
@@ -975,19 +982,19 @@ public class EstateDatabaseHelper extends DatabaseHelper {
 		StringBuilder builder = new StringBuilder();
 		builder.append("insert into ");
 		builder.append(CommentColumn.TABLE_NAME);
-		builder.append(" (" + CommentColumn.MESSAGE + ", ");
+		builder.append(" (" + CommentColumn.QUESTION + ", ");
 		builder.append(CommentColumn.USER_ID1 + ", ");
 		builder.append(CommentColumn.USER_ID2 + ", ");
 		builder.append(CommentColumn.TIME + ", ");
 		builder.append(CommentColumn.ESTATE_ID + ") values (");
-		builder.append("'" + entity.getMessage() + "', ");
-		builder.append(entity.getUser1() + ", ");
-		builder.append(entity.getUser2() + ", ");
+		builder.append("'" + entity.getQuestion() + "', ");
+		builder.append(entity.getBuyerId() + ", ");
+		builder.append(entity.getOwnerId() + ", ");
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 		builder.append("'" + timestamp.toString() + "', ");
 		builder.append(entity.getEstateId() + ");");
 		executeUpdate(builder.toString());
-		
+
 		builder = new StringBuilder();
 		builder.append("insert into " + NotificationColumn.TABLE_NAME);
 		builder.append(" (" + NotificationColumn.USER_ID + ", ");
@@ -995,8 +1002,8 @@ public class EstateDatabaseHelper extends DatabaseHelper {
 		builder.append(NotificationColumn.ESTATE_ID + ", ");
 		builder.append(NotificationColumn.MESSAGE + ", ");
 		builder.append(NotificationColumn.NOTI_TYPE + ") ");
-		builder.append("values (" + entity.getUser1() + ",");
-		builder.append(entity.getUser2() + ", ");
+		builder.append("values (" + entity.getBuyerId() + ",");
+		builder.append(entity.getOwnerId() + ", ");
 		builder.append(entity.getEstateId() + ", ");
 		builder.append("'question', ");
 		builder.append(" ");
@@ -1004,7 +1011,7 @@ public class EstateDatabaseHelper extends DatabaseHelper {
 		executeUpdate(builder.toString());
 	}
 
-	public List<CommentEntity> getComment(int estateId, int ownerId, int buyerId) throws SQLException {
+	public List<CommentEntity> getCommentBuyer(int estateId, int buyerId) throws Exception {
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		List<CommentEntity> entities = new ArrayList<>();
@@ -1013,8 +1020,8 @@ public class EstateDatabaseHelper extends DatabaseHelper {
 			builder.append("SELECT * FROM ");
 			builder.append(CommentColumn.TABLE_NAME);
 			builder.append(" where ");
-			builder.append(CommentColumn.USER_ID1 + " = " + buyerId);
-			builder.append(" or " + CommentColumn.USER_ID2 + " = " + ownerId);
+			builder.append(CommentColumn.USER_ID1 + " = " + buyerId + " and ");
+			builder.append(CommentColumn.ESTATE_ID + " = " + estateId);
 			builder.append(" order by " + CommentColumn.TIME + " desc");
 			stmt = con.prepareStatement(builder.toString());
 			rs = stmt.executeQuery();
@@ -1030,21 +1037,15 @@ public class EstateDatabaseHelper extends DatabaseHelper {
 
 	public void answerComment(CommentEntity entity) throws SQLException {
 		StringBuilder builder = new StringBuilder();
-		builder.append("insert into ");
+		builder.append("update ");
 		builder.append(CommentColumn.TABLE_NAME);
-		builder.append(" (" + CommentColumn.MESSAGE + ", ");
-		builder.append(CommentColumn.USER_ID1 + ", ");
-		builder.append(CommentColumn.USER_ID2 + ", ");
-		builder.append(CommentColumn.TIME + ", ");
-		builder.append(CommentColumn.ESTATE_ID + ") values (");
-		builder.append("'" + entity.getMessage() + "', ");
-		builder.append(entity.getUser1() + ", ");
-		builder.append(entity.getUser2() + ", ");
-		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-		builder.append("'" + timestamp.toString() + "', ");
-		builder.append(entity.getEstateId() + ");");
+		builder.append(" set " + CommentColumn.ANSWER + " = ");
+		builder.append("'" + entity.getAnswer() + "'");
+		builder.append(" where ");
+		builder.append(CommentColumn.ID + " = ");
+		builder.append(entity.getId());
 		executeUpdate(builder.toString());
-		
+
 		builder = new StringBuilder();
 		builder.append("insert into " + NotificationColumn.TABLE_NAME);
 		builder.append(" (" + NotificationColumn.USER_ID + ", ");
@@ -1052,12 +1053,36 @@ public class EstateDatabaseHelper extends DatabaseHelper {
 		builder.append(NotificationColumn.ESTATE_ID + ", ");
 		builder.append(NotificationColumn.MESSAGE + ", ");
 		builder.append(NotificationColumn.NOTI_TYPE + ") ");
-		builder.append("values (" + entity.getUser2() + ",");
-		builder.append(entity.getUser1() + ", ");
+		builder.append("values (" + entity.getOwnerId() + ",");
+		builder.append(entity.getBuyerId() + ", ");
 		builder.append(entity.getEstateId() + ", ");
 		builder.append("'question', ");
 		builder.append(" ");
 		builder.append("3);");
 		executeUpdate(builder.toString());
+	}
+
+	public List<CommentEntity> getCommentOwner(int estateId, int ownerId) throws Exception {
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		List<CommentEntity> entities = new ArrayList<>();
+		try {
+			StringBuilder builder = new StringBuilder();
+			builder.append("SELECT * FROM ");
+			builder.append(CommentColumn.TABLE_NAME);
+			builder.append(" where ");
+			builder.append(CommentColumn.USER_ID2 + " = " + ownerId + " and ");
+			builder.append(CommentColumn.ESTATE_ID + " = " + estateId);
+			builder.append(" order by " + CommentColumn.TIME + " desc");
+			stmt = con.prepareStatement(builder.toString());
+			rs = stmt.executeQuery();
+			while (rs.next()) {
+				CommentEntity entity = (CommentEntity) getCommentEntityFromResultSet(rs);
+				entities.add(entity);
+			}
+			return entities;
+		} finally {
+			closeQuery(stmt, rs);
+		}
 	}
 }

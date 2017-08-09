@@ -5,7 +5,6 @@
 <fullyQualifiedTypeName name="toannguyen.rem.server.response.TypicalAPIResponse"/>
 <fullyQualifiedTypeName name="toannguyen.rem.dal.mapping.BrokerEstateColumn"/>
 <fullyQualifiedTypeName name="toannguyen.rem.dal.database.AppointmentDatabaseHelper"/>
-<fullyQualifiedTypeName name="toannguyen.rem.dal.database.UserDatabaseHelper"/>
 <fullyQualifiedTypeName name="javax.ws.rs.POST"/>
 <fullyQualifiedTypeName name="org.omg.PortableInterceptor.SUCCESSFUL"/>
 <fullyQualifiedTypeName name="com.sun.jersey.core.impl.provider.entity.XMLJAXBElementProvider.App"/>
@@ -42,13 +41,10 @@
 <fullyQualifiedTypeName name="java.lang.Exception"/>
 <fullyQualifiedTypeName name="java.sql.ResultSet"/>
 <fullyQualifiedTypeName name="toannguyen.rem.dal.database.EstateDatabaseHelper"/>
-<fullyQualifiedTypeName name="toannguyen.rem.entity.UserEntity"/>
 <fullyQualifiedTypeName name="toannguyen.rem.entity.NotificationEntity"/>
 <fullyQualifiedTypeName name="java.io.UnsupportedEncodingException"/>
 <fullyQualifiedTypeName name="java.util.StringTokenizer"/>
-<fullyQualifiedTypeName name="toannguyen.rem.dal.utils.StringUtils"/>
 <fullyQualifiedTypeName name="java.util.List"/>
-<fullyQualifiedTypeName name="toannguyen.rem.dal.mapping.UserColumn"/>
 <fullyQualifiedTypeName name="toannguyen.rem.dal.mapping.NotificationColumn"/>
 <fullyQualifiedTypeName name="toannguyen.rem.dal.EstateDAL"/>
 <fullyQualifiedTypeName name="toannguyen.rem.dal.utils.SearchUtils"/>
@@ -59,5 +55,9 @@
 <fullyQualifiedTypeName name="toannguyen.rem.entity.Entity"/>
 <fullyQualifiedTypeName name="toannguyen.rem.entity.json.JsonToEntityConverter"/>
 <fullyQualifiedTypeName name="toannguyen.rem.entity.CommentEntity"/>
+<fullyQualifiedTypeName name="toannguyen.rem.dal.database.UserDatabaseHelper"/>
+<fullyQualifiedTypeName name="toannguyen.rem.dal.mapping.UserColumn"/>
+<fullyQualifiedTypeName name="toannguyen.rem.entity.UserEntity"/>
 <fullyQualifiedTypeName name="toannguyen.rem.dal.mapping.CommentColumn"/>
+<fullyQualifiedTypeName name="toannguyen.rem.dal.utils.StringUtils"/>
 </qualifiedTypeNameHistroy>

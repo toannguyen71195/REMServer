@@ -216,7 +216,8 @@ create table comment (
     User1 int,
     User2 int,
     EstateID int,
-    Message varchar(255),
+    Answer varchar(255),
+    Question varchar(255),
     Time datetime
 );
 

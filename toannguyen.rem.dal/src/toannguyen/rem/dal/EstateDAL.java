@@ -215,10 +215,10 @@ public class EstateDAL extends EntityDAL {
 		}
 	}
 
-	public List<CommentEntity> getComment(int estateId, int ownerId, int buyerId) throws ClassNotFoundException, SQLException {
+	public List<CommentEntity> getCommentBuyer(int estateId, int buyerId) throws Exception {
 		EstateDatabaseHelper dbh = new EstateDatabaseHelper();
 		try {
-			return dbh.getComment(estateId, ownerId, buyerId);
+			return dbh.getCommentBuyer(estateId, buyerId);
 		} finally {
 			dbh.closeConnection();
 		}
@@ -228,6 +228,15 @@ public class EstateDAL extends EntityDAL {
 		EstateDatabaseHelper dbh = new EstateDatabaseHelper();
 		try {
 			dbh.answerComment(commentEntity);
+		} finally {
+			dbh.closeConnection();
+		}
+	}
+
+	public List<CommentEntity> getCommentOwner(int estateId, int ownerId) throws Exception {
+		EstateDatabaseHelper dbh = new EstateDatabaseHelper();
+		try {
+			return dbh.getCommentOwner(estateId, ownerId);
 		} finally {
 			dbh.closeConnection();
 		}
