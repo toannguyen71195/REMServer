@@ -41,7 +41,7 @@ public class UserDatabaseHelper extends DatabaseHelper {
 		avt = resultSet.getString(UserColumn.AVATAR.getColumnName());
 		return new UserEntity(id, name, fullName, email, phone, password, address, type, avt);
 	}
-	
+
 	protected NotificationEntity getNotiFromResultSet(ResultSet resultSet) throws Exception {
 		int userId, requestId, estateId;
 		userId = resultSet.getInt(NotificationColumn.USER_ID.getColumnName());
@@ -53,8 +53,8 @@ public class UserDatabaseHelper extends DatabaseHelper {
 			EstateEntity estate = estateDbh.queryByID(estateId);
 			UserEntity user = getUserByID(userId);
 			UserEntity request = getUserByID(requestId);
-			return new NotificationEntity(resultSet.getInt(NotificationColumn.ID.getColumnName()), 
-					user, request, estate, resultSet.getString(NotificationColumn.MESSAGE.getColumnName()), 
+			return new NotificationEntity(resultSet.getInt(NotificationColumn.ID.getColumnName()), user, request,
+					estate, resultSet.getString(NotificationColumn.MESSAGE.getColumnName()),
 					resultSet.getInt(NotificationColumn.NOTI_TYPE.getColumnName()));
 		} finally {
 			if (estateDbh != null) {
@@ -62,7 +62,7 @@ public class UserDatabaseHelper extends DatabaseHelper {
 			}
 		}
 	}
-	
+
 	protected PhotoEntity getPhotoEntityFromResultSet(ResultSet resultSet) throws SQLException {
 		return new PhotoEntity(resultSet.getInt(PhotoNoteColumn.ID.getColumnName()),
 				resultSet.getString(PhotoNoteColumn.PHOTO.getColumnName()));
@@ -161,7 +161,8 @@ public class UserDatabaseHelper extends DatabaseHelper {
 		builder.append("insert into users(UserType, UserName, FullName, Email, Phone, Address, Password, Avatar) ");
 		builder.append("values (" + entity.getTypeId() + ",'" + entity.getName() + "','");
 		builder.append(entity.getFullName() + "','" + entity.getEmail() + "','");
-		builder.append(entity.getPhone() + "','" + entity.getAddress() + "','" + entity.getPassword() + "', '" + StringUtils.DEFAULT_AVATAR + "');");
+		builder.append(entity.getPhone() + "','" + entity.getAddress() + "','" + entity.getPassword() + "', '"
+				+ StringUtils.DEFAULT_AVATAR + "');");
 		executeUpdate(builder.toString());
 		return queryLogin(entity.getName(), entity.getPassword());
 
@@ -228,7 +229,8 @@ public class UserDatabaseHelper extends DatabaseHelper {
 		}
 	}
 
-	public List<UserEntity> searchUser(String query, int offset, int range) throws ClassNotFoundException, SQLException, IOException {
+	public List<UserEntity> searchUser(String query, int offset, int range)
+			throws ClassNotFoundException, SQLException, IOException {
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		List<UserEntity> entities = new ArrayList<>();
@@ -381,7 +383,7 @@ public class UserDatabaseHelper extends DatabaseHelper {
 		builder.append("values (" + userId + ",");
 		builder.append(estateEntity.getOwner().getId() + ", ");
 		builder.append(estateId + ", ");
-		builder.append("'" + tmp1  + estateEntity.getName());
+		builder.append("'" + tmp1 + estateEntity.getName());
 		builder.append(" " + tmp2 + " " + buyer.getFullName() + "', ");
 		builder.append("1);");
 		executeUpdate(builder.toString());
@@ -420,6 +422,70 @@ public class UserDatabaseHelper extends DatabaseHelper {
 
 	public void deleteNoti(int notiId) throws ClassNotFoundException, SQLException, IOException {
 		deleteByID(NotificationColumn.TABLE_NAME, NotificationColumn.ID.getColumnName(), notiId);
+	}
+
+	public void saveHistoryType(int id, String type) throws Exception {
+		StringBuilder builder = new StringBuilder();
+		try {
+			builder.append("SELECT * FROM search_history where UserID = ");
+			builder.append(id + ";");
+			PreparedStatement stmt = null;
+			ResultSet rs = null;
+			int delete = -1;
+			try {
+				stmt = con.prepareStatement(builder.toString());
+				rs = stmt.executeQuery();
+				if (rs.next()) {
+					delete = rs.getInt("ID");
+					rs.last();
+					if (rs.getRow() <= 3) {
+						delete = -1;
+					}
+				}
+			} finally {
+				closeQuery(stmt, rs);
+			}
+			if (delete > 0) {
+				deleteByID("search_history", "ID", delete);
+			}
+			builder = new StringBuilder("insert into search_history (UserID, EstateType) values (");
+			builder.append(id + ", '" + type + "');");
+			executeUpdate(builder.toString());
+		} catch (Exception e) {
+			throw new Exception("Error save: " + e.getMessage() + ". Query: " + builder.toString());
+		}
+	}
+
+	public void saveHistoryDistrict(int id, String district) throws Exception {
+		StringBuilder builder = new StringBuilder();
+		try {
+			builder.append("SELECT * FROM search_history where UserID = ");
+			builder.append(id + ";");
+			PreparedStatement stmt = null;
+			ResultSet rs = null;
+			int delete = -1;
+			try {
+				stmt = con.prepareStatement(builder.toString());
+				rs = stmt.executeQuery();
+				if (rs.next()) {
+					delete = rs.getInt("ID");
+					rs.last();
+					if (rs.getRow() <= 3) {
+						delete = -1;
+					}
+				}
+			} finally {
+				closeQuery(stmt, rs);
+			}
+			if (delete > 0) {
+				deleteByID("search_history", "ID", delete);
+			}
+			builder = new StringBuilder("insert into search_history (UserID, District) values (");
+			builder.append(id + ", '" + district + "');");
+			executeUpdate(builder.toString());
+		} catch (Exception e) {
+			throw new Exception("Error save: " + e.getMessage() + ". Query: " + builder.toString());
+		}
 	}
 
 	// private String saveImage(String base64String) throws IOException {

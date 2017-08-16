@@ -792,7 +792,7 @@ public class EstateDatabaseHelper extends DatabaseHelper {
 			builder.append(EstateColumn.STATUS_ID + " = " + EstateEntity.STATUS_AVAILABLE);
 			builder.append(" limit " + page * PAGE_COUNT + ", " + PAGE_COUNT);
 		} catch (Exception e) {
-			throw new Exception("Error build query: " + e.getMessage());
+			throw new Exception("Error build query: " + e.getMessage() + ". Query: " + builder.toString());
 		}
 		try {
 			stmt = con.prepareStatement(builder.toString());
@@ -1083,6 +1083,66 @@ public class EstateDatabaseHelper extends DatabaseHelper {
 			return entities;
 		} finally {
 			closeQuery(stmt, rs);
+		}
+	}
+
+	public List<EstateEntity> searchGPS(double lat, double lng, int dist) throws Exception {
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		StringBuilder builder = new StringBuilder();
+		builder.append("select * from (SELECT e.*, a.City, a.District, a.Ward, a.Address,");
+		builder.append(" t.TypeName,d.Bathroom, d.Bedroom, d.Cond, d.Description,");
+		builder.append(" d.Floor, d.Length, d.Width, d.Longitude, d.Latitude,");
+		builder.append(" gpsDistance(d.Latitude, d.Longitude, " + lat + ", " + lng + ") as Distance");
+		builder.append(" FROM estate e");
+		builder.append(" left join address a on e.AddressID = a.AddressID");
+		builder.append(" left join estate_type t on e.EstateTypeID = t.EstateTypeID");
+		builder.append(" left join estate_detail d on e.EstateID = d.EstateID");
+		builder.append(" where e.StatusID = 1");
+		builder.append(" order by Distance, PostTime desc) as tmp");
+		builder.append(" where Distance < " + (dist * 1000));
+		try {
+			stmt = con.prepareStatement(builder.toString());
+			rs = stmt.executeQuery();
+			List<EstateEntity> entities = new ArrayList<>();
+			while (rs.next()) {
+				entities.add((EstateEntity) getEntityFromResultSet(rs));
+			}
+			return entities;
+		} catch (Exception e) {
+			throw new Exception("Error parse result: " + e.getMessage());
+		} finally {
+			closeQuery(stmt, rs);
+		}
+	}
+
+	public List<EstateEntity> getSuggested(int userId) throws Exception {
+		List<EstateEntity> estateEntities = new ArrayList<>();
+		StringBuilder builder = new StringBuilder();
+		builder.append("SELECT * FROM search_history where UserID = ");
+		builder.append(userId + ";");
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		try {
+			stmt = con.prepareStatement(builder.toString());
+			rs = stmt.executeQuery();
+			while (rs.next()) {
+				if (rs.getString("EstateType") != null && !rs.getString("EstateType").isEmpty()) {
+					SearchEstateEntity searchEstateEntity = new SearchEstateEntity(new AddressEntity(0, "", "", "", ""), rs.getString("EstateType"));
+					estateEntities.addAll(search(searchEstateEntity, 0));
+				} 
+				if (rs.getString("District") != null && !rs.getString("District").isEmpty()) {
+					SearchEstateEntity searchEstateEntity = new SearchEstateEntity(new AddressEntity(0, "", rs.getString("District"), "", ""), "");
+					estateEntities.addAll(search(searchEstateEntity, 0));
+				} 
+			}
+		} finally {
+			closeQuery(stmt, rs);
+		}
+		if (estateEntities.size() > 6) {
+			return estateEntities.subList(0, 6);
+		} else {
+			return estateEntities;
 		}
 	}
 }

@@ -11,6 +11,7 @@ import toannguyen.rem.entity.Entity;
 import toannguyen.rem.entity.EstateEntity;
 import toannguyen.rem.entity.NotificationEntity;
 import toannguyen.rem.entity.PhotoEntity;
+import toannguyen.rem.entity.SearchEstateEntity;
 import toannguyen.rem.entity.UserEntity;
 
 public class UserDAL extends EntityDAL {
@@ -215,6 +216,35 @@ public class UserDAL extends EntityDAL {
 		UserDatabaseHelper dbh = new UserDatabaseHelper();
 		try {
 			dbh.deleteNoti(notiId);
+		} finally {
+			dbh.closeConnection();
+		}
+	}
+
+	public void saveHistoryType(int id, SearchEstateEntity searchEntity) throws Exception {
+		UserDatabaseHelper dbh = new UserDatabaseHelper();
+		try {
+			dbh.saveHistoryType(id, searchEntity.getType());
+		} finally {
+			dbh.closeConnection();
+		}
+		
+	}
+
+	public void saveHistoryDistrict(int id, SearchEstateEntity searchEntity) throws Exception {
+		UserDatabaseHelper dbh = new UserDatabaseHelper();
+		try {
+			dbh.saveHistoryDistrict(id, searchEntity.getAddress().getDistrict());
+		} finally {
+			dbh.closeConnection();
+		}
+		
+	}
+
+	public List<EstateEntity> getSuggested(int userId) throws Exception {
+		EstateDatabaseHelper dbh = new EstateDatabaseHelper();
+		try {
+			return dbh.getSuggested(userId);
 		} finally {
 			dbh.closeConnection();
 		}

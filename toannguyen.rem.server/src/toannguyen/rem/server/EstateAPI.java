@@ -13,6 +13,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import toannguyen.rem.dal.EstateDAL;
+import toannguyen.rem.dal.UserDAL;
 import toannguyen.rem.entity.CommentEntity;
 import toannguyen.rem.entity.EstateDetailEntity;
 import toannguyen.rem.entity.EstateEntity;
@@ -199,6 +200,18 @@ public class EstateAPI {
 			SearchEstateEntity searchEntity = null;
 			try {
 				searchEntity = new SearchEstateEntity(estateEntity);
+				// save search history
+				JSONObject jsonObject = new JSONObject(searchEntityJson);
+				if (jsonObject.has("userID")) {
+					if (searchEntity.getType() != null && !searchEntity.getType().isEmpty()) {
+						UserDAL.getInstance().saveHistoryType(jsonObject.getInt("userID"), searchEntity);
+					}
+					if (searchEntity.getAddress() != null && searchEntity.getAddress().getDistrict() != null 
+							&& !searchEntity.getAddress().getDistrict().isEmpty()) {
+						UserDAL.getInstance().saveHistoryDistrict(jsonObject.getInt("userID"), searchEntity);
+					}
+				}
+				
 			} catch (Exception e) {
 				throw new Exception("Error parse to search entity: " + e.getMessage());
 			}
@@ -219,6 +232,22 @@ public class EstateAPI {
 			double lng = jsonObject.getDouble("longitude");
 			int dist = jsonObject.getInt("distance");
 			List<EstateEntity> estateEntities = EstateDAL.getInstance().searchGPS(lat, lng, dist, page);
+			return response.successResponse(estateEntities, "estates");
+		} catch (Exception e) {
+			return response.unsuccessResponse(e.getMessage());
+		}
+	}
+	
+	@POST
+	@Path("searchGPSAll")
+	public String searchGPSAll(String json) {
+		EstateAPIResponse response = new EstateAPIResponse();
+		try {
+			JSONObject jsonObject = new JSONObject(json);
+			double lat = jsonObject.getDouble("latitude");
+			double lng = jsonObject.getDouble("longitude");
+			int dist = jsonObject.getInt("distance");
+			List<EstateEntity> estateEntities = EstateDAL.getInstance().searchGPS(lat, lng, dist);
 			return response.successResponse(estateEntities, "estates");
 		} catch (Exception e) {
 			return response.unsuccessResponse(e.getMessage());

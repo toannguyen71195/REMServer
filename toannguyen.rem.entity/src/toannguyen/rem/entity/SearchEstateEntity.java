@@ -9,6 +9,7 @@ public class SearchEstateEntity {
 	int bedMin, bedMax;
 	int bathMin, bathMax;
 	String direction;
+	int userID;
 
 	public SearchEstateEntity(EstateEntity entity) {
 		address = entity.getAddress();
@@ -361,4 +362,13 @@ public class SearchEstateEntity {
 		this.direction = direction;
 	}
 
+	public int getUserID() {
+		return userID;
+	}
+
+	public void setUserID(int userID) {
+		this.userID = userID;
+	}
+
+	
 }

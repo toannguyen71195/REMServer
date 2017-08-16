@@ -221,3 +221,10 @@ create table comment (
     Time datetime
 );
 
+create table search_history (
+	ID int primary key auto_increment,
+    UserID int,
+    EstateType varchar(50),
+    District varchar(50)
+);
+

@@ -268,6 +268,18 @@ public final class UserAPI {
 			return response.unsuccessResponse(e.getMessage());
 		}
 	}
+	
+	@GET
+	@Path("/getSuggested/{userId}")
+	public String getSuggested(@PathParam("userId") int userId) {
+		UserAPIResponse response = new UserAPIResponse();
+		try {
+			List<EstateEntity> entities = UserDAL.getInstance().getSuggested(userId);
+			return response.successResponse(entities, "estates");
+		} catch (Exception e) {
+			return response.unsuccessResponse(e.getMessage());
+		}
+	}
 
 	// @GET
 	// @Path("/setVisited/{userId}-{estateId}")

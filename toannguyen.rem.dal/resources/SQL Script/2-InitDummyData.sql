@@ -94,4 +94,6 @@ insert into comment (User1, User2, EstateID, Answer, Question, Time)
 			values (1, 2, 1, 'nhà mới xây được 2 tháng', 'cho hỏi tuổi của căn hộ?', '2017-08-06 05:06:07');
 insert into comment (User1, User2, EstateID, Question, Time)
 			values (1, 2, 1, 'cho tôi xin địa chỉ chính xác để xem nhà', '2017-08-06 05:06:07');
+            
+insert into search_history (UserID, District) values (1, '2')
              

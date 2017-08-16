@@ -241,4 +241,13 @@ public class EstateDAL extends EntityDAL {
 			dbh.closeConnection();
 		}
 	}
+
+	public List<EstateEntity> searchGPS(double lat, double lng, int dist) throws Exception {
+		EstateDatabaseHelper dbh = new EstateDatabaseHelper();
+		try {
+			return dbh.searchGPS(lat, lng, dist);
+		} finally {
+			dbh.closeConnection();
+		}
+	}
 }
