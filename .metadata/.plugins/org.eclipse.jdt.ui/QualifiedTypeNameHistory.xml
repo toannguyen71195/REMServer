@@ -11,10 +11,8 @@
 <fullyQualifiedTypeName name="toannguyen.rem.dal.AppointmentDAL"/>
 <fullyQualifiedTypeName name="toannguyen.rem.entity.PhotoEntity"/>
 <fullyQualifiedTypeName name="toannguyen.rem.dal.EntityDAL"/>
-<fullyQualifiedTypeName name="toannguyen.rem.dal.mapping.EstateColumn"/>
 <fullyQualifiedTypeName name="com.google.gson.GsonBuilder"/>
 <fullyQualifiedTypeName name="java.text.DateFormat"/>
-<fullyQualifiedTypeName name="toannguyen.rem.dal.mapping.PhotoColumn"/>
 <fullyQualifiedTypeName name="javax.ejb.EJBAccessException"/>
 <fullyQualifiedTypeName name="toannguyen.rem.entity.AppointmentEntity"/>
 <fullyQualifiedTypeName name="java.sql.Date"/>
@@ -60,4 +58,6 @@
 <fullyQualifiedTypeName name="toannguyen.rem.entity.SearchEstateEntity"/>
 <fullyQualifiedTypeName name="toannguyen.rem.entity.AddressEntity"/>
 <fullyQualifiedTypeName name="java.lang.Exception"/>
+<fullyQualifiedTypeName name="toannguyen.rem.dal.mapping.EstateColumn"/>
+<fullyQualifiedTypeName name="toannguyen.rem.dal.mapping.PhotoColumn"/>
 </qualifiedTypeNameHistroy>

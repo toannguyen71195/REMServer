@@ -1,4 +1,4 @@
-Drop database estate_manager;
+/* Drop database estate_manager; */
 
 CREATE DATABASE estate_manager
 DEFAULT CHARACTER SET utf8

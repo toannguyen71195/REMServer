@@ -43,6 +43,7 @@ public class EstateDatabaseHelper extends DatabaseHelper {
 					.getUserByID(resultSet.getInt(EstateColumn.OWNER_ID.getColumnName()));
 			int id = resultSet.getInt(EstateColumn.ID.getColumnName());
 			EstateDetailEntity detailEntity = queryEstateDetail(id);
+			String avt = getPhotoByID(resultSet.getInt(EstateColumn.PHOTO_ID.getColumnName()));
 			EstateEntity estateEntity = new EstateEntity(id, resultSet.getString(EstateColumn.NAME.getColumnName()),
 					userEntity, getAddressEntityFromResultSet(resultSet),
 					resultSet.getInt(EstateColumn.STATUS_ID.getColumnName()) == EstateEntity.STATUS_AVAILABLE,
@@ -50,13 +51,34 @@ public class EstateDatabaseHelper extends DatabaseHelper {
 					resultSet.getTimestamp(EstateColumn.POST_TIME.getColumnName()),
 					resultSet.getTimestamp(EstateColumn.EDIT_TIME.getColumnName()),
 					resultSet.getDouble(EstateColumn.PRICE.getColumnName()),
-					resultSet.getDouble(EstateColumn.AREA.getColumnName()));
+					resultSet.getDouble(EstateColumn.AREA.getColumnName()), avt);
 			estateEntity.setDetail(detailEntity);
 			return estateEntity;
 		} finally {
 			if (userDatabaseHelper != null) {
 				userDatabaseHelper.closeConnection();
 			}
+		}
+	}
+
+	private String getPhotoByID(int id) throws SQLException {
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		try {
+			StringBuilder builder = new StringBuilder();
+			builder.append("SELECT * FROM ");
+			builder.append(PhotoColumn.TABLE_NAME);
+			builder.append(" where ");
+			builder.append(PhotoColumn.ID + " = ");
+			builder.append(id + ";");
+			stmt = con.prepareStatement(builder.toString());
+			rs = stmt.executeQuery();
+			if (rs.next()) {
+				return getPhotoEntityFromResultSet(rs).getPhoto();
+			}
+			return null;
+		} finally {
+			closeQuery(stmt, rs);
 		}
 	}
 
@@ -426,7 +448,7 @@ public class EstateDatabaseHelper extends DatabaseHelper {
 			addressEntity = addressDatabaseHelper.insertAddress(reqEntity.getAddress());
 			// insert into estate (AddressID, Name, OwnerID,
 			// StatusID, EstateTypeID, PostTime, Price, Area, Photo)
-			// values (1, 1, 'Phòng cho thuê', 3, 1, 2, '2017-05-06 05:06:07',
+			// values (1, 1, 'Phï¿½ng cho thuï¿½', 3, 1, 2, '2017-05-06 05:06:07',
 			// 12000, 80, 1);
 			builder.append("insert into " + EstateColumn.TABLE_NAME);
 			builder.append(" (" + EstateColumn.ADDRESS_ID + ", ");

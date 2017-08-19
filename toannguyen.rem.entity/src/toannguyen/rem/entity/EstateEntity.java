@@ -19,9 +19,10 @@ public class EstateEntity extends Entity {
 	Timestamp editTime;
 	double price;
 	double area;
+	String avatar;
 
 	public EstateEntity(int id, String name, UserEntity owner, AddressEntity address, boolean status, String type,
-			Timestamp postTime, Timestamp editTime, Double price, Double area) {
+			Timestamp postTime, Timestamp editTime, Double price, Double area, String avatar) {
 		super(id, name);
 		this.owner = owner;
 		this.address = address;
@@ -31,6 +32,7 @@ public class EstateEntity extends Entity {
 		this.price = price;
 		this.area = area;
 		this.editTime = editTime;
+		this.avatar = avatar;
 	}
 
 	public EstateEntity(int id, String name, AddressEntity address, boolean status, String type,
