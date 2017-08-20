@@ -50,7 +50,6 @@
 <fullyQualifiedTypeName name="toannguyen.rem.dal.mapping.UserColumn"/>
 <fullyQualifiedTypeName name="toannguyen.rem.entity.UserEntity"/>
 <fullyQualifiedTypeName name="toannguyen.rem.dal.mapping.CommentColumn"/>
-<fullyQualifiedTypeName name="toannguyen.rem.dal.utils.StringUtils"/>
 <fullyQualifiedTypeName name="toannguyen.rem.dal.UserDAL"/>
 <fullyQualifiedTypeName name="java.lang.StringBuilder"/>
 <fullyQualifiedTypeName name="toannguyen.rem.entity.EstateEntity"/>
@@ -60,4 +59,5 @@
 <fullyQualifiedTypeName name="java.lang.Exception"/>
 <fullyQualifiedTypeName name="toannguyen.rem.dal.mapping.EstateColumn"/>
 <fullyQualifiedTypeName name="toannguyen.rem.dal.mapping.PhotoColumn"/>
+<fullyQualifiedTypeName name="toannguyen.rem.dal.utils.StringUtils"/>
 </qualifiedTypeNameHistroy>

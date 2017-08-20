@@ -438,7 +438,7 @@ public class UserDatabaseHelper extends DatabaseHelper {
 				if (rs.next()) {
 					delete = rs.getInt("ID");
 					rs.last();
-					if (rs.getRow() <= 3) {
+					if (rs.getRow() < 3) {
 						delete = -1;
 					}
 				}
@@ -470,7 +470,7 @@ public class UserDatabaseHelper extends DatabaseHelper {
 				if (rs.next()) {
 					delete = rs.getInt("ID");
 					rs.last();
-					if (rs.getRow() <= 3) {
+					if (rs.getRow() < 3) {
 						delete = -1;
 					}
 				}

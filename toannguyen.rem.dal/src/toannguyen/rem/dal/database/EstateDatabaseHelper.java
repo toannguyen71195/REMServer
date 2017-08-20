@@ -995,7 +995,7 @@ public class EstateDatabaseHelper extends DatabaseHelper {
 	public void updateStatus(int estateId, int status) throws SQLException {
 		StringBuilder builder = new StringBuilder();
 		builder.append("update estate set StatusID = ");
-		builder.append(status + "where EstateID = ");
+		builder.append(status + " where EstateID = ");
 		builder.append(estateId);
 		executeUpdate(builder.toString());
 	}
@@ -1152,10 +1152,16 @@ public class EstateDatabaseHelper extends DatabaseHelper {
 				if (rs.getString("EstateType") != null && !rs.getString("EstateType").isEmpty()) {
 					SearchEstateEntity searchEstateEntity = new SearchEstateEntity(new AddressEntity(0, "", "", "", ""), rs.getString("EstateType"));
 					estateEntities.addAll(search(searchEstateEntity, 0));
+					if (estateEntities.size() > 6) {
+						break;
+					}
 				} 
 				if (rs.getString("District") != null && !rs.getString("District").isEmpty()) {
 					SearchEstateEntity searchEstateEntity = new SearchEstateEntity(new AddressEntity(0, "", rs.getString("District"), "", ""), "");
 					estateEntities.addAll(search(searchEstateEntity, 0));
+					if (estateEntities.size() > 6) {
+						break;
+					}
 				} 
 			}
 		} finally {
